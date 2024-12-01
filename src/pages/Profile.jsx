@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
 import { useAuth } from '../context/AuthContext';
 import '../styles/Profile.css';
-import { getUserProfile } from '../api/auth';
+import { getUserProfile } from '../service/api';
 
 function Profile() {
   const { isLoggedIn } = useAuth();

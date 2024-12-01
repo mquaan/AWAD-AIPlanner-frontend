@@ -5,7 +5,7 @@ import { FaUser, FaLock } from "react-icons/fa";
 import StatusMessage from './StatusMessage';
 import { useAuth } from '../context/AuthContext';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { loginUser } from '../api/auth';
+import { loginUser } from '../service/api';
 import '../styles/Form.css';
 
 function LoginForm() {
