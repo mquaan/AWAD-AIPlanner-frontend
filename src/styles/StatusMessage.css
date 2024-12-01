@@ -1,0 +1,26 @@
+/* src/styles/StatusMessage.css */
+.status-message {
+  width: 250px;
+  text-align: center;
+  position: fixed;
+  top: 25px;
+  right: 20px;
+  padding: 18px 25px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.status-message.success {
+  background-color: #28a745;
+  opacity: 1;
+}
+
+.status-message.error {
+  background-color: #dc3545;
+  opacity: 1;
+}
