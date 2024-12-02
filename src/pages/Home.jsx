@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import '../styles/Home.css';
 import { Link } from 'react-router-dom';
 import StatusMessage from '../components/StatusMessage';
 import { useAuth } from '../context/AuthContext';
@@ -10,11 +9,10 @@ function Home() {
   useEffect(() => {
     if (status.message) {
       const timer = setTimeout(() => setStatus({ message: '', type: '' }), 3000); // Clear after 3 seconds
-      // navigate(location.pathname, { replace: true });
       return () => clearTimeout(timer);
     }
   }, [status]);
-  
+
   const handleLogout = () => {
     const confirmLogout = window.confirm('Are you sure you want to log out?');
     if (confirmLogout) {
@@ -26,24 +24,48 @@ function Home() {
   return (
     <>
       <StatusMessage message={status.message} type={status.type} />
-      <div className="home-container">
-        <div className='wrapper'>
-          <div className='title'>Welcome to AI Planner System</div>
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <div className="flex flex-col items-center justify-center py-[100px] px-[150px] bg-[#26493f5f] rounded-2xl">
+          <h1 className="text-[30px] font-bold text-black mb-7">Welcome to AI Planner System</h1>
           {isLoggedIn ? (
             <>
-              <p>You are logged in as  <span className="username-highlight">{user.name}</span></p>
-              <div className='page-container'>
-                <Link to="/profile" className="button profile-button">View Profile</Link>
-                <div onClick={handleLogout} className="button logout-button">Log Out</div>
+              <p className="text-lg text-black my-4">
+                You are logged in as
+                <span className="ml-2 font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-lg">
+                  {user.name}
+                </span>
+              </p>
+              <div className="flex space-x-4 mt-4">
+                <Link
+                  to="/profile"
+                  className="px-6 py-2 bg-[#3ca2be] text-black font-bold rounded-lg hover:opacity-80"
+                >
+                  View Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-6 py-2 bg-[#c8873c] text-black font-bold rounded-lg hover:opacity-80"
+                >
+                  Log Out
+                </button>
               </div>
             </>
           ) : (
             <>
-              <p>Already have an account? Log in below.</p>
-              <Link to="/login" className="button login-button">Log In</Link>
-              
-              <p>Don&apos;t have an account? Register now.</p>
-              <Link to="/register" className="button register-button">Register</Link>
+              <p className="text-lg text-black mb-4">Already have an account? Log in below.</p>
+              <Link
+                to="/login"
+                className="block px-8 py-2 bg-[#568175] text-white font-bold rounded-lg hover:opacity-80"
+              >
+                Log In
+              </Link>
+              <p className="text-lg text-black mt-8">Don&apos;t have an account? Register now.</p>
+              <Link
+                to="/register"
+                className="block mt-2 px-8 py-2 bg-[#3a5c67] text-white font-bold rounded-lg hover:opacity-80"
+              >
+                Register
+              </Link>
             </>
           )}
         </div>

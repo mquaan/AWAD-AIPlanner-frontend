@@ -4,7 +4,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import OAuthCallback from './pages/OAuthCallback';
-import './styles/App.css';
 import './index.css';
 
 function App() {

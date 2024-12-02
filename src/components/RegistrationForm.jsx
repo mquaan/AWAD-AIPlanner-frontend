@@ -35,33 +35,56 @@ function RegistrationForm() {
   return (
     <>
       <StatusMessage message={status.message} type={status.type} />
-      <div className='body'>
-        <div className="form-container">
-          <div className='title'>AI Planner - Register</div>
+      <div className='h-screen flex justify-center items-center'>
+        <div className="form-flex flex-col p-[50px] w-[420px] bg-[#26493f5f] rounded-3xl shadow-md text-center">
+          <div className='text-[30px] font-bold text-black mb-3'>AI Planner - Register</div>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
-            <div className='input-box'>
-              <input type="email" placeholder='Email' {...register('email', { required: 'Email is required' })} />
-              {errors.email && <p className="error-message">{errors.email.message}</p>}
-              <FaUser className='icon' />
+            <div className='relative w-full h-[50px] my-6'>
+              <input 
+                type="email"
+                placeholder='Email' {...register('email', { required: 'Email is required' })} 
+                className='w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
+                          bg-transparent text-[15px] text-black pl-6 placeholder-black
+                          focus:outline-none focus:border-[#395750] focus:shadow-sm'
+              />
+              {errors.email && <p className="text-red-500 text-[12.5px] mt-0">{errors.email.message}</p>}
+              <FaUser className='absolute top-1/2 right-[25px] transform -translate-y-1/2 text-[15px]' />
             </div>
-            <div className='input-box'>
-              <input type="text" placeholder='Name' {...register('name', { required: 'Name is required' })} />
-              {errors.name && <p className="error-message">{errors.name.message}</p>}
-              <FaUser className='icon' />
+            <div className="relative w-full h-[50px] my-6">
+              <input 
+                type="text"
+                placeholder='Name' {...register('name', { required: 'Name is required' })}
+                className='w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
+                          bg-transparent text-[15px] text-black pl-6 placeholder-black
+                          focus:outline-none focus:border-[#395750] focus:shadow-sm'
+              />
+              <FaLock className='absolute top-1/2 right-[25px] transform -translate-y-1/2 text-[15px]' />
+              {errors.name && <p className="text-red-500 text-[12.5px] mt-0">{errors.name.message}</p>}
             </div>
-            <div className='input-box'>
-              <input type="password" placeholder='Password' {...register('password', { required: 'Password is required' })} />
-              {errors.password && <p className="error-message">{errors.password.message}</p>}
-              <FaLock className='icon' />
+            <div className="relative w-full h-[50px] my-6">
+              <input 
+                type="password"
+                placeholder='Password' {...register('password', { required: 'Password is required' })}
+                className='w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
+                          bg-transparent text-[15px] text-black pl-6 placeholder-black
+                          focus:outline-none focus:border-[#395750] focus:shadow-sm'
+              />
+              <FaLock className='absolute top-1/2 right-[25px] transform -translate-y-1/2 text-[15px]' />
+              {errors.password && <p className="text-red-500 text-[12.5px] mt-0">{errors.password.message}</p>}
             </div>
 
-            <button type="submit" className="submit-button-register">Register</button>
-
-            <div className='register-link'>
-              <p>Already have an account?</p>
-              <Link to="/login" className='link-register'>Log In</Link>
-            </div>
+            <button 
+              type="submit" 
+              className="w-[60%] h-[45px] mt-2 bg-[#3a5c67] border-none rounded-full cursor-pointer shadow-md transition-colors duration-300 text-[15px]
+                        font-semibold text-white hover:bg-[#324f59]"
+            >
+                Register
+            </button>
           </form>
+          <div className='flex justify-center items-center text-center mt-5 mb-2 gap-2'>
+            <div className='text-[15px] text-[#262121] font-semibold'>Already have an account?</div>
+            <Link to="/login" className='text-[15px] font-semibold text-[#3a5c67]'>Log In</Link>
+          </div>
         </div>
       </div>
     </>
