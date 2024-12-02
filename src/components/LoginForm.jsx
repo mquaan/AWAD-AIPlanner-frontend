@@ -17,7 +17,8 @@ function LoginForm() {
   const handleGoogleLogin = async () => {
     try {
       // const response = await googleLogin();
-      window.location.href = 'http://localhost:8080/api/auth/google_login'; 
+      const url = import.meta.env.VITE_BACKEND_URL + '/api/auth/google_login';
+      window.location.href = url; 
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
     };
