@@ -18,7 +18,6 @@ function LoginForm() {
   const [status, setStatus] = useState({ message: message || '', type: type || '' });
 
   const handleGoogleSuccess = (credentialResponse) => {
-    console.log(credentialResponse);
     login(credentialResponse.credential, 'google_user');
     navigate('/', { state: { message: 'Login successful!', type: 'success' } });
   };
@@ -30,7 +29,7 @@ function LoginForm() {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data);
-      login(response.data.access_token, response.data.username);
+      login(response.data.token, response.data.user);
       navigate('/', { state: { message: response.data.message || 'Login successful!', type: 'success' } });
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
@@ -53,9 +52,9 @@ function LoginForm() {
           <h2>AI Planner - Login</h2>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             <div className='input-box'>
-              <input type="text" placeholder='Email or username' {...register('identifier', { required: 'Email/usename is required' })} />
+              <input type="email" placeholder='Email' {...register('email', { required: 'Email is required' })} />
               <FaUser className='icon' />
-              {errors.identifier && <p className="error-message">{errors.identifier.message}</p>}
+              {errors.email && <p className="error-message">{errors.email.message}</p>}
             </div>
 
             <div className="input-box">

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaUser, FaLock } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import StatusMessage from './StatusMessage';
-import { registerUser } from '../api/auth';
+import { registerUser } from '../service/api';
 
 function RegistrationForm() {
   const { register, handleSubmit, formState: { errors } } = useForm();

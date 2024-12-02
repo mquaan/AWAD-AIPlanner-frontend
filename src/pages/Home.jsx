@@ -35,7 +35,7 @@ function Home() {
           <h1>Welcome to AI Planner System</h1>
           {isLoggedIn ? (
             <>
-              <p>You are logged in as  <span className="username-highlight">{user}</span></p>
+              <p>You are logged in as  <span className="username-highlight">{user.name}</span></p>
               <div className='page-container'>
                 <Link to="/profile" className="button profile-button">View Profile</Link>
                 <div onClick={handleLogout} className="button logout-button">Log Out</div>

@@ -23,7 +23,7 @@ function Profile() {
   const fetchUserData = async () => {
     try {
       // Fetch user data from the API
-      const response = await getUserProfile();
+      const response = await getUserProfile(userData.id);
       setUserData(response.data);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to fetch profile data');
