@@ -1,10 +1,32 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import StatusMessage from '../components/StatusMessage';
 import { useAuth } from '../context/AuthContext';
 
 function Home() {
-  const { user, logout, isLoggedIn, status, setStatus } = useAuth();
+  const { user, login, logout, isLoggedIn, status, setStatus } = useAuth();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Parse URL for token and user data
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get('token');
+    const userParam = queryParams.get('user');
+
+    if (token && userParam) {
+      try {
+        const parsedUser = JSON.parse(decodeURIComponent(userParam));
+        login(token, parsedUser);
+        setStatus({ message: 'You are now logged in.', type: 'success' }); // Optional: Success message
+        navigate('/', { replace: true }); // Remove token and user from URL
+      } catch (error) {
+        console.error('Invalid user data in URL', error);
+        setStatus({ message: 'Invalid login data.', type: 'error' });
+      }
+    }
+  }, [location, setStatus, navigate]);
 
   useEffect(() => {
     if (status.message) {

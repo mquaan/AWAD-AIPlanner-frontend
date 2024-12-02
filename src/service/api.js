@@ -13,19 +13,16 @@ export const registerUser = async (data) => {
 };
 
 export const getUserProfile = async (id) => {
-  const response = await axiosInstance.get(`/user/profile/${id}`);
+  const response = await axiosInstance.get(`/user/profile/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+    },
+  });
   return response;
 };
 
 export const googleLogin = async () => {
   const response = await axiosInstance.get(`/auth/google_login`);
-  return response;
-}
-
-export const googleCallback = async (code) => {
-  const response = await axiosInstance.get(`/auth/google_callback`, {
-      params: { code }
-    }
-  );
   return response;
 }

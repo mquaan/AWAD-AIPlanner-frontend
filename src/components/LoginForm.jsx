@@ -17,7 +17,7 @@ function LoginForm() {
   const handleGoogleLogin = async () => {
     try {
       // const response = await googleLogin();
-      window.location.href = 'http://localhost:8080/api/auth/google_login';
+      window.location.href = 'http://localhost:8080/api/auth/google_login'; 
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
     };
