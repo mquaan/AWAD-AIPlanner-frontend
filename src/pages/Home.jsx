@@ -1,23 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import '../styles/Home.css';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import StatusMessage from '../components/StatusMessage';
 import { useAuth } from '../context/AuthContext';
 
 function Home() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { user, logout, isLoggedIn } = useAuth();
-  const { message, type } = location.state || {};
-  const [status, setStatus] = useState({ message: message || '', type: type || '' });
+  const { user, logout, isLoggedIn, status, setStatus } = useAuth();
 
   useEffect(() => {
     if (status.message) {
       const timer = setTimeout(() => setStatus({ message: '', type: '' }), 3000); // Clear after 3 seconds
-      navigate(location.pathname, { replace: true });
+      // navigate(location.pathname, { replace: true });
       return () => clearTimeout(timer);
     }
-  }, [status, navigate, location.pathname]);
+  }, [status]);
   
   const handleLogout = () => {
     const confirmLogout = window.confirm('Are you sure you want to log out?');
@@ -32,7 +28,7 @@ function Home() {
       <StatusMessage message={status.message} type={status.type} />
       <div className="home-container">
         <div className='wrapper'>
-          <h1>Welcome to AI Planner System</h1>
+          <div className='title'>Welcome to AI Planner System</div>
           {isLoggedIn ? (
             <>
               <p>You are logged in as  <span className="username-highlight">{user.name}</span></p>

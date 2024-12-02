@@ -1,13 +1,9 @@
 .profile-container {
-  padding: 30px 100px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  background: transparent;
-  border: 2px solid rgb(255, 255, 255, 0.2);
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(50px);
-  text-align: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .info {
@@ -21,7 +17,7 @@
   position: fixed;
   top: 25px;
   left: 20px;
-  padding: 0 20px;
+  padding: 10px 20px;
   background-color: #70704f;
   color: white;
   text-decoration: none;

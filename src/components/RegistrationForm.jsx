@@ -1,22 +1,25 @@
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import '../styles/Form.css';
 import { FaUser, FaLock } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import StatusMessage from './StatusMessage';
 import { registerUser } from '../service/api';
+import { useAuth } from '../context/AuthContext';
 
 function RegistrationForm() {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const [status, setStatus] = useState({ message: '', type: '' });
+  const { status, setStatus } = useAuth();
+
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       const response = await registerUser(data);
       const successMessage = response.data.message || 'Registered successfully!';
-      navigate('/login', { state: { message: successMessage, type: 'success' } });
+      setStatus({ message: successMessage, type: 'success' });
+      navigate('/login');
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Registration failed!', type: 'error' });
     }
@@ -34,7 +37,7 @@ function RegistrationForm() {
       <StatusMessage message={status.message} type={status.type} />
       <div className='body'>
         <div className="form-container">
-          <h2>AI Planner - Register</h2>
+          <div className='title'>AI Planner - Register</div>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             <div className='input-box'>
               <input type="email" placeholder='Email' {...register('email', { required: 'Email is required' })} />
@@ -42,8 +45,8 @@ function RegistrationForm() {
               <FaUser className='icon' />
             </div>
             <div className='input-box'>
-              <input type="text" placeholder='Username' {...register('username', { required: 'Username is required' })} />
-              {errors.username && <p className="error-message">{errors.username.message}</p>}
+              <input type="text" placeholder='Name' {...register('name', { required: 'Name is required' })} />
+              {errors.name && <p className="error-message">{errors.name.message}</p>}
               <FaUser className='icon' />
             </div>
             <div className='input-box'>

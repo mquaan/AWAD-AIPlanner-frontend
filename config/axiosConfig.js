@@ -4,15 +4,16 @@ import axios from 'axios';
 // import { handleRefreshToken } from './api';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:8080/api',
-    headers: {
-        "Content-Type": "application/json"
-    }
+  baseURL: 'http://localhost:8080/api',
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem('authToken')}`
+  }
 })
 
-const decodeToken = (token) => {
-    return JSON.parse(atob(token.split('.')[1]));
-}
+// const decodeToken = (token) => {
+//     return JSON.parse(atob(token.split('.')[1]));
+// }
 
 // const handleExpiredAccessToken = async (refreshToken) => {
 //     try {

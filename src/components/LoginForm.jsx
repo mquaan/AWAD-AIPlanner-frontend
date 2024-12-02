@@ -1,36 +1,48 @@
 import { useForm } from 'react-hook-form';
-import { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from "react-icons/fa";
 import StatusMessage from './StatusMessage';
 import { useAuth } from '../context/AuthContext';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { loginUser } from '../service/api';
+// import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { loginUser, googleLogin } from '../service/api';
 import '../styles/Form.css';
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, status, setStatus } = useAuth();
   
-  const location = useLocation();
-  const { message, type } = location.state || {};
-  const [status, setStatus] = useState({ message: message || '', type: type || '' });
+  // const location = useLocation();
+  // const { message, type } = location.state || {};
+  // const [status, setStatus] = useState({ message: message || '', type: type || '' });
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    login(credentialResponse.credential, 'google_user');
-    navigate('/', { state: { message: 'Login successful!', type: 'success' } });
+  const handleGoogleLogin = async () => {
+    try {
+      // const response = await googleLogin();
+      window.location.href = 'http://localhost:8080/api/auth/google_login';
+    } catch (error) {
+      setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
+    };
   };
 
-  const handleGoogleFailure = (error) => {
-    console.log('Google login failed:', error);
-  };
+  // const handleGoogleSuccess = (credentialResponse) => {
+  //   login(credentialResponse.credential, 'google_user');
+  //   setStatus({ message: 'Google login successful!', type: 'success' });
+  //   navigate('/');
+  // };
+
+  // const handleGoogleFailure = (error) => {
+  //   console.log('Google login failed:', error);
+  //   setStatus({ message: 'Google login failed!', type: 'error' });
+  // };
 
   const onSubmit = async (data) => {
     try {
       const response = await loginUser(data);
       login(response.data.token, response.data.user);
-      navigate('/', { state: { message: response.data.message || 'Login successful!', type: 'success' } });
+      setStatus({ message: 'Login successful!', type: 'success' });
+      navigate('/');
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
     }
@@ -39,17 +51,16 @@ function LoginForm() {
   useEffect(() => {
     if (status.message) {
       const timer = setTimeout(() => setStatus({ message: '', type: '' }), 3000); // Clear after 3 seconds
-      navigate(location.pathname, { replace: true });
       return () => clearTimeout(timer);
     }
-  }, [status, navigate, location.pathname]);
+  }, [status]);
 
   return (
     <>
       <StatusMessage message={status.message} type={status.type} />
       <div className="body">
         <div className="form-container">
-          <h2>AI Planner - Login</h2>
+          <div className='title'>AI Planner - Login</div>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             <div className='input-box'>
               <input type="email" placeholder='Email' {...register('email', { required: 'Email is required' })} />
@@ -66,7 +77,7 @@ function LoginForm() {
             <button type="submit" className="submit-button-login">Log In</button>
 
             <div className='or'> or </div>
-            <GoogleOAuthProvider clientId="138521205229-9sffq4ng14m4kpcgceacelngthptkj1m.apps.googleusercontent.com">
+            {/* <GoogleOAuthProvider clientId="138521205229-9sffq4ng14m4kpcgceacelngthptkj1m.apps.googleusercontent.com">
               <div className="social-login">
                 <GoogleLogin
                   className="google-login"
@@ -74,13 +85,18 @@ function LoginForm() {
                   onFailure={handleGoogleFailure}
                 />
               </div>
-            </GoogleOAuthProvider>
+            </GoogleOAuthProvider> */}
 
-            <div className='register-link'>
-              <p> Don&apos;t have an account?</p>
-              <Link to="/register" className='link-login'>Register</Link>
-            </div>
           </form>
+          <div className='google-login'>
+            <button onClick={handleGoogleLogin}>
+              Google
+            </button>
+          </div>
+          <div className='register-link'>
+            <p> Don&apos;t have an account?</p>
+            <Link to="/register" className='link-login'>Register</Link>
+          </div>
         </div>
       </div>
     </>

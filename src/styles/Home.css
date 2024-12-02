@@ -28,9 +28,11 @@
   background-color: #26493f5f;
 }
 
-h1 {
+.title {
   font-size: 30px;
   color: #000000;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .home-container p {

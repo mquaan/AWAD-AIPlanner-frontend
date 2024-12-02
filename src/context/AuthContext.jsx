@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(localStorage.getItem('user')); 
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))); 
   const [authToken, setAuthToken] = useState(localStorage.getItem('authToken'));
+  const [status, setStatus] = useState({ message: '', type: '' });
 
   const login = (token, userData) => {
     setAuthToken(token);
     setUser(userData);
-    localStorage.setItem('user', userData);
+    localStorage.setItem('user', JSON.stringify(userData));
     localStorage.setItem('authToken', token);
   };
 
@@ -22,7 +23,18 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoggedIn: !!authToken }}>
+    <AuthContext.Provider 
+      value={
+        { 
+          user, 
+          login, 
+          logout, 
+          isLoggedIn: !!authToken,
+          status,
+          setStatus
+        }
+      }
+    >
       {children}
     </AuthContext.Provider>
   );

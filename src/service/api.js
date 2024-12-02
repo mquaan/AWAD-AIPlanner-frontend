@@ -8,15 +8,24 @@ export const loginUser = async (credentials) => {
 };
 
 export const registerUser = async (data) => {
-  const response = await axios.post(`/auth/register`, data);
+  const response = await axiosInstance.post(`/auth/register`, data);
   return response;
 };
 
 export const getUserProfile = async (id) => {
-  const response = await axios.get(`/user/profile/${id}`, {
-    // headers: {
-    //   Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-    // },
-  });
+  const response = await axiosInstance.get(`/user/profile/${id}`);
   return response;
 };
+
+export const googleLogin = async () => {
+  const response = await axiosInstance.get(`/auth/google_login`);
+  return response;
+}
+
+export const googleCallback = async (code) => {
+  const response = await axiosInstance.get(`/auth/google_callback`, {
+      params: { code }
+    }
+  );
+  return response;
+}
