@@ -1,15 +1,16 @@
 // src/components/StatusMessage.jsx
 import PropTypes from 'prop-types';
-import { STATUS_MESSAGE } from '../constants';
 
 function StatusMessage({ message, type }) {
+  console.log(message)
+  
   if (!message) return null; // Render nothing if no message
 
-  const bgColor = type === STATUS_MESSAGE.SUCCESS
+  const bgColor = type === 'success'
     ? 'bg-success'
-    : type === STATUS_MESSAGE.ERROR
+    : type === 'error'
     ? 'bg-error'
-    : type === STATUS_MESSAGE.WARNING
+    : type === 'warning'
     ? 'bg-warning'
     : 'bg-background-neutral';
 

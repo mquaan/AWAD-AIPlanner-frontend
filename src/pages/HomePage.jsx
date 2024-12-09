@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import StatusMessage from "../components/StatusMessage";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import Button from "../components/Button";
 
 const HomePage = () => {
   const { status, setStatus, login } = useAuth();
@@ -52,8 +53,9 @@ const HomePage = () => {
             </div>
             <p className="font-medium text-lg text-center text-text-neutral w-[480px]">Streamline your study schedule, track progress effortlessly, and stay ahead with personalized AI-driven insights designed for your success</p>
             <Link to="/dashboard" className="block mx-auto w-fit">
-              <button className="px-4 py-2 bg-primary border-none rounded-full cursor-pointer shadow-md transition-colors duration-300 text-base
-                            font-semibold text-white hover:bg-button-hover">Get Started</button>
+              <Button>
+                Get Started
+              </Button>
             </Link>
           </div>
         </div>
