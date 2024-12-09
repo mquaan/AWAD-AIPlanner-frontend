@@ -3,12 +3,15 @@ import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext';
 import PageProvider from './context/PageContext.jsx';
+import ToastProvider from './context/ToastContext.jsx';
 // import './index.css'
 
 createRoot(document.getElementById('root')).render(
-  <PageProvider>
-    <AuthProvider>
-      <App />
-    </AuthProvider>
-  </PageProvider>
+  <ToastProvider>
+    <PageProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </PageProvider>
+  </ToastProvider>
 )

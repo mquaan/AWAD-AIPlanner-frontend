@@ -1,7 +1,7 @@
 import { axiosInstance } from "../../config/axiosConfig";
 
-export const getUserProfile = async (id) => {
-  const response = await axiosInstance.get(`/user/profile/${id}`);
+export const getUserProfile = async () => {
+  const response = await axiosInstance.get(`/user/profile`);
   return response;
 };
 
