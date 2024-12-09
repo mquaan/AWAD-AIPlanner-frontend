@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import StatusMessage from '../components/StatusMessage';
 import { useAuth } from '../context/AuthContext';
+import Button from '../components/Button';
 
 function Home() {
   const { user, login, logout, isLoggedIn, status, setStatus } = useAuth();
@@ -58,36 +59,25 @@ function Home() {
                 </span>
               </p>
               <div className="flex space-x-4 mt-4">
-                <Link
-                  to="/profile"
-                  className="px-6 py-2 bg-[#3ca2be] text-black font-bold rounded-lg hover:opacity-80"
-                >
+                <Button type="button" className="w-[120px] text-black bg-[#3ca2be] hover:bg-[#3795ae]" onClick={() => navigate('/profile')}>
                   View Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="px-6 py-2 bg-[#c8873c] text-black font-bold rounded-lg hover:opacity-80"
-                >
+                </Button>
+                <Button type="button" className="w-[120px] text-black bg-[#c8873c] hover:bg-[#bd7f39]" onClick={handleLogout}>
                   Log Out
-                </button>
+                </Button>
               </div>
             </>
           ) : (
             <>
-              <p className="text-lg text-black mb-4">Already have an account? Log in below.</p>
-              <Link
-                to="/login"
-                className="block px-8 py-2 bg-[#568175] text-white font-bold rounded-lg hover:opacity-80"
-              >
+              <p className="text-lg text-black mb-2">Already have an account? Log in below.</p>
+              <Button type="button" className="w-[100px]" onClick={() => navigate('/login')}>
                 Log In
-              </Link>
-              <p className="text-lg text-black mt-8">Don&apos;t have an account? Register now.</p>
-              <Link
-                to="/register"
-                className="block mt-2 px-8 py-2 bg-[#3a5c67] text-white font-bold rounded-lg hover:opacity-80"
-              >
+              </Button>
+
+              <p className="text-lg text-black mt-8 mb-2">Don&apos;t have an account? Register now.</p>
+              <Button type="button" className="w-[100px]" onClick={() => navigate('/register')}>
                 Register
-              </Link>
+              </Button>
             </>
           )}
         </div>

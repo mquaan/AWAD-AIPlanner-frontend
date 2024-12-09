@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaHome } from "react-icons/fa";
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile } from '../service/api';
+import Button from '../components/Button';
 
 function Profile() {
   const { isLoggedIn, user } = useAuth();
@@ -22,7 +23,6 @@ function Profile() {
   const fetchUserData = async () => {
     try {
       // Fetch user data from the API
-      console.log(user.id);
       const response = await getUserProfile(user.id);
       setProfile(response.data);
     } catch (err) {
@@ -35,14 +35,13 @@ function Profile() {
 
   return (
     <>
-      <Link 
-        to="/"
-        className="flex fixed top-[25px] left-[20px] px-[20px] py-[10px] bg-[#4b675e]
-                  text-white rounded-2xl gap-2 items-center justify-center hover:opacity-90"
+      <Button
+        onClick={() => navigate('/')}
+        className="flex fixed top-[25px] left-[20px] gap-2 items-center justify-center w-[100px]"
       >
         <FaHome className='mb-[2px] text-[16px]'/>
         <div className='text-[14px]'>Home</div>
-      </Link>
+      </Button>
       <div className="h-screen flex flex-col items-center justify-center">
           <div className='flex flex-col items-center justify-center py-[60px] px-[100px] bg-[#26493f5f] rounded-2xl'>
             <div className='text-[30px] font-bold text-black mb-7'>Profile</div>
