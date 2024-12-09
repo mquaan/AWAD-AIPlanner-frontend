@@ -9,7 +9,9 @@ const MainPage = () => {
       <div className="mt-6">
         <h1 className="text-2xl font-semibold">{heading}</h1>
       </div>
-      <Outlet />
+      <div className="mt-4">
+        <Outlet />
+      </div>
     </div>
   );
 };

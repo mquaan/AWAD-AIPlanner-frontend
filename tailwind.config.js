@@ -21,10 +21,10 @@ export default {
 
         "background-neutral": "var(--neutral-color)",
         "text-neutral": "var(--text-neutral-color)",
-      },
-      width: {
-        "sidebar-expanded": "var(--sidebar-width-expanded)",
-        "sidebar-collapsed": "var(--sidebar-width-collapsed)",
+
+        "success": "var(--success-color)",
+        "warning": "var(--warning-color)",
+        "error": "var(--error-color)",
       }
     },
   },
