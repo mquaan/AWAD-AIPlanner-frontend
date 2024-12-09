@@ -10,16 +10,18 @@
 @layer base {
   :root {
     --primary-color: #ff6542;
-    --secondary-color: #6C63FF; /*6C63FF  007aff*/
 
     --text-primary-color: #181818;
     --background-color: #fffdf6;
 
     --button-hover-color: #FF942F;
+    --button-hover-color-secondary: #d1d5db;
     --primary-hover-color: #fcefeb;
 
-    --neutral-color: #f5f5f5;
+    --neutral-color: #e5e7eb;
     --text-neutral-color: #737373;
+
+    --disabled-color: #d4d4d4;
 
     --success-color: #2ABB7F;
     --warning-color: #F5CD47;

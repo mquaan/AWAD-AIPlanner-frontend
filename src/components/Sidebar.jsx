@@ -1,5 +1,5 @@
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-import { RxDashboard, RxLayout, RxCalendar, RxTimer } from "react-icons/rx";
+import { RxDashboard, RxLayout, RxTimer } from "react-icons/rx";
 import { BiLogOut } from "react-icons/bi";
 import { SlSettings } from "react-icons/sl";
 import { LuUser } from "react-icons/lu";
@@ -19,13 +19,8 @@ const MENU_ITEMS = [
   },
   {
     icon: <RxLayout size={24} />,
-    title: 'Board',
-    path: '/board',
-  },
-  {
-    icon: <RxCalendar size={24} />,
-    title: 'Calendar',
-    path: '/calendar',
+    title: 'Task',
+    path: '/task',
   },
   {
     icon: <RxTimer size={24} />,

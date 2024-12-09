@@ -40,7 +40,7 @@ function RegistrationForm() {
       <div className='h-screen flex justify-center items-center'>
         <div className="form-flex flex-col p-[50px] w-[420px] bg-[#26493f5f] rounded-3xl shadow-md text-center">
           <div className='text-[30px] font-bold text-black mb-3'>AI Planner - Register</div>
-          <form onSubmit={handleSubmit(onSubmit)} className="form">
+          <form onSubmit={handleSubmit(onSubmit)} className="form space-y-6">
             <InputField
               type="email"
               placeholder="Email"
@@ -62,7 +62,7 @@ function RegistrationForm() {
               error={errors.password?.message}
               icon={FaLock}
             />
-            <Button type="submit">Register</Button>
+            <Button type="submit" className='mx-auto'>Register</Button>
           </form>
           <div className='flex justify-center items-center text-center mt-5 mb-2 gap-2'>
             <div className='text-[15px] text-[#262121] font-semibold'>Already have an account?</div>
