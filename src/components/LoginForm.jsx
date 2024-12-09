@@ -6,8 +6,8 @@ import StatusMessage from './StatusMessage';
 import { useAuth } from '../context/AuthContext';
 import { loginUser } from '../service/api';
 import { FcGoogle } from "react-icons/fc";
-
-// import '../styles/Form.css';
+import InputField from './InputField';
+import Button from './Button';
 
 function LoginForm() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -49,36 +49,21 @@ function LoginForm() {
         <div className="flex flex-col p-[50px] w-[420px] bg-[#26493f5f] rounded-3xl shadow-md text-center">
           <div className='text-[30px] font-bold text-black mb-3'>AI Planner - Login</div>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
-            <div className='relative w-full h-[50px] my-6'>
-              <input 
-                type="email"
-                placeholder='Email' {...register('email', { required: 'Email is required' })}
-                className='w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
-                          bg-transparent text-[15px] text-black pl-6 placeholder-black
-                          focus:outline-none focus:border-[#395750] focus:shadow-sm'
-              />
-              <FaUser className='absolute top-1/2 right-[25px] transform -translate-y-1/2 text-[15px]' />
-              {errors.email && <p className="text-red-500 text-[12.5px] mt-0">{errors.email.message}</p>}
-            </div>
-
-            <div className="relative w-full h-[50px] my-6">
-              <input 
-                type="password"
-                placeholder='Password' {...register('password', { required: 'Password is required' })}
-                className='w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
-                          bg-transparent text-[15px] text-black pl-6 placeholder-black
-                          focus:outline-none focus:border-[#395750] focus:shadow-sm'
-              />
-              <FaLock className='absolute top-1/2 right-[25px] transform -translate-y-1/2 text-[15px]' />
-              {errors.password && <p className="text-red-500 text-[12.5px] mt-0">{errors.password.message}</p>}
-            </div>
-            <button 
-              type="submit" 
-              className="w-[60%] h-[45px] mt-2 bg-[#43655c] border-none rounded-full cursor-pointer shadow-md transition-colors duration-300 text-[15px]
-                        font-semibold text-white hover:bg-[#395750]"
-            >
-                Log In
-            </button>
+            <InputField
+              type="email"
+              placeholder="Email"
+              {...register('email', { required: 'Email is required' })}
+              error={errors.email?.message}
+              icon={FaUser}
+            />
+            <InputField
+              type="password"
+              placeholder="Password"
+              {...register('password', { required: 'Password is required' })}
+              error={errors.password?.message}
+              icon={FaLock}
+            />
+            <Button type="submit">Log In</Button>
             <div className='text-black text-[15px] mt-4'> or </div>
           </form>
           <div className='flex justify-center items-center mt-4'>
