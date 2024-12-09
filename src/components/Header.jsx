@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Menu from "./Menu";
 import { Link } from "react-router-dom";
+import { userLogout } from "../service/authApi";
 
 const items = [
   { label: "Go to dashboard", path: "/dashboard" },
@@ -13,11 +14,16 @@ const Header = () => {
 
   const [showMenuAccount, setShowMenuAccount] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     const confirmLogout = window.confirm('Are you sure you want to log out?');
-    if (confirmLogout) {
-      logout(); // Call logout from your AuthContext
-      setStatus({ message: 'You have logged out successfully.', type: 'success' });
+    if (!confirmLogout) return;
+
+    try{
+      const response = await userLogout();
+      logout();
+      setStatus({ message: response.data.message || 'Login successful!', type: 'success' });
+    } catch(err){
+      setStatus({ message: err.response?.data?.message || 'Logout failed', type: 'error' });
     }
   };
 

@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from "react-icons/fa";
 import StatusMessage from './StatusMessage';
 import { useAuth } from '../context/AuthContext';
-import { loginUser } from '../service/api';
+import { loginUser } from '../service/authApi';
 import { FcGoogle } from "react-icons/fc";
 import InputField from './InputField';
 import Button from './Button';
@@ -28,7 +28,7 @@ function LoginForm() {
     try {
       const response = await loginUser(data);
       login(response.data.token, response.data.user);
-      setStatus({ message: 'Login successful!', type: 'success' });
+      setStatus({ message: response.data.message || 'Login successful!', type: 'success' });
       navigate('/');
     } catch (error) {
       setStatus({ message: error.response?.data?.message || 'Login failed', type: 'error' });
