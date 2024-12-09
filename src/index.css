@@ -20,6 +20,10 @@
 
     --neutral-color: #f5f5f5;
     --text-neutral-color: #737373;
+
+    --success-color: #2ABB7F;
+    --warning-color: #F5CD47;
+    --error-color: #F15B50;
   }
 }
 
