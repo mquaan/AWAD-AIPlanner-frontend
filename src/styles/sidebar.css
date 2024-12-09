@@ -1,0 +1,40 @@
+.sidebar {
+  --sidebar-width-expanded: 208px;
+  --sidebar-width-collapsed: 80px;
+  --sidebar-left: 0.75rem;
+}
+
+.sidebar-nav {
+  left: var(--sidebar-left);
+}
+
+.sidebar-toggle {
+  --sidebar-toggle-size: 1.5rem;
+  width: var(--sidebar-toggle-size);
+  height: var(--sidebar-toggle-size);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.sidebar-toggle.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+.sidebar-toggle.expanded {
+  left: calc(var(--sidebar-width-expanded) + var(--sidebar-left) - var(--sidebar-toggle-size)/2);
+}
+.sidebar-toggle.collapsed {
+  left: calc(var(--sidebar-width-collapsed) + var(--sidebar-left) - var(--sidebar-toggle-size)/2);
+}
+
+.sidebar-toggle-area {
+  --sidebar-toggle-area-size: 3rem;
+  width: var(--sidebar-toggle-area-size);
+  height: var(--sidebar-toggle-area-size);
+}
+.sidebar-toggle-area.expanded {
+  left: calc(var(--sidebar-width-expanded) + var(--sidebar-left) - var(--sidebar-toggle-area-size)/2);
+}
+.sidebar-toggle-area.collapsed {
+  left: calc(var(--sidebar-width-collapsed) + var(--sidebar-left) - var(--sidebar-toggle-area-size)/2);
+}
