@@ -15,6 +15,12 @@ function Login() {
 
   return (
     <div>
+      <img 
+        src="/logo-with-text.svg" 
+        alt="logo" 
+        className="fill-black cursor-pointer fixed top-4 left-5" 
+        onClick={() => navigate('/')}
+      />
       <LoginForm />
     </div>
   );
