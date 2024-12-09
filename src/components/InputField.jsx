@@ -4,13 +4,14 @@ import { twMerge } from 'tailwind-merge';
 
 const InputField = forwardRef(({ type = "text", placeholder = "", className, error, icon: Icon, ...props }, ref) => {
   const defaultClassName = `
-    w-[calc(100%-30px)] h-full outline-none border-2 border-black/20 rounded-full
-    bg-transparent text-[15px] text-black pl-6 placeholder-black
+    w-[calc(100%-30px)] h-[45px] outline-none border-[1.5px] border-black/20 rounded-full
+    bg-transparent text-base text-black px-6 placeholder-text-neutral
     focus:outline-none focus:border-[#395750] focus:shadow-sm
+    disabled:bg-disabled disabled:cursor-not-allowed disabled:opacity-70
   `;
   
   return (
-    <div className="relative w-full h-[50px] my-6">
+    <div className="relative">
       <input
         type={type}
         placeholder={placeholder}

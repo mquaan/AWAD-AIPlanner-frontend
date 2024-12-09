@@ -9,9 +9,15 @@ import Account from './pages/Account';
 import Board from './pages/Board';
 
 import PrivateRoute from './PrivateRoute';
+import StatusMessage from './components/StatusMessage';
+import { useToast } from './context/ToastContext';
 
 function App() {
+  const { toast } = useToast();
+
   return (
+    <>
+    <StatusMessage type={toast.type} message={toast.message} />
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -27,6 +33,7 @@ function App() {
         <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
+    </>
   );
 }
 
