@@ -20,7 +20,7 @@ axiosInstance.interceptors.response.use(function (response) {
 }, function (error) {
   if (error.status === 401) { // Unauthorized
     localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     alert('Session expired, please login again');
     window.location.href = '/login';
   }

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaUser, FaLock } from "react-icons/fa";
 import { useAuth } from '../context/AuthContext';
-import { loginUser } from '../service/api';
+import { loginUser } from '../service/authApi';
 import { FcGoogle } from "react-icons/fc";
 import InputField from './InputField';
 import Button from './Button';

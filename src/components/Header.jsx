@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import { useToast } from '../context/ToastContext';
 import DialogConfirm from "./DialogConfirm";
+import { userLogout } from "../service/authApi";
 
 const items = [
   { label: "Go to dashboard", path: "/dashboard" },
@@ -18,10 +19,17 @@ const Header = () => {
   const [showMenuAccount, setShowMenuAccount] = useState(false);
   const [showDialogConfirm, setShowDialogConfirm] = useState(false);
 
-  const handleLogout = () => {
-    logout(); // Call logout from your AuthContext
-    setShowDialogConfirm(false);
-    showToast('success', 'Logged out successfully');
+  const handleLogout = async() => {
+    try{
+      await userLogout();
+      
+      logout();
+
+      setShowDialogConfirm(false);
+      showToast('success', 'Logged out successfully');
+    } catch(err){
+      showToast('success', err.response?.data?.message || 'Logout failed');
+    }
   };
 
   const handleMenuClick = (index) => {
