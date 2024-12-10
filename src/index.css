@@ -10,22 +10,24 @@
 @layer base {
   :root {
     --primary-color: #ff6542;
+    --primary-light-color: #FFEDE1;
 
     --text-primary-color: #181818;
     --background-color: #fffdf6;
 
     --button-hover-color: #FF942F;
     --button-hover-color-secondary: #d1d5db;
-    --primary-hover-color: #fcefeb;
+    /* --primary-hover-color: #fcefeb; */
 
     --neutral-color: #e5e7eb;
     --text-neutral-color: #737373;
 
     --disabled-color: #d4d4d4;
 
-    --success-color: #2ABB7F;
+    --success-color: #22c55e;
     --warning-color: #F5CD47;
-    --error-color: #F15B50;
+    --error-color: #ef4444;
+    --info-color: #3b82f6;
   }
 }
 
@@ -42,6 +44,10 @@
   background: #929292;
 }
 
+::-ms-reveal {
+  display: none;
+}
+
 body,
 html {
   font-family: 'Poppins', sans-serif;
@@ -49,6 +55,6 @@ html {
   padding: 0;
   box-sizing: border-box;
   color: var(--text-primary-color);
-  background-color: var(--background-color);
+  background: var(--background-color);
   overflow: auto;
 }

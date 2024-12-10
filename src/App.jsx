@@ -10,6 +10,7 @@ import Account from './pages/Account';
 import PrivateRoute from './PrivateRoute';
 import StatusMessage from './components/StatusMessage';
 import { useToast } from './context/ToastContext';
+import AuthLayout from './layouts/AuthLayout';
 
 function App() {
   const { toast } = useToast();
@@ -26,8 +27,10 @@ function App() {
             <Route path='/account' element={<Account />} />
           </Route>
         </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
       </Routes>
     </Router>
     </>

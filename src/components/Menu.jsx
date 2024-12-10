@@ -8,7 +8,7 @@ const MenuItem = ({ icon, label, isSelected, onClick }) => {
       className={`flex items-center px-4 py-3 cursor-pointer transition ${
         isSelected
           ? "bg-primary text-white"
-          : "hover:bg-primary-hover hover:text-primary"
+          : "hover:bg-primary-light hover:text-primary"
       }`}
       onClick={onClick}
     >
