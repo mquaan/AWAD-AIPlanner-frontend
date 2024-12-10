@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import { useToast } from '../context/ToastContext';
 import DialogConfirm from "./DialogConfirm";
-import { userLogout } from "../service/authApi";
+// import { userLogout } from "../service/authApi";
 
 const items = [
   { label: "Go to dashboard", path: "/dashboard" },
@@ -21,9 +21,7 @@ const Header = () => {
 
   const handleLogout = async() => {
     try{
-      await userLogout();
-      
-      logout();
+      await logout();
 
       setShowDialogConfirm(false);
       showToast('success', 'Logged out successfully');

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaUser, FaLock } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import { registerUser } from '../service/api';
+import { registerUser } from '../service/authApi';
 import Button from './Button';
 import InputField from './InputField';
 import { useToast } from '../context/ToastContext';
