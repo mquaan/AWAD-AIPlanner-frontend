@@ -1,4 +1,4 @@
-import { axios } from "../../config/axiosConfig";
+import { axios, axiosInstance } from "../../config/axiosConfig";
 
 export const loginUser = async (credentials) => {
   const response = await axios.post(`/auth/login`, credentials);
@@ -14,3 +14,8 @@ export const googleLogin = async () => {
   const response = await axios.get(`/auth/google_login`);
   return response;
 };
+
+export const userLogout = async () => {
+  const response = await axiosInstance.post(`/auth/logout`);
+  return response;
+}

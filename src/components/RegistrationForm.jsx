@@ -5,7 +5,7 @@ import { FaUser, FaLock } from "react-icons/fa";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import StatusMessage from './StatusMessage';
-import { registerUser } from '../service/api';
+import { registerUser } from '../service/authApi';
 import { useAuth } from '../context/AuthContext';
 import Button from './Button';
 import InputField from './InputField';
