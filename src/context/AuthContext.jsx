@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
+import { userLogout } from '../service/authApi';
 
 const AuthContext = createContext();
 
@@ -15,7 +16,9 @@ export function AuthProvider({ children }) {
     localStorage.setItem('authToken', token);
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await userLogout()
+
     setAuthToken(null);
     setUser(null);
     localStorage.removeItem('user');

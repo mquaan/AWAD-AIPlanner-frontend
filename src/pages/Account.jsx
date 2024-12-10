@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import InputField from "../components/InputField";
 import DialogConfirm from "../components/DialogConfirm";
 import { useToast } from "../context/ToastContext";
+import { useForm } from 'react-hook-form';
 
 const Account = () => {
   const { setHeading } = usePage();
@@ -13,56 +14,66 @@ const Account = () => {
   }, []);
 
   const [profile, setProfile] = useState(null);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    getValues,
+    formState: { errors },
+  } = useForm();
 
-  const { showToast } = useToast();
-
-  const [newName, setNewName] = useState("");
-  const [isNameChange, setIsNameChange] = useState(false);
-
-  useEffect(() => {
-    if (profile && profile.name !== newName.trim()) {
-      setIsNameChange(true);
-    } else {
-      setIsNameChange(false);
-    }
-  }, [newName]);
-
-  const [errorMessages, setErrorMessages] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-
-  const [isPasswordChange, setIsPasswordChange] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const fetchUserData = async () => {
-    try {
-      // Fetch user data from the API
-      const response = await getUserProfile();
-      setProfile(response.data);
-      setNewName(response.data.name);
-    } catch (err) {
-      showToast("error", err.message || 'Failed to fetch profile data');
-    }
-  };
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    reset: resetPassword,
+    getValues: getPasswordValues,
+    setError: setErrorPassword,
+    formState: { errors: errorsPassword },
+  } = useForm();
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Fetch user data from the API
+        const response = await getUserProfile();
+        setProfile(response.data);
+        setValue('name', response.data.name);
+      } catch (err) {
+        showToast("error", err.response?.data?.message || 'Failed to fetch profile data');
+      }
+    };
+
     fetchUserData();
   }, []);
+
+  const { showToast } = useToast();
 
   const [showDialogConfirmChangeName, setShowDialogConfirmChangeName] = useState(false);
   const [showDialogConfirmChangePassword, setShowDialogConfirmChangePassword] = useState(false);
 
+  const [showNameActions, setShowNameActions] = useState(false);
+  const [showPasswordActions, setShowPasswordActions] = useState(false);
+
+  useEffect(() => {
+    watch((value) => {
+      if (profile && profile.name !== value.name?.trim()) {
+        setShowNameActions(true);
+      } else {
+        setShowNameActions(false);
+      }
+    });
+  }, [profile, watch])
+
   const handleUpdateProfile = async () => {
     try {
       // Update user name
-      const response = await updateUserProfile({ name: newName });
+      const response = await updateUserProfile({ name: getValues('name') });
       setProfile(response.data);
+
       setShowDialogConfirmChangeName(false);
-      setIsNameChange(false);
+      setShowNameActions(false);
 
       showToast("success", 'Profile updated successfully');
     } catch (err) {
@@ -70,14 +81,11 @@ const Account = () => {
     }
   }
 
-  const validateChangePassword = (e) => {
-    e.preventDefault();
+  const validateChangePassword = () => {
+    if (getPasswordValues('newPassword') !== getPasswordValues('confirmPassword')) {
+      setErrorPassword('newPassword', { message: "Passwords don't match" });
+      setErrorPassword('confirmPassword', { message: "Passwords don't match" });
 
-    if (newPassword !== confirmPassword) {
-      setErrorMessages({
-        ...errorMessages,
-        confirmPassword: "Passwords don't match",
-      });
       return false;
     }
 
@@ -86,31 +94,21 @@ const Account = () => {
   }
 
   const handleChangePassword = async () => {
+    console.log(getPasswordValues('currentPassword'), getPasswordValues('newPassword'));
     try {
       await changePassword({ 
-        currentPassword: currentPassword,
-        newPassword: newPassword
+        old_password: getPasswordValues('currentPassword'),
+        password: getPasswordValues('newPassword'),
       });
+
       setShowDialogConfirmChangePassword(false);
-      setIsPasswordChange(false);
-      clearPasswordFields();
+      setShowPasswordActions(false);
+      resetPassword();
 
       showToast("success", 'Password changed successfully');
     } catch (err) {
       showToast("error", err.message || 'Failed to change password');
     }
-  }
-
-  const clearPasswordFields = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-
-    setErrorMessages({
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
   }
 
   const handleChangePhoto = async (e) => {
@@ -160,32 +158,38 @@ const Account = () => {
           {/* Name */}
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Name</h2>
-            <div className="flex gap-2">
+            <form onSubmit={handleSubmit(() => setShowDialogConfirmChangeName(true))} className="flex gap-2">
               <InputField
                 type="text"
                 className="w-[400px]"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
+                {...register('name', { 
+                  required: 'Name is required' 
+                })}
+                placeholder="Enter your name"                // onChange={(e) => {console.log(e.target.value); setNewName(e.target.value)}}
+                error={errors.name?.message}
               />
               {/* If value change, show buttons */}
-              {isNameChange &&
+              {showNameActions &&
                 <div className="flex gap-2">
                   <Button
                     className="w-24"
                     variant="secondary"
-                    onClick={() => setNewName(profile?.name)}
+                    onClick={() => {
+                      reset({ name: profile?.name });
+                      setShowNameActions(false);
+                    }}
                   >
                     Cancel
                   </Button>
                   <Button
+                    type="submit"
                     className="w-24"
-                    onClick={() => setShowDialogConfirmChangeName(true)}
                   >
                     Save
                   </Button>
                 </div>
               }
-            </div>
+            </form>
           </div>
         </div>
 
@@ -194,47 +198,39 @@ const Account = () => {
           <div className="border-[1.5px] rounded-md border-background-neutral p-4 space-y-2">
             <div className="space-y-4">
               <h2 className="text-xl font-semibold">Password</h2>
-              {isPasswordChange ?
-              <form className="flex flex-col gap-2" onSubmit={validateChangePassword}>
+              {showPasswordActions ?
+              <form className="flex flex-col gap-2" onSubmit={handleSubmitPassword(validateChangePassword)}>
                 <InputField
                   className="w-[400px]"
                   type="password"
-                  placeholder="Current password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
+                  placeholder="Enter current password"
+                  {...registerPassword('currentPassword', { required: 'Current password is required' })}
+                  error={errorsPassword.currentPassword?.message}
                 />
                 <InputField
                   className="w-[400px]"
                   type="password"
-                  placeholder="New password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={8}
+                  placeholder="Enter new password"
+                  {...registerPassword('newPassword', { 
+                    required: 'New password is required',
+                    minLength: { value: 8, message: 'Password must be at least 8 characters long' }
+                  })}
+                  error={errorsPassword.newPassword?.message}
                 />
                 <InputField
                   className="w-[400px]"
                   type="password"
-                  placeholder="Confirm new password"
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value)
-                    setErrorMessages({
-                      ...errorMessages,
-                      confirmPassword: "",
-                    });
-                  }}
-                  required
-                  error={errorMessages.confirmPassword}
+                  placeholder="Enter confirm new password"
+                  {...registerPassword('confirmPassword', { required: 'Confirm password is required' })}
+                  error={errorsPassword.confirmPassword?.message}
                 />
                 <div className="flex gap-2">
                   <Button
                     className="w-24"
                     variant="secondary"
                     onClick={() => {
-                      setIsPasswordChange(false)
-                      clearPasswordFields()
+                      setShowPasswordActions(false)
+                      resetPassword();
                     }}
                   >
                     Cancel
@@ -250,7 +246,7 @@ const Account = () => {
               :
               <Button
                 className="w-fit"
-                onClick={() => setIsPasswordChange(true)}
+                onClick={() => setShowPasswordActions(true)}
               >
                 Change password
               </Button>

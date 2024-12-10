@@ -7,9 +7,10 @@ import PropTypes from 'prop-types';
 import { usePage } from '../context/PageContext';
 import { Link, useLocation } from 'react-router-dom';
 import '../styles/sidebar.css';
-import { useEffect, useState } from "react";
-import { userLogout } from "../service/authApi";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from '../context/ToastContext';
+import { useState } from "react";
+import DialogConfirm from "./DialogConfirm";
 
 const MENU_ITEMS = [
   {
@@ -57,35 +58,43 @@ const SidebarHeader = () => {
 
 const SidebarFooter = () => {
   const { showSidebar } = usePage();
-  const { logout, status, setStatus } = useAuth();
+  const { logout } = useAuth();
+  const { showToast } = useToast();
+
+  const [showDialogConfirm, setShowDialogConfirm] = useState(false);
 
   const handleLogout = async() => {
-    // handle logout
-    const confirmLogout = window.confirm('Are you sure you want to log out?');
-    if (!confirmLogout) return;
     try{
-      const response = await userLogout();
-      logout();
-      setStatus({ message: response.data.message || 'Login successful!', type: 'success' });
-    } catch(err){
-      setStatus({ message: err.response?.data?.message || 'Logout failed', type: 'error' });
-    }
-  }
+      await logout();
 
-  useEffect(() => {
-    if (status.message) {
-      const timer = setTimeout(() => setStatus({ message: '', type: '' }), 3000); // Clear after 3 seconds
-      return () => clearTimeout(timer);
+      showToast('success', 'Logged out successfully');
+    } catch(err){
+      showToast('success', err.response?.data?.message || 'Logout failed');
     }
-  }, [status]);
+  };
 
   return (
-    <div className="px-4 pb-5 pt-2 bg-white flex flex-col items-center">
-      <div className={`w-full flex items-center p-2 rounded-md hover:cursor-pointer hover:bg-primary-hover hover:text-primary ${!showSidebar && 'w-fit'}`} onClick={handleLogout}>
-        <BiLogOut size={24} />
-        {showSidebar && <span className="ml-2">Logout</span>}
+    <>
+      <div className="px-4 pb-5 pt-2 bg-white flex flex-col items-center">
+        <div
+          className={`w-full flex items-center p-2 rounded-md hover:cursor-pointer hover:bg-primary-hover hover:text-primary ${
+            !showSidebar && "w-fit"
+          }`}
+          onClick={() => setShowDialogConfirm(true)}
+        >
+          <BiLogOut size={24} />
+          {showSidebar && <span className="ml-2">Logout</span>}
+        </div>
       </div>
-    </div>
+
+      <DialogConfirm
+        open={showDialogConfirm}
+        onClose={() => setShowDialogConfirm(false)}
+        onConfirm={handleLogout}
+        title="Confirm"
+        content="Are you sure you want to log out?"
+      />
+    </>
   );
 };
 
@@ -97,7 +106,7 @@ const SidebarItem = ({ icon, title, path }) => {
 
   return (
     <Link to={path} className="w-full">
-      <div className={`flex items-center p-2 rounded-md ${isActive ? 'bg-primary text-white shadow-md' : 'hover:bg-primary-hover hover:text-primary'} ${!showSidebar && 'w-fit'}`}>
+      <div className={`flex items-center p-2 rounded-md ${isActive ? 'bg-primary text-white shadow-md' : 'hover:bg-primary-light hover:text-primary'} ${!showSidebar && 'w-fit'}`}>
         {icon}
         {showSidebar && <span className="ml-2">{title}</span>}
       </div>
