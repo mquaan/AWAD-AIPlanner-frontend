@@ -6,11 +6,6 @@ import { TASKS } from '../data/testData';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const Board = () => {
-  const { setHeading } = usePage();
-  useEffect(() => {
-    setHeading("Board");
-  }, []);
-
   const navigate = useNavigate();
 
   const { id } = useParams();

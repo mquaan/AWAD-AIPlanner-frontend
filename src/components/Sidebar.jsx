@@ -77,7 +77,7 @@ const SidebarFooter = () => {
     <>
       <div className="px-4 pb-5 pt-2 bg-white flex flex-col items-center">
         <div
-          className={`w-full flex items-center p-2 rounded-md hover:cursor-pointer hover:bg-primary-hover hover:text-primary ${
+          className={`w-full flex items-center p-2 rounded-md hover:cursor-pointer hover:bg-primary-light hover:text-primary ${
             !showSidebar && "w-fit"
           }`}
           onClick={() => setShowDialogConfirm(true)}

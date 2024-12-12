@@ -13,11 +13,15 @@
     --primary-light-color: #FFEDE1;
 
     --text-primary-color: #181818;
+    --text-secondary-color: #4b5563;
     --background-color: #fffdf6;
 
     --button-hover-color: #FF942F;
     --button-hover-color-secondary: #d1d5db;
     /* --primary-hover-color: #fcefeb; */
+
+    --border-color: #d1d5db;
+    --border-focus-color: #ff9045;
 
     --neutral-color: #e5e7eb;
     --text-neutral-color: #737373;

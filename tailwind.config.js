@@ -14,11 +14,15 @@ export default {
         "primary-light": "var(--primary-light-color)",
 
         "text-primary": "var(--text-primary-color)",
+        "text-secondary": "var(--text-secondary-color)",
         "background": "var(--background-color)",
 
         "button-hover": "var(--button-hover-color)",
         "button-hover-secondary": "var(--button-hover-color-secondary)",
         // "primary-hover": "var(--primary-hover-color)",
+
+        "border": "var(--border-color)",
+        "border-focus": "var(--border-focus-color)",
 
         "background-neutral": "var(--neutral-color)",
         "text-neutral": "var(--text-neutral-color)",
