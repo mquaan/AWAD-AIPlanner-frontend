@@ -16,7 +16,7 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
   const [error, setError] = useState("");
 
   const validateDates = () => {
-    const now = new Date();
+    // const now = new Date();
 
     // Kiểm tra estimated_start_time và estimated_end_time có hợp lệ không
     if (!isValid(taskData.estimated_start_time) || !isValid(taskData.estimated_end_time)) {
@@ -24,11 +24,11 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
       return false;
     }
 
-    // Kiểm tra estimated_start_time không được là quá khứ
-    if (isBefore(taskData.estimated_start_time, now)) {
-      setError("Start date cannot be in the past.");
-      return false;
-    }
+    // // Kiểm tra estimated_start_time không được là quá khứ
+    // if (isBefore(taskData.estimated_start_time, now)) {
+    //   setError("Start date cannot be in the past.");
+    //   return false;
+    // }
 
     // Kiểm tra estimated_end_time phải sau estimated_start_time
     if (isAfter(taskData.estimated_end_time, taskData.estimated_start_time)) {
@@ -47,7 +47,6 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
         ...taskData,
       };
       onSave(savedTask);
-      onClose();
     } else {
       return;
     }
@@ -59,7 +58,7 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
     const { name, value } = e.target;
     setTaskData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === 'priority' ? Number(value) : value,
     }));
   };
 
@@ -118,9 +117,9 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
             value={taskData.priority}
             onChange={handleChange}
           >
-            <option value={1}>High</option>
-            <option value={2}>Medium</option>
-            <option value={3}>Low</option>
+            <option value={Number(0)}>High</option>
+            <option value={Number(1)}>Medium</option>
+            <option value={Number(2)}>Low</option>
           </select>
         </div>
 

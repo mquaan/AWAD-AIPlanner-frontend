@@ -5,6 +5,19 @@ export const getTasks = async () => {
   return response;
 };
 
+export const updateTask = async (task) => {
+  const response = await axiosInstance.put(`/task/${task.id}`, {
+    "name": task.name,
+    "description": task.description,
+    "subject_id": task.subject.id,
+    "priority": task.priority === 0 ? "High" : task.priority === 1 ? "Medium" : "Low",
+    "status": task.status === 0 ? "ToDo" : task.status === 1 ? "InProgress" : task.status === 2 ? "Completed" : 'Expired',
+    "estimated_start_time": task.estimated_start_time,
+    "estimated_end_time": task.estimated_end_time
+  });
+  return response;
+};
+
 export const addTask = async () => {
   const response = await axiosInstance.post(`/task`, {
     "name": "123",

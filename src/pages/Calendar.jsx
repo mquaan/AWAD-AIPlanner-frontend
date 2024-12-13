@@ -85,9 +85,9 @@ const Calendar = () => {
           start: task.estimated_start_time,
           end: task.estimated_end_time,
           color:
-            task.priority === 1
+            task.priority === 0
               ? "var(--priority-1)"
-              : task.priority === 2
+              : task.priority === 1
               ? "var(--priority-2)"
               : "var(--priority-3)",
         }))}

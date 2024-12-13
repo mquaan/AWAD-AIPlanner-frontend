@@ -8,6 +8,8 @@ import Board from "./Board";
 import Calendar from "./Calendar";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
+import { updateTask } from "../service/taskApi";
+import { useToast } from "../context/ToastContext";
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
@@ -62,16 +64,24 @@ const Task = () => {
     navigate('/task');
   };
 
-  const handleSave = (updatedTask) => {
-    console.log(updatedTask);
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      )
-    );
+  const { showToast } = useToast();
+
+  const handleSave = async (updatedTask) => {
+    try {
+      const response = await updateTask(updatedTask);
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === response.data.id ? response.data : task
+        )
+      );
+    } catch (error) {
+      showToast("error", error.response?.data?.message || 'Failed to update task');
+    }
+    
     if (oldEvent) {
       setOldEvent(null);
     }
+    navigate('/task');
   };
 
   return (

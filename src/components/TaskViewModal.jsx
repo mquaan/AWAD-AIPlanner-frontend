@@ -85,6 +85,7 @@ const TaskViewModal = ({ onClose }) => {
             Calendar
           </button>
         </div>
+        {currentView !== "calendar" &&
         <div className="space-y-2">
           <Switch
             label="Completed tasks"
@@ -111,9 +112,11 @@ const TaskViewModal = ({ onClose }) => {
             handleDiameter={18}
           />
         </div>
+        }
       </div>
 
       {/* Sort By Section */}
+      {currentView !== "calendar" &&
       <div className="space-y-2">
         <h4 className="font-semibold">Sort by</h4>
         <div className="space-y-2">
@@ -146,6 +149,7 @@ const TaskViewModal = ({ onClose }) => {
           </div>
         </div>
       </div>
+      }
 
       {/* Filter By Section */}
       <div>
