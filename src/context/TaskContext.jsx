@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { TASKS1 } from "../data/testData";
 
 const VIEW_MODES = ['list', 'board', 'calendar'];
 
@@ -8,7 +9,16 @@ const TaskContext = createContext();
 const TaskProvider = ({ children }) => {
   const [currentView, setCurrentView] = useState();
 
+  const [tasks, setTasks] = useState(TASKS1);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  // ------CALENDAR------
+  const [cancelChangeEvent, setCancelChangeEvent] = useState(false);
+  const [oldEvent, setOldEvent] = useState(null);
+  //---------------------
+
   useEffect(() => {
+    // Get view
     const view = localStorage.getItem('currentView');
     if (VIEW_MODES.includes(view))
       setCurrentView(view);
@@ -16,6 +26,10 @@ const TaskProvider = ({ children }) => {
       localStorage.setItem('currentView', 'list');
       setCurrentView('list');
     }
+
+    // Get tasks
+    // TODO: Fetch tasks from API
+    setTasks(TASKS1);
   }, []);
 
   const changeView = (view) => {
@@ -28,6 +42,14 @@ const TaskProvider = ({ children }) => {
     <TaskContext.Provider value={{
       currentView,
       changeView,
+      tasks,
+      setTasks,
+      selectedTask,
+      setSelectedTask,
+      cancelChangeEvent,
+      setCancelChangeEvent,
+      oldEvent,
+      setOldEvent
     }}>
       {children}
     </TaskContext.Provider>

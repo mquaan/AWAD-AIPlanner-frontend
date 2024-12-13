@@ -11,6 +11,7 @@
   :root {
     --primary-color: #ff6542;
     --primary-light-color: #FFEDE1;
+    --primary-dark-color: #ff3b0f;
 
     --text-primary-color: #181818;
     --text-secondary-color: #4b5563;
@@ -32,6 +33,21 @@
     --warning-color: #F5CD47;
     --error-color: #ef4444;
     --info-color: #3b82f6;
+
+    --priority-1: #ef233c;
+    --priority-2: #ffd60a;
+    --priority-3: #1B84FF;
+
+    --fc-button-text-color: var(--primary-color);
+    --fc-button-bg-color: #ffffff00;
+    --fc-button-border-color: var(--primary-color);
+    --fc-button-hover-bg-color: var(--primary-light-color);
+    --fc-button-hover-border-color: var(--button-hover-color);
+    --fc-button-active-bg-color: var(--primary-color);
+    --fc-button-active-border-color: var(--primary-color);
+
+
+    --fc-today-bg-color: var(--primary-light-color);
   }
 }
 

@@ -2,40 +2,36 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { format, isBefore, isAfter, isValid } from 'date-fns';
+import { isBefore, isAfter, isValid } from 'date-fns';
 
-const Modal = ({ task, onClose, onSave }) => {
-  
+const TaskModal = ({ task, onClose, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
     name: task.name,
     description: task.description,
     priority: task.priority,
-    startDate: new Date(task.startDate),
-    endDate: new Date(task.endDate),
+    estimated_start_time: new Date(task.estimated_start_time),
+    estimated_end_time: new Date(task.estimated_end_time)
   });
   const [error, setError] = useState("");
-
-  if (!task) return null;
-
 
   const validateDates = () => {
     const now = new Date();
 
-    // Kiểm tra startDate và endDate có hợp lệ không
-    if (!isValid(taskData.startDate) || !isValid(taskData.endDate)) {
+    // Kiểm tra estimated_start_time và estimated_end_time có hợp lệ không
+    if (!isValid(taskData.estimated_start_time) || !isValid(taskData.estimated_end_time)) {
       setError("Please select valid dates.");
       return false;
     }
 
-    // Kiểm tra startDate không được là quá khứ
-    if (isBefore(taskData.startDate, now)) {
+    // Kiểm tra estimated_start_time không được là quá khứ
+    if (isBefore(taskData.estimated_start_time, now)) {
       setError("Start date cannot be in the past.");
       return false;
     }
 
-    // Kiểm tra endDate phải sau startDate
-    if (isAfter(taskData.endDate, taskData.startDate)) {
+    // Kiểm tra estimated_end_time phải sau estimated_start_time
+    if (isAfter(taskData.estimated_end_time, taskData.estimated_start_time)) {
       setError(""); // Clear any previous error
       return true;
     }
@@ -49,8 +45,6 @@ const Modal = ({ task, onClose, onSave }) => {
       const savedTask = {
         ...task,
         ...taskData,
-        startDate: format(taskData.startDate, 'yyyy/MM/dd HH:mm'),
-        endDate: format(taskData.endDate, 'yyyy/MM/dd HH:mm'),
       };
       onSave(savedTask);
       onClose();
@@ -78,7 +72,7 @@ const Modal = ({ task, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[10000]"
       onClick={onClose}
     >
       <div
@@ -124,18 +118,18 @@ const Modal = ({ task, onClose, onSave }) => {
             value={taskData.priority}
             onChange={handleChange}
           >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
+            <option value={1}>High</option>
+            <option value={2}>Medium</option>
+            <option value={3}>Low</option>
           </select>
         </div>
 
         <div className="flex gap-4">
           <div>
-            <label htmlFor="startDate" className="block text-sm font-semibold mb-2">Start Date:</label>
+            <label htmlFor="estimated_start_time" className="block text-sm font-semibold mb-2">Start Date:</label>
             <DatePicker
-              selected={taskData.startDate}
-              onChange={(date) => handleDateChange(date, 'startDate')}
+              selected={taskData.estimated_start_time}
+              onChange={(date) => handleDateChange(date, 'estimated_start_time')}
               dateFormat="yyyy/MM/dd HH:mm"
               showTimeSelect
               timeIntervals={15}
@@ -146,17 +140,17 @@ const Modal = ({ task, onClose, onSave }) => {
           </div>
 
           <div className='mb-4'>
-            <label htmlFor="endDate" className="block text-sm font-semibold mb-2">End Date:</label>
+            <label htmlFor="estimated_end_time" className="block text-sm font-semibold mb-2">End Date:</label>
             <DatePicker
-              selected={taskData.endDate}
-              onChange={(date) => handleDateChange(date, 'endDate')}
+              selected={taskData.estimated_end_time}
+              onChange={(date) => handleDateChange(date, 'estimated_end_time')}
               dateFormat="yyyy/MM/dd HH:mm"
               showTimeSelect
               timeIntervals={15}
               timeCaption='Time'
               placeholderText="Select an end date"
               className="border p-2 rounded"
-              minDate={taskData.startDate}
+              minDate={taskData.estimated_start_time}
             />
           </div>
         </div>
@@ -180,10 +174,10 @@ const Modal = ({ task, onClose, onSave }) => {
   );
 };
 
-Modal.propTypes = {
-  task: PropTypes.object,
+TaskModal.propTypes = {
+  task: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };
 
-export default Modal;
+export default TaskModal;

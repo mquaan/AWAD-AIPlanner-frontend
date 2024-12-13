@@ -31,7 +31,7 @@ const TaskViewModal = ({ onClose }) => {
   return (
     <div
       ref={modalRef}
-      className="absolute -top-2 -right-6 w-72 bg-white shadow-lg rounded-lg p-4 space-y-4"
+      className="absolute -top-2 -right-6 w-72 bg-white shadow-lg rounded-lg p-4 space-y-4 z-50"
     >
       {/* Header */}
       <div className="flex justify-between items-center">
