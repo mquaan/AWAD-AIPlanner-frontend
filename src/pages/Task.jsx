@@ -37,7 +37,7 @@ const Task = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { tasks, setTasks, selectedTask, setSelectedTask, oldEvent, setCancelChangeEvent } = useTask();
+  const { tasks, setTasks, selectedTask, setSelectedTask, oldEvent, setOldEvent, setCancelChangeEvent } = useTask();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Task = () => {
     }
   }, [id, tasks, navigate]);
 
-  const closeModal = () => {
+  const cancelModal = () => {
     if (oldEvent) {
       setCancelChangeEvent(true);
     }
@@ -69,20 +69,28 @@ const Task = () => {
         task.id === updatedTask.id ? updatedTask : task
       )
     );
+    if (oldEvent) {
+      setOldEvent(null);
+    }
   };
 
   return (
     <div className="relative">
-      {showViewModal && 
-        <TaskViewModal 
-          onClose={() => setShowViewModal(false)}
-        />
-      }
+      {showViewModal && (
+        <TaskViewModal onClose={() => setShowViewModal(false)} />
+      )}
       {!currentView && <div>Loading</div>}
-      {currentView === 'list' && <div>List</div>}
-      {currentView === 'board' && <Board />}
-      {currentView === 'calendar' && <Calendar />}
-      {isModalOpen && <Modal task={selectedTask} onClose={closeModal} onSave={handleSave} />}
+      {currentView === "list" && <div>List</div>}
+      {currentView === "board" && <Board />}
+      {currentView === "calendar" && <Calendar />}
+      {isModalOpen && (
+        <Modal
+          task={selectedTask}
+          onClose={() => navigate("/task")}
+          onCancel={cancelModal}
+          onSave={handleSave}
+        />
+      )}
     </div>
   );
 };

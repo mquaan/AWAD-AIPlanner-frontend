@@ -10,8 +10,14 @@ import { useNavigate } from 'react-router-dom';
 const Calendar = () => {
   const calendarRef = useRef(null);
 
-  const { tasks, cancelChangeEvent, setCancelChangeEvent, oldEvent, setOldEvent } = useTask();
+  const { tasks, cancelChangeEvent, setCancelChangeEvent, oldEvent, setOldEvent, currentViewCalendar, changeViewCalendar } = useTask();
   const navigate = useNavigate();
+
+  const handleViewChange = (info) => {
+    if (info.view.type !== currentViewCalendar) {
+      changeViewCalendar(info.view.type);
+    }
+  }
 
   const handleEventClick = (info) => {
     console.log('click', info.event.id, info.event.start, info.event.end);
@@ -50,7 +56,7 @@ const Calendar = () => {
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
+        initialView={currentViewCalendar}
         headerToolbar={{
           left: "prev,next today",
           center: "title",
@@ -66,13 +72,14 @@ const Calendar = () => {
             eventMaxStack: 4,
           },
         }}
+        datesSet={handleViewChange}
         dayMaxEventRows={3}
         eventMaxStack={3}
         editable={true}
         selectable={true}
         eventResizableFromStart={true}
         snapDuration="00:15:00"
-        events={tasks.map((task) => ({
+        events={tasks?.map((task) => ({
           id: task.id,
           title: task.name,
           start: task.estimated_start_time,

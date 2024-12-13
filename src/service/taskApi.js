@@ -1,12 +1,7 @@
 import { axiosInstance } from "../../config/axiosConfig";
 
 export const getTasks = async () => {
-  const response = await axiosInstance.get(`/task`, {
-    params: {
-      "page": 1,
-      "limit": 10
-    }
-  });
+  const response = await axiosInstance.get(`/task/?limit=1000&page=1`);
   return response;
 };
 

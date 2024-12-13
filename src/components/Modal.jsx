@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { isBefore, isAfter, isValid } from 'date-fns';
 
-const TaskModal = ({ task, onClose, onSave }) => {
+const TaskModal = ({ task, onCancel, onClose, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
     name: task.name,
@@ -73,7 +73,7 @@ const TaskModal = ({ task, onClose, onSave }) => {
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[10000]"
-      onClick={onClose}
+      onClick={onCancel}
     >
       <div
         className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full relative"
@@ -81,7 +81,7 @@ const TaskModal = ({ task, onClose, onSave }) => {
       >
         <button
           className="absolute text-[30px] top-2 right-4 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
+          onClick={onCancel}
         >
           &times;
         </button>
@@ -126,8 +126,9 @@ const TaskModal = ({ task, onClose, onSave }) => {
 
         <div className="flex gap-4">
           <div>
-            <label htmlFor="estimated_start_time" className="block text-sm font-semibold mb-2">Start Date:</label>
+            <label htmlFor="date-picker-start-time" className="block text-sm font-semibold mb-2">Start Date:</label>
             <DatePicker
+              id='date-picker-start-time'
               selected={taskData.estimated_start_time}
               onChange={(date) => handleDateChange(date, 'estimated_start_time')}
               dateFormat="yyyy/MM/dd HH:mm"
@@ -140,8 +141,9 @@ const TaskModal = ({ task, onClose, onSave }) => {
           </div>
 
           <div className='mb-4'>
-            <label htmlFor="estimated_end_time" className="block text-sm font-semibold mb-2">End Date:</label>
+            <label htmlFor="date-picker-end-time" className="block text-sm font-semibold mb-2">End Date:</label>
             <DatePicker
+              id='date-picker-end-time'
               selected={taskData.estimated_end_time}
               onChange={(date) => handleDateChange(date, 'estimated_end_time')}
               dateFormat="yyyy/MM/dd HH:mm"
@@ -158,7 +160,7 @@ const TaskModal = ({ task, onClose, onSave }) => {
         <div className="flex justify-end gap-4">
           <button
             className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
-            onClick={onClose}
+            onClick={onCancel}
           >
             Cancel
           </button>
@@ -177,6 +179,7 @@ const TaskModal = ({ task, onClose, onSave }) => {
 TaskModal.propTypes = {
   task: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };
 
