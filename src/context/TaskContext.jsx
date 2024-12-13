@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import { TASKS1 } from "../data/testData";
+import { addTask, getTasks } from "../service/taskApi";
+import { useToast } from "./ToastContext";
 
 const VIEW_MODES = ['list', 'board', 'calendar'];
 
@@ -17,6 +19,8 @@ const TaskProvider = ({ children }) => {
   const [oldEvent, setOldEvent] = useState(null);
   //---------------------
 
+    const { showToast } = useToast();
+
   useEffect(() => {
     // Get view
     const view = localStorage.getItem('currentView');
@@ -29,7 +33,18 @@ const TaskProvider = ({ children }) => {
 
     // Get tasks
     // TODO: Fetch tasks from API
-    setTasks(TASKS1);
+    const handleGetTasks = async () => {
+      try {
+        // await addTask();
+        const response = await getTasks();
+        setTasks(response.data);
+      } catch (error) {
+        showToast("error", error.response?.data?.message || 'Failed to fetch task data');
+      }
+    };
+
+    handleGetTasks();
+    // setTasks(TASKS1);
   }, []);
 
   const changeView = (view) => {
