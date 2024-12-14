@@ -117,9 +117,9 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
             value={taskData.priority}
             onChange={handleChange}
           >
-            <option value={Number(0)}>High</option>
-            <option value={Number(1)}>Medium</option>
-            <option value={Number(2)}>Low</option>
+            <option value={0}>High</option>
+            <option value={1}>Medium</option>
+            <option value={2}>Low</option>
           </select>
         </div>
 

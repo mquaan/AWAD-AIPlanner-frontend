@@ -7,7 +7,7 @@ import Switch from "./Switch";
 import { SelectItem, Select } from "./Select";
 
 const TaskViewModal = ({ onClose }) => {
-  const { currentView, changeView } = useTask();
+  const { currentView, changeView, filters, updateFilters } = useTask();
 
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [showExpiredTasks, setShowExpiredTasks] = useState(false);
@@ -175,12 +175,13 @@ const TaskViewModal = ({ onClose }) => {
             </label>
             <Select
               className="w-40"
-              onChange={(value) => console.log(value)}
-              defaultValue=""
+              onChange={(value) => updateFilters({ priority: value })}
+              defaultValue={filters.priority}
             >
-              <SelectItem value={""} label={"All"} />
-              <SelectItem value={1} label={"High"} />
-              <SelectItem value={2} label={"Medium"} />
+              <SelectItem value="" label={"All"} />
+              <SelectItem value="High" label={"High"} />
+              <SelectItem value="Medium" label={"Medium"} />
+              <SelectItem value="Low" label={"Low"} />
             </Select>
           </div>
         </div>

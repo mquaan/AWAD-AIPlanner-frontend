@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import { updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
+import { priorityToString } from "../utils/priority";
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
@@ -39,7 +40,7 @@ const Task = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { tasks, setTasks, selectedTask, setSelectedTask, oldEvent, setOldEvent, setCancelChangeEvent } = useTask();
+  const { tasks, setTasks, selectedTask, setSelectedTask, oldEvent, setOldEvent, setCancelChangeEvent, filters } = useTask();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -66,14 +67,40 @@ const Task = () => {
 
   const { showToast } = useToast();
 
+  const checkIfNewTaskSatisfyFilters = (task) => {
+    // if (filters.showCompletedTasks && !task.completed) return false;
+    // if (filters.showExpiredTasks && new Date(task.estimated_end_time) > new Date()) return false;
+    if (filters.subject && task.subject.id !== filters.subject) {
+      console.log('subject', task.subject.id)
+      return false;
+    }
+    if (filters.priority && priorityToString(task.priority) !== filters.priority) {
+      console.log('priority', task.priority, filters.priority)
+      return false
+    }
+
+    return true;
+  }
+
   const handleSave = async (updatedTask) => {
     try {
       const response = await updateTask(updatedTask);
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === response.data.id ? response.data : task
-        )
-      );
+      // setTasks((prevTasks) =>
+      //   prevTasks.map((task) =>
+      //     task.id === response.data.id ? response.data : task
+      //   )
+      // );
+      for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === response.data.id) {
+          if (!checkIfNewTaskSatisfyFilters(response.data)) {
+            tasks.splice(i, 1);
+          } else {
+            tasks[i] = response.data;
+          }
+          break;
+        }
+      }
+      setTasks([...tasks]);
     } catch (error) {
       showToast("error", error.response?.data?.message || 'Failed to update task');
     }

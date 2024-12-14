@@ -1,7 +1,9 @@
 import { axiosInstance } from "../../config/axiosConfig";
+import { priorityToString } from "../utils/priority";
+import { statusToString } from "../utils/status";
 
-export const getTasks = async () => {
-  const response = await axiosInstance.get(`/task/?limit=1000&page=1`);
+export const getTasks = async (query) => {
+  const response = await axiosInstance.get(`/task/?${query}`);
   return response;
 };
 
@@ -10,8 +12,8 @@ export const updateTask = async (task) => {
     "name": task.name,
     "description": task.description,
     "subject_id": task.subject.id,
-    "priority": task.priority === 0 ? "High" : task.priority === 1 ? "Medium" : "Low",
-    "status": task.status === 0 ? "ToDo" : task.status === 1 ? "InProgress" : task.status === 2 ? "Completed" : 'Expired',
+    "priority": priorityToString(task.priority),
+    "status": statusToString(task.status),
     "estimated_start_time": task.estimated_start_time,
     "estimated_end_time": task.estimated_end_time
   });

@@ -6,6 +6,14 @@ import { useToast } from "./ToastContext";
 
 const VIEW_MODES = ['list', 'board', 'calendar'];
 const VIEW_CAL_MODES = ['dayGridMonth', 'timeGridWeek', 'timeGridDay'];
+const DEFAULT_FILTERS = {
+  limit: 100,
+  page: 1,
+  // showCompletedTasks: false,
+  // showExpiredTasks: false,
+  subject: '',
+  priority: '',
+};
 
 const TaskContext = createContext();
 
@@ -15,13 +23,15 @@ const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
 
+  const [filters, setFilters] = useState();
+
   // ------CALENDAR------
   const [currentViewCalendar, setCurrentViewCalendar] = useState();
   const [cancelChangeEvent, setCancelChangeEvent] = useState(false);
   const [oldEvent, setOldEvent] = useState(null);
   //---------------------
 
-    const { showToast } = useToast();
+  const { showToast } = useToast();
 
   useEffect(() => {
     // Get view
@@ -42,11 +52,26 @@ const TaskProvider = ({ children }) => {
       setCurrentViewCalendar('dayGridMonth');
     }
 
+    // Get filters
+    const filter = localStorage.getItem('filters');
+    if (filter) {
+      setFilters(JSON.parse(filter));
+    }
+    else {
+      localStorage.setItem('filters', DEFAULT_FILTERS);
+      setFilters(DEFAULT_FILTERS);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!filters) return;
+    
+    const query = new URLSearchParams(filters).toString();
+
     // Get tasks
-    // TODO: Fetch tasks from API
     const handleGetTasks = async () => {
       try {
-        const response = await getTasks();
+        const response = await getTasks(query);
         setTasks(response.data.data);
       } catch (error) {
         showToast("error", error.response?.data?.message || 'Failed to fetch task data');
@@ -54,8 +79,7 @@ const TaskProvider = ({ children }) => {
     };
 
     handleGetTasks();
-    // setTasks(TASKS1);
-  }, []);
+  }, [filters]);
 
   const changeView = (view) => {
     if (!VIEW_MODES.includes(view)) return;
@@ -69,6 +93,15 @@ const TaskProvider = ({ children }) => {
     localStorage.setItem('currentViewCalendar', view);
   }
 
+  const updateFilters = (newFilter) => {
+    const newFilters = {
+      ...filters,
+      ...newFilter
+    };
+    setFilters(newFilters);
+    localStorage.setItem('filters', JSON.stringify(newFilters));
+  }
+
   return (
     <TaskContext.Provider value={{
       currentView,
@@ -79,6 +112,8 @@ const TaskProvider = ({ children }) => {
       setTasks,
       selectedTask,
       setSelectedTask,
+      filters,
+      updateFilters,
       cancelChangeEvent,
       setCancelChangeEvent,
       oldEvent,
