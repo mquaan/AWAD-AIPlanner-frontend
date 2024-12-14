@@ -9,7 +9,7 @@ const Board = () => {
   const { setHeading } = usePage();
   useEffect(() => {
     setHeading("Board");
-  }, []);
+  }, [setHeading]);
 
   const navigate = useNavigate();
 

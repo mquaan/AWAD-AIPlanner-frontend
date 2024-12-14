@@ -2,7 +2,12 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { format, isBefore, isAfter, isValid } from 'date-fns';
+import { format, isAfter, isValid } from 'date-fns';
+
+import { TfiMore } from "react-icons/tfi";
+import { LiaTimesSolid } from "react-icons/lia";
+
+import { SUBJECTS } from '../data/testData';
 
 const Modal = ({ task, onClose, onSave }) => {
   
@@ -20,7 +25,7 @@ const Modal = ({ task, onClose, onSave }) => {
 
 
   const validateDates = () => {
-    const now = new Date();
+    // const now = new Date();
 
     // Kiểm tra startDate và endDate có hợp lệ không
     if (!isValid(taskData.startDate) || !isValid(taskData.endDate)) {
@@ -29,10 +34,10 @@ const Modal = ({ task, onClose, onSave }) => {
     }
 
     // Kiểm tra startDate không được là quá khứ
-    if (isBefore(taskData.startDate, now)) {
-      setError("Start date cannot be in the past.");
-      return false;
-    }
+    // if (isBefore(taskData.startDate, now)) {
+    //   setError("Start date cannot be in the past.");
+    //   return false;
+    // }
 
     // Kiểm tra endDate phải sau startDate
     if (isAfter(taskData.endDate, taskData.startDate)) {
@@ -78,86 +83,119 @@ const Modal = ({ task, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-50"
       onClick={onClose}
     >
       <div
-        className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full relative"
+        className="bg-white rounded-2xl shadow-xl max-w-lg w-full relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          className="absolute text-[30px] top-2 right-4 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          &times;
-        </button>
-        <h2 className="text-2xl font-semibold mb-4">Edit Task</h2>
-        
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700">Task Name</label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-md"
-            name="name"
-            value={taskData.name}
-            onChange={handleChange}
-            placeholder="Enter task name"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700">Description</label>
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded-md"
-            name="description"
-            value={taskData.description}
-            onChange={handleChange}
-            placeholder="Enter task description"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block font-medium text-gray-700">Priority</label>
-          <select
-            className="w-full p-2 border border-gray-300 rounded-md"
-            name="priority"
-            value={taskData.priority}
-            onChange={handleChange}
-          >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-        </div>
-
-        <div className="flex gap-4">
-          <div>
-            <label htmlFor="startDate" className="block text-sm font-semibold mb-2">Start Date:</label>
-            <DatePicker
-              selected={taskData.startDate}
-              onChange={(date) => handleDateChange(date, 'startDate')}
-              dateFormat="yyyy/MM/dd HH:mm"
-              showTimeSelect
-              timeIntervals={15}
-              timeCaption='Time'
-              placeholderText="Select a start date"
-              className="border p-2 rounded"
-            />
+        <div className='flex items-center justify-between pl-6 pr-5 py-4 text-gray-500'>
+          <h2 className="text-lg   font-semibold">Edit Task</h2>
+          <div className='flex gap-2'>  
+            <button className='hover:text-black hover:bg-gray-200 p-1 rounded-lg'>
+              <TfiMore />
+            </button>
+            <button
+              className="hover:text-black hover:bg-gray-200 p-1 rounded-lg"
+              onClick={onClose}
+              >
+              <LiaTimesSolid />
+            </button>
           </div>
+        </div>
+        <hr className='border-t border-gray-200'/>
+        
+        {/* bot */}
+        <div className='flex'>
+          {/* Left part */}
+          <div className='p-5 flex flex-col gap-1'>
+            <input
+              type="text"
+              className="w-full text-xl font-semibold rounded-md border-0
+                        focus:border focus:border-gray-300 focus:outline-none focus:ring-0"
+              name="name"
+              value={taskData.name}
+              onChange={handleChange}
+              placeholder="Task name"
+              />
 
-          <div className='mb-4'>
-            <label htmlFor="endDate" className="block text-sm font-semibold mb-2">End Date:</label>
-            <DatePicker
-              selected={taskData.endDate}
-              onChange={(date) => handleDateChange(date, 'endDate')}
-              dateFormat="yyyy/MM/dd HH:mm"
-              showTimeSelect
-              timeIntervals={15}
-              timeCaption='Time'
-              placeholderText="Select an end date"
-              className="border p-2 rounded"
-              minDate={taskData.startDate}
-            />
+              <textarea
+                className="w-full text-sm rounded-md border-0 resize-none focus:resize
+                          focus:border focus:border-gray-300 focus:outline-none focus:ring-0"
+                name="description"
+                value={taskData.description}
+                onChange={handleChange}
+                placeholder="Enter task description"
+              />
+
+              <div className="relative">
+                <label className="block font-medium text-gray-700">Subject</label>
+                <select
+                  className="appearance-none w-full p-2 cursor-pointer
+                            outline-none bg-white rounded-md border border-gray-300
+                            focus:outline-none focus:ring-0"
+                  name="subject"
+                  value={taskData.subject}
+                  onChange={handleChange}
+                  >
+                  {SUBJECTS.map((subject) => (
+                    <option key={subject.id} value={subject.name}>
+                      {subject.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+          </div>
+          
+          <div className='border-r border-gray-500'/>
+
+          {/* Right part */}
+          <div className='flex flex-col p-6 gap-4'>
+            <div className="mb-4">
+              <label className="block font-medium text-gray-700">Priority</label>
+              <select
+                className="w-full p-2 border border-gray-300 rounded-md"
+                name="priority"
+                value={taskData.priority}
+                onChange={handleChange}
+                >
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div>
+                <label htmlFor="startDate" className="block text-sm font-semibold mb-2">Start Date:</label>
+                <DatePicker
+                  selected={taskData.startDate}
+                  onChange={(date) => handleDateChange(date, 'startDate')}
+                  dateFormat="yyyy/MM/dd HH:mm"
+                  showTimeSelect
+                  timeIntervals={15}
+                  timeCaption='Time'
+                  placeholderText="Select a start date"
+                  className="border p-2 rounded"
+                  />
+              </div>
+
+              <div className='mb-4'>
+                <label htmlFor="endDate" className="block text-sm font-semibold mb-2">End Date:</label>
+                <DatePicker
+                  selected={taskData.endDate}
+                  onChange={(date) => handleDateChange(date, 'endDate')}
+                  dateFormat="yyyy/MM/dd HH:mm"
+                  showTimeSelect
+                  timeIntervals={15}
+                  timeCaption='Time'
+                  placeholderText="Select an end date"
+                  className="border p-2 rounded"
+                  minDate={taskData.startDate}
+                  />
+              </div>
+            </div>
           </div>
         </div>
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
@@ -165,13 +203,13 @@ const Modal = ({ task, onClose, onSave }) => {
           <button
             className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
             onClick={onClose}
-          >
+            >
             Cancel
           </button>
           <button
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             onClick={handleSave}
-          >
+            >
             Save
           </button>
         </div>
