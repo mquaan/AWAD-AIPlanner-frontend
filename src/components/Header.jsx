@@ -26,7 +26,7 @@ const Header = () => {
       setShowDialogConfirm(false);
       showToast('success', 'Logged out successfully');
     } catch(err){
-      showToast('success', err.response?.data?.message || 'Logout failed');
+      showToast('error', err.response?.data?.message || 'Logout failed');
     }
   };
 
