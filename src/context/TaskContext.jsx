@@ -58,7 +58,7 @@ const TaskProvider = ({ children }) => {
       setFilters(JSON.parse(filter));
     }
     else {
-      localStorage.setItem('filters', DEFAULT_FILTERS);
+      localStorage.setItem('filters', JSON.stringify(DEFAULT_FILTERS));
       setFilters(DEFAULT_FILTERS);
     }
   }, []);

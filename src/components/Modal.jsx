@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { isBefore, isAfter, isValid } from 'date-fns';
 
-const TaskModal = ({ task, onCancel, onClose, onSave }) => {
+const TaskModal = ({ task, onCancel, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
     name: task.name,
@@ -58,7 +58,7 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
     const { name, value } = e.target;
     setTaskData((prevData) => ({
       ...prevData,
-      [name]: name === 'priority' ? Number(value) : value,
+      [name]: value,
     }));
   };
 
@@ -117,9 +117,9 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
             value={taskData.priority}
             onChange={handleChange}
           >
-            <option value={0}>High</option>
-            <option value={1}>Medium</option>
-            <option value={2}>Low</option>
+            <option value={'High'}>High</option>
+            <option value={'Medium'}>Medium</option>
+            <option value={'Low'}>Low</option>
           </select>
         </div>
 
@@ -177,7 +177,6 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
 
 TaskModal.propTypes = {
   task: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };

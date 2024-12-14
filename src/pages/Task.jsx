@@ -85,11 +85,6 @@ const Task = () => {
   const handleSave = async (updatedTask) => {
     try {
       const response = await updateTask(updatedTask);
-      // setTasks((prevTasks) =>
-      //   prevTasks.map((task) =>
-      //     task.id === response.data.id ? response.data : task
-      //   )
-      // );
       for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === response.data.id) {
           if (!checkIfNewTaskSatisfyFilters(response.data)) {
@@ -123,7 +118,6 @@ const Task = () => {
       {isModalOpen && (
         <Modal
           task={selectedTask}
-          onClose={() => navigate("/task")}
           onCancel={cancelModal}
           onSave={handleSave}
         />
