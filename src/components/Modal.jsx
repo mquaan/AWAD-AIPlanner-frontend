@@ -2,40 +2,36 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { format, isBefore, isAfter, isValid } from 'date-fns';
+import { isBefore, isAfter, isValid } from 'date-fns';
 
-const Modal = ({ task, onClose, onSave }) => {
-  
+const TaskModal = ({ task, onCancel, onClose, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
     name: task.name,
     description: task.description,
     priority: task.priority,
-    startDate: new Date(task.startDate),
-    endDate: new Date(task.endDate),
+    estimated_start_time: new Date(task.estimated_start_time),
+    estimated_end_time: new Date(task.estimated_end_time)
   });
   const [error, setError] = useState("");
 
-  if (!task) return null;
-
-
   const validateDates = () => {
-    const now = new Date();
+    // const now = new Date();
 
-    // Kiểm tra startDate và endDate có hợp lệ không
-    if (!isValid(taskData.startDate) || !isValid(taskData.endDate)) {
+    // Kiểm tra estimated_start_time và estimated_end_time có hợp lệ không
+    if (!isValid(taskData.estimated_start_time) || !isValid(taskData.estimated_end_time)) {
       setError("Please select valid dates.");
       return false;
     }
 
-    // Kiểm tra startDate không được là quá khứ
-    if (isBefore(taskData.startDate, now)) {
-      setError("Start date cannot be in the past.");
-      return false;
-    }
+    // // Kiểm tra estimated_start_time không được là quá khứ
+    // if (isBefore(taskData.estimated_start_time, now)) {
+    //   setError("Start date cannot be in the past.");
+    //   return false;
+    // }
 
-    // Kiểm tra endDate phải sau startDate
-    if (isAfter(taskData.endDate, taskData.startDate)) {
+    // Kiểm tra estimated_end_time phải sau estimated_start_time
+    if (isAfter(taskData.estimated_end_time, taskData.estimated_start_time)) {
       setError(""); // Clear any previous error
       return true;
     }
@@ -49,11 +45,8 @@ const Modal = ({ task, onClose, onSave }) => {
       const savedTask = {
         ...task,
         ...taskData,
-        startDate: format(taskData.startDate, 'yyyy/MM/dd HH:mm'),
-        endDate: format(taskData.endDate, 'yyyy/MM/dd HH:mm'),
       };
       onSave(savedTask);
-      onClose();
     } else {
       return;
     }
@@ -65,7 +58,7 @@ const Modal = ({ task, onClose, onSave }) => {
     const { name, value } = e.target;
     setTaskData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === 'priority' ? Number(value) : value,
     }));
   };
 
@@ -78,8 +71,8 @@ const Modal = ({ task, onClose, onSave }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-      onClick={onClose}
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[10000]"
+      onClick={onCancel}
     >
       <div
         className="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full relative"
@@ -87,7 +80,7 @@ const Modal = ({ task, onClose, onSave }) => {
       >
         <button
           className="absolute text-[30px] top-2 right-4 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
+          onClick={onCancel}
         >
           &times;
         </button>
@@ -124,18 +117,19 @@ const Modal = ({ task, onClose, onSave }) => {
             value={taskData.priority}
             onChange={handleChange}
           >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
+            <option value={0}>High</option>
+            <option value={1}>Medium</option>
+            <option value={2}>Low</option>
           </select>
         </div>
 
         <div className="flex gap-4">
           <div>
-            <label htmlFor="startDate" className="block text-sm font-semibold mb-2">Start Date:</label>
+            <label htmlFor="date-picker-start-time" className="block text-sm font-semibold mb-2">Start Date:</label>
             <DatePicker
-              selected={taskData.startDate}
-              onChange={(date) => handleDateChange(date, 'startDate')}
+              id='date-picker-start-time'
+              selected={taskData.estimated_start_time}
+              onChange={(date) => handleDateChange(date, 'estimated_start_time')}
               dateFormat="yyyy/MM/dd HH:mm"
               showTimeSelect
               timeIntervals={15}
@@ -146,17 +140,18 @@ const Modal = ({ task, onClose, onSave }) => {
           </div>
 
           <div className='mb-4'>
-            <label htmlFor="endDate" className="block text-sm font-semibold mb-2">End Date:</label>
+            <label htmlFor="date-picker-end-time" className="block text-sm font-semibold mb-2">End Date:</label>
             <DatePicker
-              selected={taskData.endDate}
-              onChange={(date) => handleDateChange(date, 'endDate')}
+              id='date-picker-end-time'
+              selected={taskData.estimated_end_time}
+              onChange={(date) => handleDateChange(date, 'estimated_end_time')}
               dateFormat="yyyy/MM/dd HH:mm"
               showTimeSelect
               timeIntervals={15}
               timeCaption='Time'
               placeholderText="Select an end date"
               className="border p-2 rounded"
-              minDate={taskData.startDate}
+              minDate={taskData.estimated_start_time}
             />
           </div>
         </div>
@@ -164,7 +159,7 @@ const Modal = ({ task, onClose, onSave }) => {
         <div className="flex justify-end gap-4">
           <button
             className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300"
-            onClick={onClose}
+            onClick={onCancel}
           >
             Cancel
           </button>
@@ -180,10 +175,11 @@ const Modal = ({ task, onClose, onSave }) => {
   );
 };
 
-Modal.propTypes = {
-  task: PropTypes.object,
+TaskModal.propTypes = {
+  task: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };
 
-export default Modal;
+export default TaskModal;

@@ -7,6 +7,7 @@ const PageProvider = ({ children }) => {
   const [showSidebar, setShowSidebar] = useState(localStorage.getItem('showSidebar') === 'true');
 
   const [heading, setHeading] = useState();
+  const [actions, setActions] = useState([]);
 
   const toggleSidebar = () => {
     setShowSidebar((prevState) => !prevState);
@@ -18,7 +19,9 @@ const PageProvider = ({ children }) => {
       showSidebar,
       toggleSidebar,
       heading,
-      setHeading
+      setHeading,
+      actions,
+      setActions,
     }}>
       {children}
     </PageContext.Provider>

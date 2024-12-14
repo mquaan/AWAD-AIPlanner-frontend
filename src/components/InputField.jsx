@@ -7,7 +7,7 @@ const InputField = forwardRef(({ type = "text", placeholder = "", className, err
   const [showPassword, setShowPassword] = useState(false);
   
   const defaultClassName = `
-    relative w-full h-[45px] bg-transparent outline-none border-[1.5px] border-black/20 rounded-full
+    relative w-full h-[45px] bg-transparent outline-none border-[1.5px] border-black/20 rounded-lg
     focus-within:outline-none focus-within:border-[#395750] focus-within:shadow-sm
     ${disabled && 'bg-disabled opacity-70'}
     ${error && 'border-error'}

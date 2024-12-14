@@ -10,7 +10,7 @@ export const updateUserProfile = async (data) => {
   return response;
 };
 
-export const changePassword = async () => {
+export const changePassword = async (data) => {
   const response = await axiosInstance.put(`/user/profile/password`, data);
   return response;
 };
