@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { TASKS1 } from "../data/testData";
-import { addTask, getTasks } from "../service/taskApi";
+import { getTasks } from "../service/taskApi";
 import { useToast } from "./ToastContext";
 
 const VIEW_MODES = ['list', 'board', 'calendar'];

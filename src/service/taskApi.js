@@ -9,9 +9,9 @@ export const updateTask = async (task) => {
   const response = await axiosInstance.put(`/task/${task.id}`, {
     "name": task.name,
     "description": task.description,
-    "subject_id": task.subject.id,
-    "priority": task.priority,
-    "status": task.status,
+    "subject_id": task.subject_id,
+    "priority": priorityToString(task.priority),
+    "status": statusToString(task.status),
     "estimated_start_time": task.estimated_start_time,
     "estimated_end_time": task.estimated_end_time
   });
@@ -24,8 +24,8 @@ export const addTask = async () => {
     "description": "123",
     "subject_id": "675b34719d16a02d3166c363",
     "priority": "Medium",
-    "estimated_start_time": "2024-12-15T10:00:00Z",
-    "estimated_end_time": "2024-12-20T08:00:00Z"
+    "estimated_start_time": "2024-12-15T10:00:00.000Z",
+    "estimated_end_time": "2024-12-20T08:00:00.000Z"
 });
   return response;
 };

@@ -26,8 +26,8 @@ function StatusMessage({ message, type='' }) {
 }
 
 StatusMessage.propTypes = {
-    message: PropTypes.string,
-    type: PropTypes.oneOf([ 'success', 'error', 'warning', 'info', '' ]),
+  message: PropTypes.string,
+  type: PropTypes.oneOf([ 'success', 'error', 'warning', 'info', '' ]),
 };
 
 export default StatusMessage;
