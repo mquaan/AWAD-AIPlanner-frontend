@@ -16,13 +16,13 @@ const Button = ({ children, onClick=null, type='button', variant='primary', clas
       type={type}
       onClick={onClick}
       className={twMerge(
-        'w-[200px] h-[45px] px-4 py-2 flex items-center justify-center gap-[10px] rounded-3xl cursor-pointer shadow-sm',
+        'w-[200px] h-[45px] px-4 py-2 flex items-center justify-center gap-[10px] rounded-lg cursor-pointer shadow-sm',
         'transition-colors duration-300 text-center text-[15px] font-semibold text-white',
         variantStyle,
         className,
       )}
     >
-      {Icon && <Icon className='mr-2 text-xl' />}
+      {Icon && <Icon className='text-xl' />}
       {children}
     </button>
   );
