@@ -38,6 +38,11 @@
     --priority-2: #ffd60a;
     --priority-3: #1B84FF;
 
+    --todo-background-color: #e5e7eb;
+    --in-progress-background-color: #ddffe3;
+    --completed-background-color: #c3e4fc;
+    --expired-background-color: #fde2e4;
+
     --fc-button-text-color: var(--primary-color);
     --fc-button-bg-color: #ffffff00;
     --fc-button-border-color: var(--primary-color);
@@ -45,7 +50,6 @@
     --fc-button-hover-border-color: var(--button-hover-color);
     --fc-button-active-bg-color: var(--primary-color);
     --fc-button-active-border-color: var(--primary-color);
-
 
     --fc-today-bg-color: var(--primary-light-color);
   }
