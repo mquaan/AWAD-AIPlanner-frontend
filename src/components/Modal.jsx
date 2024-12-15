@@ -17,11 +17,11 @@ import { useToast } from '../context/ToastContext';
 const TaskModal = ({ task, onCancel, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
-    name: task.name,
-    description: task.description,
+    name: task.name || "",
+    description: task.description || "",
     subject_id: task.subject?.id || "",
-    status: task.status,
-    priority: task.priority,
+    status: task.id ? task.status : "ToDo",
+    priority: task.id ? task.priority : "Medium",
     estimated_start_time: task.estimated_start_time ? new Date(task.estimated_start_time) : null,
     estimated_end_time: task.estimated_end_time ? new Date(task.estimated_end_time) : null,
   });
@@ -113,7 +113,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
-          <h2 className="text-lg font-semibold">Edit Task</h2>
+          <h2 className="text-lg font-semibold">{task.id ? 'Edit Task' : 'New Task'}</h2>
           <div className="flex gap-2">
             <button className="hover:text-black hover:bg-gray-200 p-1 rounded-lg">
               <TfiMore />

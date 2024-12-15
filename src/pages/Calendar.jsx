@@ -12,7 +12,17 @@ import UnassignedTaskCard from '../components/UnassignedTaskCard';
 const Calendar = () => {
   const calendarRef = useRef(null);
 
-  const { tasks, cancelChangeEvent, setCancelChangeEvent, oldEvent, setOldEvent, currentViewCalendar, changeViewCalendar } = useTask();
+  const {
+    tasks,
+    cancelChangeEvent,
+    setCancelChangeEvent,
+    oldEvent,
+    setOldEvent,
+    currentViewCalendar,
+    changeViewCalendar,
+    setIsModalOpen,
+    setSelectedTask,
+  } = useTask();
   
   var [assignedTasks, unassignedTasks] = tasks.reduce((acc, task) => {
     if (task.estimated_start_time || task.estimated_end_time || task.status === 'Completed' || task.status === 'Expired') {
@@ -61,6 +71,12 @@ const Calendar = () => {
 
   const handleDateSelect = (info) => {
     console.log('select', info.start, info.end);
+
+    setIsModalOpen(true);
+    setSelectedTask({
+      estimated_start_time: info.start,
+      estimated_end_time: info.end,
+    });
   }
 
   const containerRef = useRef(null);
@@ -120,6 +136,7 @@ const Calendar = () => {
               eventMaxStack: 4,
             },
           }}
+          allDaySlot={false}
           datesSet={handleViewChange}
           dayMaxEventRows={3}
           eventMaxStack={3}
