@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { TASKS1 } from "../data/testData";
-import { addTask, getTasks } from "../service/taskApi";
+import { getTasks } from "../service/taskApi";
 import { useToast } from "./ToastContext";
 
 const VIEW_MODES = ['list', 'board', 'calendar'];
@@ -58,7 +57,7 @@ const TaskProvider = ({ children }) => {
       setFilters(JSON.parse(filter));
     }
     else {
-      localStorage.setItem('filters', DEFAULT_FILTERS);
+      localStorage.setItem('filters', JSON.stringify(DEFAULT_FILTERS));
       setFilters(DEFAULT_FILTERS);
     }
   }, []);

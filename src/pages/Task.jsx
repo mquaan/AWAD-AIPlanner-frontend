@@ -101,6 +101,7 @@ const Task = () => {
         }
       }
       setTasks([...tasks]);
+      showToast("success", "Task updated successfully");
     } catch (error) {
       showToast("error", error.response?.data?.message || 'Failed to update task');
     }

@@ -1,17 +1,14 @@
-import { useState, useEffect } from 'react';
-import { usePage } from "../context/PageContext";
 import TaskBoard from '../components/TaskBoard';
-import Modal from '../components/Modal';
-import { TASKS } from '../data/testData';
-import { useNavigate, useParams } from 'react-router-dom';
+
+import { useTask } from '../context/TaskContext';
+import { useNavigate } from 'react-router-dom';
 
 const Board = () => {
   const navigate = useNavigate();
+  
+  const { tasks, setTasks } = useTask();
 
-  const { id } = useParams();
-  const [tasks, setTasks] = useState(TASKS);
-
-  const statuses = ['To-Do', 'In Progress', 'Completed', 'Expired'];
+  const statuses = ['ToDo', 'InProgress', 'Completed', 'Expired'];
 
   const handleAddTask = (status) => {
     const taskName = prompt('Enter task name:');
@@ -24,42 +21,8 @@ const Board = () => {
     }
   };
 
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = (task) => {
-    setSelectedTask(task);
-    setIsModalOpen(true);
-    navigate(`/board/${task.id}`);
-  };
-
-  const closeModal = () => {
-    setSelectedTask(null);
-    setIsModalOpen(false);
-    navigate('/board');
-  };
-
-  useEffect(() => {
-    if (id) {
-      const task = tasks.find((task) => task.id === parseInt(id));
-      if (!task) {
-        navigate('/board');
-      } else {
-        setSelectedTask(task);
-        setIsModalOpen(true); // Mở modal khi tìm thấy task
-      }
-    } else {
-      setSelectedTask(null);
-      setIsModalOpen(false);
-    }
-  }, [id, tasks, navigate]);
-
-  const handleSave = (updatedTask) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === updatedTask.id ? updatedTask : task
-      )
-    );
+  const openModal = (task_id) => {
+    navigate(`/task/${task_id}`);
   };
 
   return (
@@ -67,7 +30,9 @@ const Board = () => {
       {statuses.map((status) => (
         <div key={status} className="py-4 rounded-xl">
           <div className='flex mb-4 gap-2 items-end'>
-            <h2 className="text-lg font-semibold">{status.toUpperCase()}</h2>
+            <h2 className="text-lg font-semibold">
+              {status === 'ToDo' ? 'TO-DO' : status === 'InProgress' ? 'IN PROGRESS' : status.toUpperCase()}
+            </h2>
             <p className='text-sm text-text-neutral pb-[2.5px]'>
               {tasks.filter((task) => task.status === status).length}
             </p>
@@ -77,7 +42,7 @@ const Board = () => {
             {tasks
               .filter((task) => task.status === status)
               .map((task) => (
-                <TaskBoard key={task.id} task={task} onClick={() => openModal(task)}/>
+                <TaskBoard key={task.id} task={task} onClick={() => openModal(task.id)}/>
               ))}
           </div>
           <div
@@ -89,7 +54,6 @@ const Board = () => {
           </div>
         </div>
       ))}
-      {isModalOpen && <Modal task={selectedTask} onClose={closeModal} onSave={handleSave} />}
     </div>
   );
 };

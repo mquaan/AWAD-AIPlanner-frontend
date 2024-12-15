@@ -6,7 +6,6 @@ import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import Dashboard from './pages/Dashboard';
 import Account from './pages/Account';
-import Board from './pages/Board';
 import Task from './pages/Task';
 
 import PrivateRoute from './PrivateRoute';
@@ -44,8 +43,6 @@ function App() {
                   </TaskProvider>
                 }
               />
-              <Route path="/board" element={<Board />} />
-              <Route path="/board/:id" element={<Board />} />
             </Route>
           </Route>
           <Route element={<AuthLayout />}>

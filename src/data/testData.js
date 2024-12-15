@@ -6,6 +6,14 @@ export const TASKS = [
   { id: 5, name: 'Task 5', description: 'Sample task 5', status: 'To-Do', startDate: '2024/09/01', endDate: '2024-09-30', priority: 'Medium' },
 ]
 
+export const SUBJECTS = [
+  { id: 1, name: 'Math' },
+  { id: 2, name: 'Science' },
+  { id: 3, name: 'English' },
+  { id: 4, name: 'History' },
+  { id: 5, name: 'Geography' },
+]
+
 export const TASKS1 = [
   {
     id: '1',
