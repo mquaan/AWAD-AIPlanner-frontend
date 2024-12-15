@@ -12,13 +12,14 @@ import { PiTagChevronFill  } from "react-icons/pi";
 import { getSubjects } from '../service/subjectApi'
 import { Select, SelectItem } from './Select_modal';
 import { getStatusColor } from '../utils/status';
+import { useToast } from '../context/ToastContext';
 
 const TaskModal = ({ task, onCancel, onSave }) => {
   // Use a single state to hold the task data
   const [taskData, setTaskData] = useState({
     name: task.name,
     description: task.description,
-    subject_id: task.subject.id,
+    subject_id: task.subject?.id || "",
     status: task.status,
     priority: task.priority,
     estimated_start_time: task.estimated_start_time ? new Date(task.estimated_start_time) : null,
@@ -28,6 +29,8 @@ const TaskModal = ({ task, onCancel, onSave }) => {
   const [subjects, setSubjects] = useState([])
 
   const [error, setError] = useState("");
+
+  const { showToast } = useToast();
 
   const validateDates = () => {
     if (!taskData.estimated_start_time || !taskData.estimated_end_time) {
@@ -93,8 +96,8 @@ const TaskModal = ({ task, onCancel, onSave }) => {
       try {
         const response = await getSubjects();
         setSubjects(response.data);
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        showToast("error", err.response?.data?.message || "Failed to get subjects");
       }
     };
     callGetSubjects();
@@ -106,7 +109,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl w-[700px]"
+        className="bg-white rounded-2xl shadow-xl w-[700px] max-h-screen overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
@@ -152,29 +155,25 @@ const TaskModal = ({ task, onCancel, onSave }) => {
               <label className="flex mt-4 px-2 font-semibold text-sm text-gray-700">
                 Subject
               </label>
-              {subjects?.length > 0 ? (
-                <Select
-                  name="subject_id"
-                  className="w-[80%]"
-                  onChange={handleChange}
-                  defaultValue={taskData.subject_id}
-                  icon={<FcBookmark className="mb-[2px]" />}
-                >
-                  {subjects.map((subject) => (
-                    <SelectItem
-                      key={subject.id}
-                      value={subject.id}
-                      label={subject.name}
-                    />
-                  ))}
-                </Select>
-              ) : (
-                <p className="text-sm text-text-secondary px-2 mt-2">
-                  No subjects to select.
-                  <br />
-                  Add subjects in {"'Settings'"}.
-                </p>
-              )}
+              <Select
+                name="subject_id"
+                className="w-[80%]"
+                onChange={handleChange}
+                defaultValue={taskData.subject_id}
+                icon={<FcBookmark className="mb-[2px]" />}
+              >
+                <SelectItem
+                  value={""}
+                  label={"No subject"}
+                />
+                {subjects?.map((subject) => (
+                  <SelectItem
+                    key={subject.id}
+                    value={subject.id}
+                    label={subject.name}
+                  />
+                ))}
+              </Select>
             </div>
           </div>
 
@@ -216,7 +215,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                   taskData.priority === "High" ?
                     <FcHighPriority className="mb-[2px]" />
                     : taskData.priority === "Medium" ?
-                    <FcMediumPriority className="mb-[2px]" />
+                      <FcMediumPriority className="mb-[2px]" />
                     : <FcLowPriority className="mb-[2px]" />
                 }
               >
@@ -268,10 +267,9 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                       : taskData.estimated_end_time
                   }
                   onChange={(date) => {
-                      handleDateChange(date, "estimated_end_time")
-                      checkIfWillBeExpired(date)
-                    }
-                  }
+                    handleDateChange(date, "estimated_end_time");
+                    checkIfWillBeExpired(date);
+                  }}
                   dateFormat="dd/MM/yyyy HH:mm"
                   showTimeSelect
                   timeIntervals={15}

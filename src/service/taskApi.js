@@ -6,6 +6,15 @@ export const getTasks = async (query) => {
 };
 
 export const updateTask = async (task) => {
+  console.log({
+    "name": task.name,
+    "description": task.description,
+    "subject_id": task.subject_id,
+    "priority": task.priority,
+    "status": task.status,
+    "estimated_start_time": task.estimated_start_time,
+    "estimated_end_time": task.estimated_end_time
+  });
   const response = await axiosInstance.put(`/task/${task.id}`, {
     "name": task.name,
     "description": task.description,
