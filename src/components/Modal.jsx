@@ -132,7 +132,7 @@ const TaskModal = ({ task, onCancel, onClose, onSave }) => {
               />
 
               <textarea
-                className="w-full text-sm rounded-md border-0 resize-none focus:resize px-2
+                className="w-full text-sm resize-both max-w-[400px] max-h-[150px] rounded-md border-0 resize-none focus:resize px-2
                           focus:border focus:border-gray-300 focus:outline-none focus:ring-0"
                 name="description"
                 value={taskData.description}
