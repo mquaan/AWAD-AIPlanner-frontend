@@ -68,13 +68,11 @@ const Task = () => {
   const { showToast } = useToast();
 
   const checkIfNewTaskSatisfyFilters = (task) => {
-    // if (filters.showCompletedTasks && !task.completed) return false;
-    // if (filters.showExpiredTasks && new Date(task.estimated_end_time) > new Date()) return false;
     if (filters.subject && task.subject.id !== filters.subject) {
       console.log('subject', task.subject.id)
       return false;
     }
-    if (filters.priority && priorityToString(task.priority) !== filters.priority) {
+    if (filters.priority && task.priority !== filters.priority) {
       console.log('priority', task.priority, filters.priority)
       return false
     }
@@ -87,6 +85,7 @@ const Task = () => {
       const response = await updateTask(updatedTask);
       for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === response.data.id) {
+          console.log('check');
           if (!checkIfNewTaskSatisfyFilters(response.data)) {
             tasks.splice(i, 1);
           } else {

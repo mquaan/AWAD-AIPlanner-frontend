@@ -23,7 +23,7 @@ const statusToString = (number) => {
 const statusToStringDisplay = (string) => {
   switch (string) {
     case "ToDo":
-      return "To Do";
+      return "To-Do";
     case "InProgress":
       return "In Progress";
     case "Completed":
@@ -50,5 +50,20 @@ const getStatusBgColor = (status) => {
   }
 };
 
-export { statusToString, statusToStringDisplay, getStatusBgColor };
+const getStatusColor = (status) => {
+  switch (status) {
+    case "ToDo":
+      return "var(--todo-color)";
+    case "InProgress":
+      return "var(--in-progress-color)";
+    case "Completed":
+      return "var(--completed-color)";
+    case "Expired":
+      return "var(--expired-color)";
+    default:
+      return "var(--neutral-color)";
+  }
+};
+
+export { statusToString, statusToStringDisplay, getStatusBgColor, getStatusColor };
 export default Status;

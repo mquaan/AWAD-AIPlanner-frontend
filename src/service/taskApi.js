@@ -10,8 +10,8 @@ export const updateTask = async (task) => {
     "name": task.name,
     "description": task.description,
     "subject_id": task.subject_id,
-    "priority": priorityToString(task.priority),
-    "status": statusToString(task.status),
+    "priority": task.priority,
+    "status": task.status,
     "estimated_start_time": task.estimated_start_time,
     "estimated_end_time": task.estimated_end_time
   });

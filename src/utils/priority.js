@@ -20,11 +20,11 @@ const priorityToString = (number) => {
 const getPriorityColor = (priority) => {
   switch (priority) {
     case "High":
-      return "var(--priority-1)";
+      return "var(--priority-high-color)";
     case "Medium":
-      return "var(--priority-2)";
+      return "var(--priority-medium-color)";
     case "Low":
-      return "var(--priority-3)";
+      return "var(--priority-low-color)";
     default:
       return "var(--neutral-color)";
   }

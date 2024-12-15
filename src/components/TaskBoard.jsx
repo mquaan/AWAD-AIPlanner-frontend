@@ -45,7 +45,7 @@ const TaskBoard = ({ task, onClick }) => {
         </div>
         <div className="flex items-center gap-1 text-teal-600">
           <RiCalendarCheckLine size={14} />
-          <span className="text-sm">{formatDate(task.estimated_end_time)}</span>
+          <span className="text-sm">{task.estimated_end_time ? formatDate(task.estimated_end_time) : 'No end date'}</span>
         </div>
       </div>
     </div>

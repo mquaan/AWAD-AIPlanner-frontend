@@ -33,6 +33,19 @@ export default {
         "warning": "var(--warning-color)",
         "error": "var(--error-color)",
         "info": "var(--info-color)",
+
+        "priority-high": "var(--priority-high-color)",
+        "priority-medium": "var(--priority-medium-color)",
+        "priority-low": "var(--priority-low-color)",
+
+        "todo": "var(--todo-color)",
+        "todo-background": "var(--todo-background-color)",
+        "in-progress": "var(--in-progress-color)",
+        "in-progress-background": "var(--in-progress-background-color)",
+        "completed": "var(--completed-color)",
+        "completed-background": "var(--completed-background-color)",
+        "expired": "var(--expired-color)",
+        "expired-background": "var(--expired-background-color)",
       },
       width: {
         "sidebar-expanded": "var(--sidebar-width-expanded)",
