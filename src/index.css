@@ -61,15 +61,18 @@
 
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #bebebe;
+  /* background: #bebebe; */
+  background: var(--primary-color);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #929292;
+  /* background: #929292; */
+  background: var(--primary-dark-color);
 }
 
 ::-ms-reveal {
