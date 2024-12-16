@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Button from './Button';
 
-const DialogConfirm = ({ open, onClose, onConfirm, title, content }) => {
+const DialogConfirm = ({ open, onClose, onConfirm, title, content, negativeText, positiveText }) => {
   if (!open) return null;
 
   return (
@@ -16,14 +16,14 @@ const DialogConfirm = ({ open, onClose, onConfirm, title, content }) => {
             variant="secondary"
             onClick={onClose}
           >
-            Cancel
+            {negativeText || 'Cancel'}
           </Button>
           <Button
             className="w-fit"
             variant="primary"
             onClick={onConfirm}
           >
-            Confirm
+            {positiveText || 'Confirm'}
           </Button>
         </div>
       </div>
@@ -37,6 +37,8 @@ DialogConfirm.propTypes = {
   onConfirm: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  negativeText: PropTypes.string,
+  positiveText: PropTypes.string,
 };
 
 export default DialogConfirm;

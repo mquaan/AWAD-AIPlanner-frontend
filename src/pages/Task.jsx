@@ -8,7 +8,7 @@ import Board from "./Board";
 import Calendar from "./Calendar";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { updateTask } from "../service/taskApi";
+import { addTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import { priorityToString } from "../utils/priority";
 
@@ -40,8 +40,18 @@ const Task = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { tasks, setTasks, selectedTask, setSelectedTask, oldEvent, setOldEvent, setCancelChangeEvent, filters } = useTask();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    tasks,
+    setTasks,
+    selectedTask,
+    setSelectedTask,
+    oldEvent,
+    setOldEvent,
+    setCancelChangeEvent,
+    filters,
+    isModalOpen,
+    setIsModalOpen,
+  } = useTask();
 
   useEffect(() => {
     if (id) {
@@ -59,22 +69,25 @@ const Task = () => {
   }, [id, tasks, navigate]);
 
   const cancelModal = () => {
-    if (oldEvent) {
-      setCancelChangeEvent(true);
+    if (selectedTask.id) {
+      if (oldEvent) {
+        setCancelChangeEvent(true);
+      }
+      navigate('/task');
+    } else {
+      setSelectedTask(null);
+      setIsModalOpen(false);
     }
-    navigate('/task');
   };
 
   const { showToast } = useToast();
 
   const checkIfNewTaskSatisfyFilters = (task) => {
-    // if (filters.showCompletedTasks && !task.completed) return false;
-    // if (filters.showExpiredTasks && new Date(task.estimated_end_time) > new Date()) return false;
     if (filters.subject && task.subject.id !== filters.subject) {
       console.log('subject', task.subject.id)
       return false;
     }
-    if (filters.priority && priorityToString(task.priority) !== filters.priority) {
+    if (filters.priority && task.priority !== filters.priority) {
       console.log('priority', task.priority, filters.priority)
       return false
     }
@@ -82,14 +95,9 @@ const Task = () => {
     return true;
   }
 
-  const handleSave = async (updatedTask) => {
+  const handleUpdateTask = async (updatedTask) => {
     try {
       const response = await updateTask(updatedTask);
-      // setTasks((prevTasks) =>
-      //   prevTasks.map((task) =>
-      //     task.id === response.data.id ? response.data : task
-      //   )
-      // );
       for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id === response.data.id) {
           if (!checkIfNewTaskSatisfyFilters(response.data)) {
@@ -102,14 +110,38 @@ const Task = () => {
       }
       setTasks([...tasks]);
       showToast("success", "Task updated successfully");
+
+      navigate('/task');
+
+      if (oldEvent) {
+        setOldEvent(null);
+      }
     } catch (error) {
       showToast("error", error.response?.data?.message || 'Failed to update task');
     }
-    
-    if (oldEvent) {
-      setOldEvent(null);
+  }
+
+  const handleAddTask = async (newTask) => {
+    try {
+      const response = await addTask(newTask);
+      if (checkIfNewTaskSatisfyFilters(response.data)) {
+        setTasks([...tasks, response.data]);
+      }
+      showToast("success", "Task added successfully");
+
+      setSelectedTask(null);
+      setIsModalOpen(false);
+    } catch (error) {
+      showToast("error", error.response?.data?.message || 'Failed to add task');
     }
-    navigate('/task');
+  }
+
+  const handleSave = (task) => {
+    if (task.id) {
+      handleUpdateTask(task);
+    } else {
+      handleAddTask(task);
+    }
   };
 
   return (
@@ -124,7 +156,6 @@ const Task = () => {
       {isModalOpen && (
         <Modal
           task={selectedTask}
-          onClose={() => navigate("/task")}
           onCancel={cancelModal}
           onSave={handleSave}
         />

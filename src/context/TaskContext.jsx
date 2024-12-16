@@ -22,6 +22,8 @@ const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [filters, setFilters] = useState();
 
   // ------CALENDAR------
@@ -116,7 +118,9 @@ const TaskProvider = ({ children }) => {
       cancelChangeEvent,
       setCancelChangeEvent,
       oldEvent,
-      setOldEvent
+      setOldEvent,
+      isModalOpen,
+      setIsModalOpen,
     }}>
       {children}
     </TaskContext.Provider>

@@ -17,5 +17,18 @@ const priorityToString = (number) => {
   }
 };
 
-export { priorityToString };
+const getPriorityColor = (priority) => {
+  switch (priority) {
+    case "High":
+      return "var(--priority-high-color)";
+    case "Medium":
+      return "var(--priority-medium-color)";
+    case "Low":
+      return "var(--priority-low-color)";
+    default:
+      return "var(--neutral-color)";
+  }
+};
+
+export { priorityToString, getPriorityColor };
 export default Priority;

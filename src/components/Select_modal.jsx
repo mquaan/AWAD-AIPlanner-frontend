@@ -18,7 +18,7 @@ const SelectItem = ({ label, isSelected, onClick, className }) => {
   );
 };
 
-const Select = ({ name, children, placeholder, onChange, defaultValue, className, icon }) => {
+const Select = ({ name, children, placeholder, onChange, defaultValue, className, icon, disabled }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(defaultValue !== null ? defaultValue : null);
   const dropdownRef = useRef(null);
@@ -44,7 +44,7 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
   };
 
   // Get the label of the selected option
-  const selectedLabel = React.Children.toArray(children).find(
+  const selectedLabel = disabled ? defaultValue : React.Children.toArray(children).find(
     (child) => React.isValidElement(child) && child.props.value === selectedOption
   )?.props.label;
 
@@ -54,27 +54,31 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
         tabIndex={0}
         className={twMerge(
           "flex items-center justify-between px-2 py-2 rounded-md cursor-pointer transition group",
-          isOpen ? "bg-primary-light" : "hover:bg-primary-light"
+          !disabled && (isOpen ? "bg-primary-light" : "hover:bg-primary-light"),
+          disabled && "bg-disabled cursor-not-allowed",
         )}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!disabled)
+            setIsOpen(!isOpen)
+        }}
       >
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-md">
-          {selectedLabel || placeholder || "Select..."}
-        </span>
-      </div>
+        <div className="flex items-center gap-2">
+          {icon}
+          <span className="text-md">
+            {selectedLabel || placeholder || "Select..."}
+          </span>
+        </div>
         
+        {!disabled &&
         <LuChevronDown 
           className={twMerge(
             "w-4 h-4 transition-opacity",
             isOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           )}
-          // className="w-4 h-4 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity" 
-        />
+        />}
       </div>
 
-      {isOpen && (
+      {!disabled && isOpen && (
         <ul
           className="absolute mt-1 w-full bg-white border border-border rounded-md shadow-lg max-h-60 overflow-auto z-10"
           role="listbox"
@@ -103,12 +107,13 @@ SelectItem.propTypes = {
 
 Select.propTypes = {
   name: PropTypes.string.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   placeholder: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
   icon: PropTypes.node,
+  disabled: PropTypes.bool,
 };
 
 export { SelectItem, Select };
