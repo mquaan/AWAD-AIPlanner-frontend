@@ -10,12 +10,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import { addTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
-import { priorityToString } from "../utils/priority";
+import { VscFeedback } from "react-icons/vsc";
+import FeedbackModal from "../components/FeedbackModal";
+import { getFeedback } from "../service/feedbackApi";
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
   const [showViewModal, setShowViewModal] = useState(false);
   const { currentView } = useTask();
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const [feedback, setFeedback] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!currentView) return;
@@ -27,9 +34,18 @@ const Task = () => {
     setActions([
       <Button
         key={1}
+        onClick={handleGetFeedback}
+        variant="outline"
+        className="w-fit font-medium border-none hover:text-primary"
+        icon={VscFeedback}
+      >
+        AI feedback
+      </Button>,
+      <Button
+        key={2}
         onClick={() => setShowViewModal(true)}
         variant="outline"
-        className="w-fit border-none font-medium hover:text-primary"
+        className="w-fit font-medium border-none hover:text-primary"
         icon={IoMdOptions}
       >
         View
@@ -144,13 +160,35 @@ const Task = () => {
     }
   };
 
+  const handleGetFeedback = async () => {
+    setIsLoading(true);
+    setShowFeedback(true);
+    try {
+      const response = await getFeedback();
+      setFeedback(response.data.Candidates[0].Content.Parts[0]);
+    } catch (error) {
+      showToast('error', error.response?.data?.message || 'Failed to get feedback');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleCloseFeedback = () => {
+    setShowFeedback(false);
+    setFeedback("");
+  }
+
   return (
     <div className="relative">
+      {isLoading && <div>Loading...</div>}
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
       )}
+      {showFeedback && (
+        <FeedbackModal isOpen={showFeedback} feedback={feedback} onClose={handleCloseFeedback} />
+      )}
       {!currentView && <div>Loading</div>}
-      {currentView === "list" && <div>List</div>}
+      {currentView === "list" && <div>AIList</div>}
       {currentView === "board" && <Board />}
       {currentView === "calendar" && <Calendar />}
       {isModalOpen && (
