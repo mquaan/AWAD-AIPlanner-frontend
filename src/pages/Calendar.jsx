@@ -44,8 +44,6 @@ const Calendar = () => {
   }
 
   const handleEventClick = (info) => {
-    console.log('click', info.event.id, info.event.start, info.event.end);
-
     const task = tasks.find((task) => task.id === info.event.id);
     navigate(`/task/${task.id}`);
   }
@@ -61,8 +59,6 @@ const Calendar = () => {
   }, [cancelChangeEvent]);
 
   const handleEventResizeAndDrop = (info) => {
-    console.log('old', info.oldEvent.id, info.oldEvent.start, info.oldEvent.end);
-    console.log('resize', info.event.id, info.event.start, info.event.end);
     setOldEvent(info.oldEvent);
 
     const task = tasks.find((task) => task.id === info.event.id);
@@ -72,8 +68,6 @@ const Calendar = () => {
   }
 
   const handleDateSelect = (info) => {
-    console.log('select', info.start, info.end);
-
     setIsModalOpen(true);
     setSelectedTask({
       estimated_start_time: info.start,
@@ -98,7 +92,6 @@ const Calendar = () => {
   }, [])
 
   const handleExternalEventDrop = (info) => {
-    console.log('drop', info.event.id, info.event.start, info.event.end);
     setOldEvent({
       id: info.event.id,
       start: null,
@@ -119,7 +112,8 @@ const Calendar = () => {
 
   return (
     <div className="w-full h-[calc(100vh-125px)] flex justify-between overflow-hidden">
-      <div className={`${showSidebar ? 'w-[962px]' : 'w-[1090px]'}`}>
+      {/* <div className={`${showSidebar ? 'w-[682px]' : 'w-[810px]'}`}> */}
+      <div className={`${showSidebar ? 'w-[56vw]' : 'w-[65.9vw]'}`}>
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

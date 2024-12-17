@@ -3,7 +3,7 @@ import { BiLogOut } from "react-icons/bi";
 import { SlSettings } from "react-icons/sl";
 import { LuUser } from "react-icons/lu";
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/sidebar.css';
 import { useAuth } from "../context/AuthContext";
 import { useToast } from '../context/ToastContext';
@@ -13,26 +13,26 @@ import { usePage } from '../context/PageContext';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 const MENU_ITEMS = [
-  {
-    icon: <RxDashboard size={24} />,
-    title: 'Dashboard',
-    path: '/dashboard',
-  },
+  // {
+  //   icon: <RxDashboard size={24} />,
+  //   title: 'Dashboard',
+  //   path: '/dashboard',
+  // },
   {
     icon: <RxLayout size={24} />,
     title: 'Task',
     path: '/task',
   },
-  {
-    icon: <RxTimer size={24} />,
-    title: 'Focus timer',
-    path: '/timer',
-  },
-  {
-    icon: <SlSettings size={24} />,
-    title: 'Settings',
-    path: '/settings',
-  },
+  // {
+  //   icon: <RxTimer size={24} />,
+  //   title: 'Focus timer',
+  //   path: '/timer',
+  // },
+  // {
+  //   icon: <SlSettings size={24} />,
+  //   title: 'Settings',
+  //   path: '/settings',
+  // },
   {
     icon: <LuUser size={24} />,
     title: 'Account',
@@ -125,7 +125,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`sidebar`}
+      className={`sidebar z-10`}
     >
       <div
         className={`fixed top-3 bottom-3 left-3 overflow-y-hidden flex flex-col bg-white shadow-md rounded-lg transition-width duration-300 ${

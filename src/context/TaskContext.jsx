@@ -27,6 +27,7 @@ const TaskProvider = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [filters, setFilters] = useState();
+  const [searchName, setSearchName] = useState('');
 
   // ------CALENDAR------
   const [currentViewCalendar, setCurrentViewCalendar] = useState();
@@ -69,12 +70,15 @@ const TaskProvider = ({ children }) => {
   useEffect(() => {
     if (!filters) return;
     
-    const query = new URLSearchParams(filters).toString();
+    const query = new URLSearchParams(filters);
+    if (searchName) query.append('name', searchName);
+    const queryString = query.toString();
 
     // Get tasks
     const handleGetTasks = async () => {
+      console.log('fetching tasks');
       try {
-        const response = await getTasks(query);
+        const response = await getTasks(queryString);
         setTasks(response.data.data);
       } catch (error) {
         showToast("error", error.response?.data?.message || 'Failed to fetch task data');
@@ -82,7 +86,7 @@ const TaskProvider = ({ children }) => {
     };
 
     handleGetTasks();
-  }, [filters]);
+  }, [filters, searchName]);
 
   const changeView = (view) => {
     if (!VIEW_MODES.includes(view)) return;
@@ -117,6 +121,8 @@ const TaskProvider = ({ children }) => {
       setSelectedTask,
       filters,
       updateFilters,
+      // searchName,
+      setSearchName,
       cancelChangeEvent,
       setCancelChangeEvent,
       oldEvent,
@@ -125,7 +131,7 @@ const TaskProvider = ({ children }) => {
       setIsModalOpen,
     }}>
       {children}
-    </TaskContext.Provider>
+    </TaskContext.Provider> 
   );
 }
 

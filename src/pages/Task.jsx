@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePage } from "../context/PageContext";
 import Button from "../components/Button";
 import { IoMdOptions } from "react-icons/io";
@@ -10,16 +10,19 @@ import Calendar from "./Calendar";
 import List from "./List";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { addTask, updateTask } from "../service/taskApi";
+import { addTask, deleteTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import { VscFeedback } from "react-icons/vsc";
 import FeedbackModal from "../components/FeedbackModal";
 import { getFeedback } from "../service/feedbackApi";
+import InputField from "../components/InputField";
+import { GoSearch } from "react-icons/go";
+import {debounce} from 'lodash'
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
   const [showViewModal, setShowViewModal] = useState(false);
-  const { currentView } = useTask();
+  const { currentView, setSearchName } = useTask();
   const [showFeedback, setShowFeedback] = useState(false);
 
   const [feedback, setFeedback] = useState("");
@@ -34,8 +37,15 @@ const Task = () => {
 
   useEffect(() => {
     setActions([
-      <Button
+      <InputField
         key={1}
+        placeholder="Search task name..."
+        className="w-64 border-[1px] border-gray-200 focus-within:border-[1.5px] shadow-sm"
+        icon={GoSearch}
+        onChange={debounceSearch}
+      />,
+      <Button
+        key={2}
         onClick={handleGetFeedback}
         variant="outline"
         className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
@@ -44,7 +54,7 @@ const Task = () => {
         AI feedback
       </Button>,
       <Button
-        key={2}
+        key={3}
         onClick={() => setShowViewModal(true)}
         variant="outline"
         className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
@@ -152,9 +162,29 @@ const Task = () => {
     }
   }
 
+  const handleDeleteTask = async (deletedTask) => {
+    try {
+      const response = await deleteTask(deletedTask.id);
+      setTasks(tasks.filter((task) => task.id !== response.data.id));
+      showToast("success", "Task deleted successfully");
+
+      setSelectedTask(null);
+      setIsModalOpen(false);
+
+      navigate('/task');
+    } catch (error) {
+      showToast("error", error.response?.data?.message || 'Failed to delete task');
+    }
+  }
+
   const handleSave = (task) => {
+    console.log(task);
     if (task.id) {
-      handleUpdateTask(task);
+      if (!task.isDeleted) {
+        handleUpdateTask(task);
+      } else {
+        handleDeleteTask(task);
+      }
     } else {
       handleAddTask(task);
     }
@@ -177,6 +207,10 @@ const Task = () => {
     setShowFeedback(false);
     setFeedback("");
   }
+
+  const debounceSearch = useMemo(() => {
+    return debounce((e) => setSearchName(e.target.value), 600)
+  }, [])
 
   return (
     <div className="relative">
