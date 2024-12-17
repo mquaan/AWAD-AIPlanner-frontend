@@ -8,9 +8,10 @@ import { useToast } from "../context/ToastContext";
 import { useForm } from 'react-hook-form';
 
 const Account = () => {
-  const { setHeading } = usePage();
+  const { setHeading, setActions } = usePage();
   useEffect(() => {
     setHeading("Account");
+    setActions([]);
   }, []);
 
   const [profile, setProfile] = useState(null);

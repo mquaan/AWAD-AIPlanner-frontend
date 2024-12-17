@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { usePage } from "../context/PageContext";
 
 const Dashboard = () => {
-  const { setHeading } = usePage();
+  const { setHeading, setActions } = usePage();
   useEffect(() => {
     setHeading("Dashboard");
+    setActions([]);
   }, []);
 
   return <div></div>;
