@@ -13,11 +13,11 @@ import { usePage } from '../context/PageContext';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 const MENU_ITEMS = [
-  // {
-  //   icon: <RxDashboard size={24} />,
-  //   title: 'Dashboard',
-  //   path: '/dashboard',
-  // },
+  {
+    icon: <RxDashboard size={24} />,
+    title: 'Dashboard',
+    path: '/dashboard',
+  },
   {
     icon: <RxLayout size={24} />,
     title: 'Task',
