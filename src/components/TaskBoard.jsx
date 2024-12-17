@@ -15,7 +15,7 @@ const TaskBoard = ({ task, onClick }) => {
       minute: '2-digit',
       day: '2-digit',
       month: '2-digit',
-      ...(isCurrentYear ? {} : { year: 'numeric' }), // Chỉ thêm năm nếu không phải năm hiện tại
+      ...(isCurrentYear ? {} : { year: 'numeric' }),
     };
 
     return new Intl.DateTimeFormat('vi-VN', options).format(date);
@@ -24,7 +24,7 @@ const TaskBoard = ({ task, onClick }) => {
   return (
     <div
       key={task.id}
-      className="p-3 border border-[#d8d8d8] rounded-xl shadow-sm flex gap-4
+      className="py-[12px] px-5 border w-[95%] border-[#d8d6d6] rounded-xl shadow-sm flex gap-4
                 hover:shadow-md transition duration-300 cursor-pointer"
       onClick={onClick}
     >
@@ -32,19 +32,19 @@ const TaskBoard = ({ task, onClick }) => {
       <div
         className={`mt-4 w-3 h-3 rounded-full ${
           task.priority === 'High'
-            ? 'bg-red-600'
+            ? 'bg-priority-high'
             : task.priority === 'Medium'
-            ? 'bg-yellow-500'
-            : 'bg-blue-600'
+            ? 'bg-priority-medium'
+            : 'bg-priority-low'
         }`}
       ></div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <h3 className="font-semibold">{task.name}</h3>
+          <h3 className="font-medium">{task.name}</h3>
           <p className="text-sm text-gray-600">{task.description}</p>
         </div>
-        <div className="flex items-center gap-1 text-teal-600">
-          <RiCalendarCheckLine size={14} />
+        <div className="flex items-center gap-1 text-gray-500">
+          <RiCalendarCheckLine size={15} className='mb-[2px]' />
           <span className="text-sm">{task.estimated_end_time ? formatDate(task.estimated_end_time) : 'No end date'}</span>
         </div>
       </div>

@@ -9,6 +9,8 @@ import { useAuth } from "../context/AuthContext";
 import { useToast } from '../context/ToastContext';
 import { useState } from "react";
 import DialogConfirm from "./DialogConfirm";
+import { usePage } from '../context/PageContext';
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 const MENU_ITEMS = [
   {
@@ -108,28 +110,31 @@ const SidebarItem = ({ expanded, icon, title, path }) => {
 };
 
 const Sidebar = () => {
-  const [isHovered, setIsHovered] = useState(false);
+  // const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
+  const { showSidebar, toggleSidebar } = usePage();
+  const [showToggle, setShowToggle] = useState(false);
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
+  // const handleMouseEnter = () => {
+  //   setIsHovered(true);
+  // };
+
+  // const handleMouseLeave = () => {
+  //   setIsHovered(false);
+  // };
 
   return (
     <div
       className={`sidebar`}
     >
       <div
-        className={`fixed z-50 top-3 bottom-3 left-3 overflow-y-hidden flex flex-col bg-white shadow-md rounded-lg transition-width duration-300 ${
-          isHovered ? "w-sidebar-expanded" : "w-sidebar-collapsed"
+        className={`fixed top-3 bottom-3 left-3 overflow-y-hidden flex flex-col bg-white shadow-md rounded-lg transition-width duration-300 ${
+          showSidebar ? "w-sidebar-expanded" : "w-sidebar-collapsed"
         }`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        // onMouseEnter={handleMouseEnter}
+        // onMouseLeave={handleMouseLeave}
       >
-        <SidebarHeader expanded={isHovered} />
+        <SidebarHeader expanded={showSidebar} />
         <div className="h-full mt-2 px-4 py-5 flex flex-col items-center overflow-x-hidden overflow-y-auto">
           {MENU_ITEMS.map((item, index) => (
             <SidebarItem
@@ -137,11 +142,25 @@ const Sidebar = () => {
               icon={item.icon}
               title={item.title}
               path={item.path}
-              expanded={isHovered}
+              expanded={showSidebar}
             />
           ))}
         </div>
-        <SidebarFooter expanded={isHovered} />
+        <SidebarFooter expanded={showSidebar} />
+      </div>
+      <div
+        className={`sidebar-toggle-area top-[3.5rem] flex items-center justify-center fixed ${showSidebar ? 'expanded' : 'collapsed'} transition-all duration-300`}
+        onMouseEnter={() => setShowToggle(true)}
+        onMouseLeave={() => setShowToggle(false)}
+      >
+        <button
+          className={`sidebar-toggle flex items-center justify-center rounded-full bg-background-neutral text-text-neutral border-[1.5px] shadow-sm ${
+            showToggle ? 'visible' : ''
+          }`}
+          onClick={toggleSidebar}
+        >
+          {showSidebar ? <FaAngleLeft /> : <FaAngleRight />}
+        </button>
       </div>
     </div>
   );

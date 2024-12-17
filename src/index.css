@@ -34,15 +34,15 @@
     --error-color: #ef4444;
     --info-color: #3b82f6;
 
-    --priority-high-color: #ef233c;
-    --priority-medium-color: #ffd60a;
-    --priority-low-color: #1B84FF;
+    --priority-high-color: #E57373;
+    --priority-medium-color: #FFB74D;
+    --priority-low-color: #64B5F6;
 
-    --todo-color: #737373;
+    --todo-color: #89a7d8;
     --todo-background-color: #e5e7eb;
-    --in-progress-color: #10b981;
+    --in-progress-color: #f0885f;
     --in-progress-background-color: #ddffe3;
-    --completed-color: #1B84FF;
+    --completed-color: #43c59a;
     --completed-background-color: #c3e4fc;
     --expired-color: #ef233c;
     --expired-background-color: #fde2e4;

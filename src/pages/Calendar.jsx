@@ -8,6 +8,7 @@ import { useTask } from '../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 import { getPriorityColor } from '../utils/priority';
 import UnassignedTaskCard from '../components/UnassignedTaskCard';
+import { usePage } from '../context/PageContext';
 import moment from 'moment';
 
 const Calendar = () => {
@@ -114,10 +115,11 @@ const Calendar = () => {
     navigate(`/task/${task.id}`);
   }
   
+  const { showSidebar } = usePage();
 
   return (
-    <div className="w-full h-[calc(100vh-125px)] flex gap-3 overflow-hidden">
-      <div className="w-full">
+    <div className="w-full h-[calc(100vh-125px)] flex justify-between overflow-hidden">
+      <div className={`${showSidebar ? 'w-[962px]' : 'w-[1090px]'}`}>
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -186,7 +188,7 @@ const Calendar = () => {
         />
       </div>
 
-      <div className="w-[256px] border-[1px]" ref={containerRef}>
+      <div className="w-[240px] border-[1px] rounded-lg" ref={containerRef}>
         <div className="h-[42px] mb-[24px] flex flex-col justify-center border-b-[1px]">
           <h1 className="px-3 font-semibold text-center">
             Tasks unassigned time

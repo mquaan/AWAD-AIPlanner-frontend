@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { IoClose } from "react-icons/io5";
 import { RxListBullet, RxLayout, RxCalendar } from "react-icons/rx";
@@ -8,9 +8,6 @@ import { SelectItem, Select } from "./Select";
 
 const TaskViewModal = ({ onClose }) => {
   const { currentView, changeView, filters, updateFilters } = useTask();
-
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
-  const [showExpiredTasks, setShowExpiredTasks] = useState(false);
 
   const modalRef = useRef(null);
 
@@ -87,22 +84,24 @@ const TaskViewModal = ({ onClose }) => {
         </div>
         {currentView !== "calendar" &&
         <div className="space-y-2">
-          <Switch
-            label="Completed tasks"
-            checked={showCompletedTasks}
-            onChange={() => setShowCompletedTasks(!showCompletedTasks)}
-            styles={{
-              container: "w-full justify-between",
-              label: "text-text-secondary",
-            }}
-            width={40}
-            height={20}
-            handleDiameter={18}
-          />
+          {currentView === "list" &&
+            <Switch
+              label="Completed tasks"
+              checked={filters.showCompletedTasks}
+              onChange={() => updateFilters({ showCompletedTasks : !filters.showCompletedTasks })}
+              styles={{
+                container: "w-full justify-between",
+                label: "text-text-secondary",
+              }}
+              width={40}
+              height={20}
+              handleDiameter={18}
+            />
+          }
           <Switch
             label="Expired tasks"
-            checked={showExpiredTasks}
-            onChange={() => setShowExpiredTasks(!showExpiredTasks)}
+            checked={filters.showExpiredTasks}
+            onChange={() => updateFilters({ showExpiredTasks : !filters.showExpiredTasks })}
             styles={{
               container: "w-full justify-between",
               label: "text-text-secondary",

@@ -3,9 +3,11 @@ import { usePage } from "../context/PageContext";
 import Button from "../components/Button";
 import { IoMdOptions } from "react-icons/io";
 import TaskViewModal from "../components/TaskViewModal";
+import Loading from "../components/Loading";
 import { useTask } from "../context/TaskContext";
 import Board from "./Board";
 import Calendar from "./Calendar";
+import List from "./List";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import { addTask, updateTask } from "../service/taskApi";
@@ -36,7 +38,7 @@ const Task = () => {
         key={1}
         onClick={handleGetFeedback}
         variant="outline"
-        className="w-fit font-medium border-none hover:text-primary"
+        className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
         icon={VscFeedback}
       >
         AI feedback
@@ -45,7 +47,7 @@ const Task = () => {
         key={2}
         onClick={() => setShowViewModal(true)}
         variant="outline"
-        className="w-fit font-medium border-none hover:text-primary"
+        className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
         icon={IoMdOptions}
       >
         View
@@ -100,11 +102,9 @@ const Task = () => {
 
   const checkIfNewTaskSatisfyFilters = (task) => {
     if (filters.subject && task.subject.id !== filters.subject) {
-      console.log('subject', task.subject.id)
       return false;
     }
     if (filters.priority && task.priority !== filters.priority) {
-      console.log('priority', task.priority, filters.priority)
       return false
     }
 
@@ -180,20 +180,19 @@ const Task = () => {
 
   return (
     <div className="relative">
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loading />}
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
-      )}
+      )}      
       {showFeedback && (
         <FeedbackModal isOpen={showFeedback} feedback={feedback} onClose={handleCloseFeedback} />
       )}
-      {!currentView && <div>Loading</div>}
-      {currentView === "list" && <div>AIList</div>}
+      {!currentView && <div><Loading /></div>}
+      {currentView === "list" && <List />}
       {currentView === "board" && <Board />}
       {currentView === "calendar" && <Calendar />}
       {isModalOpen && (
         <Modal
-          task={selectedTask}
           onCancel={cancelModal}
           onSave={handleSave}
         />

@@ -4,18 +4,18 @@ const Priority = Object.freeze({
   LOW: 2,
 });
 
-const priorityToString = (number) => {
-  switch (number) {
-    case 0:
-      return "High";
-    case 1:
-      return "Medium";
-    case 2:
-      return "Low";
-    default:
-      return null;
-  }
-};
+// const priorityToString = (number) => {
+//   switch (number) {
+//     case 0:
+//       return "High";
+//     case 1:
+//       return "Medium";
+//     case 2:
+//       return "Low";
+//     default:
+//       return null;
+//   }
+// };
 
 const getPriorityColor = (priority) => {
   switch (priority) {
@@ -30,5 +30,5 @@ const getPriorityColor = (priority) => {
   }
 };
 
-export { priorityToString, getPriorityColor };
+export { getPriorityColor };
 export default Priority;
