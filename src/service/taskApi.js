@@ -18,6 +18,13 @@ export const updateTask = async (task) => {
   return response;
 };
 
+export const updateTaskStatus = async (task) => {
+  const response = await axiosInstance.put(`/task/status/${task.id}`, {
+    "status": task.status,
+  });
+  return response;
+};
+
 export const addTask = async (task) => {
   const response = await axiosInstance.post(`/task/`, task);
   return response;

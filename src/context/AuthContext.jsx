@@ -23,6 +23,10 @@ export function AuthProvider({ children }) {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('currentView');
+    localStorage.removeItem('currentViewCalendar');
+    localStorage.removeItem('filters');
+    localStorage.removeItem('showSidebar');
   };
 
   return (

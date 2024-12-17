@@ -8,8 +8,8 @@ const VIEW_CAL_MODES = ['dayGridMonth', 'timeGridWeek', 'timeGridDay'];
 const DEFAULT_FILTERS = {
   limit: 100,
   page: 1,
-  // showCompletedTasks: false,
-  // showExpiredTasks: false,
+  showCompletedTasks: false,
+  showExpiredTasks: false,
   subject: '',
   priority: '',
 };
