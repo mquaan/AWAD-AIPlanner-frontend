@@ -1,29 +1,30 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { isAfter, isBefore, isValid } from 'date-fns';
 
 import { TfiMore } from "react-icons/tfi";
 import { LiaTimesSolid } from "react-icons/lia";
-import { FcBookmark, FcMediumPriority, FcHighPriority, FcLowPriority } from "react-icons/fc";
+import { FcMediumPriority, FcHighPriority, FcLowPriority } from "react-icons/fc";
 import { PiTagChevronFill  } from "react-icons/pi";
-
+import { AiFillFileAdd } from "react-icons/ai";
+import { useTask } from '../context/TaskContext';
 import { getSubjects } from '../service/subjectApi'
 import { Select, SelectItem } from './Select_modal';
 import { getStatusColor } from '../utils/status';
 import { useToast } from '../context/ToastContext';
 
-const TaskModal = ({ task, onCancel, onSave }) => {
-  // Use a single state to hold the task data
+const Modal = ({ onCancel, onSave }) => {
+  const { selectedTask } = useTask();
   const [taskData, setTaskData] = useState({
-    name: task.name || "",
-    description: task.description || "",
-    subject_id: task.subject?.id || "",
-    status: task.id ? task.status : "ToDo",
-    priority: task.id ? task.priority : "Medium",
-    estimated_start_time: task.estimated_start_time ? new Date(task.estimated_start_time) : null,
-    estimated_end_time: task.estimated_end_time ? new Date(task.estimated_end_time) : null,
+    name: selectedTask.name || "",
+    description: selectedTask.description || "",
+    subject_id: selectedTask.subject?.id || "",
+    status: selectedTask.id ? selectedTask.status : "ToDo",
+    priority: selectedTask.id ? selectedTask.priority : "Medium",
+    estimated_start_time: selectedTask.estimated_start_time ? new Date(selectedTask.estimated_start_time) : null,
+    estimated_end_time: selectedTask.estimated_end_time ? new Date(selectedTask.estimated_end_time) : null,
   });
 
   const [subjects, setSubjects] = useState([])
@@ -54,7 +55,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
   const handleSave = () => {
     if (validateDates()){
       const savedTask = {
-        ...task,
+        ...selectedTask,
         ...taskData,
       };
       onSave(savedTask);
@@ -65,7 +66,6 @@ const TaskModal = ({ task, onCancel, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target || e;
-    console.log(name, value);
     setTaskData((prevTask) => ({
       ...prevTask,
       [name]: value,
@@ -87,9 +87,25 @@ const TaskModal = ({ task, onCancel, onSave }) => {
     }
   };
 
+  const modalRef = useRef(null);
+  
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (modalRef.current && !modalRef.current.contains(event.target)) {
+          onCancel();
+        }
+      };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+  
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [onCancel]);
+
   useEffect(() => {
-    if (task.status !== "Expired" && task.estimated_end_time) {
-      checkIfWillBeExpired(task.estimated_end_time);
+    if (selectedTask.status !== "Expired" && selectedTask.estimated_end_time) {
+      checkIfWillBeExpired(selectedTask.estimated_end_time);
     }
 
     const callGetSubjects = async () => {
@@ -102,18 +118,19 @@ const TaskModal = ({ task, onCancel, onSave }) => {
     };
     callGetSubjects();
   }, []);
+  
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-[10000]"
-      onClick={onCancel}
     >
       <div
         className="bg-white rounded-2xl shadow-xl w-[700px] max-h-screen overflow-auto"
         onClick={(e) => e.stopPropagation()}
+        ref={modalRef}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
-          <h2 className="text-lg font-semibold">{task.id ? 'Edit Task' : 'New Task'}</h2>
+          <h2 className="text-lg font-semibold">{selectedTask.id ? 'Edit Task' : 'New Task'}</h2>
           <div className="flex gap-2">
             <button className="hover:text-black hover:bg-gray-200 p-1 rounded-lg">
               <TfiMore />
@@ -143,7 +160,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
             />
 
             <textarea
-              className="w-full text-sm resize-both max-w-[400px] max-h-[150px] rounded-md border-0 resize-none focus:resize px-2
+              className="w-full text-sm resize-both min-w-[160px] min-h-[30px] max-w-[400px] max-h-[150px] rounded-md border-0 resize-none focus:resize px-2
                           focus:border focus:border-gray-300 focus:outline-none focus:ring-0"
               name="description"
               value={taskData.description}
@@ -160,7 +177,8 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                 className="w-[80%]"
                 onChange={handleChange}
                 defaultValue={taskData.subject_id}
-                icon={<FcBookmark className="mb-[2px]" />}
+
+                icon={taskData.subject_id ? <AiFillFileAdd className='text-[#f65454e9]'/> : <AiFillFileAdd className='text-[#bdd1da]'/>}
               >
                 <SelectItem
                   value={""}
@@ -178,7 +196,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
           </div>
 
           {/* Right part */}
-          <div className="flex flex-col p-6 gap-4 bg-[#faf5f3] shadow-sm rounded-ee-xl basis-1/3">
+          <div className="flex flex-col p-6 gap-4 bg-[#faf5f3] shadow-sm basis-1/3">
             <div className="">
               <label className="block font-semibold px-2 text-sm text-gray-700">
                 Status
@@ -191,12 +209,11 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                 disabled={taskData.status === "Expired"}
                 icon={
                   <PiTagChevronFill
-                    className="mb-[2px]"
                     style={{ color: getStatusColor(taskData.status) }}
                   />
                 }
               >
-                <SelectItem value="ToDo" label="To-Do" />
+                <SelectItem value="ToDo" label="To Do" />
                 <SelectItem value="InProgress" label="In Progress" />
                 <SelectItem value="Completed" label="Completed" />
               </Select>
@@ -213,10 +230,10 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                 defaultValue={taskData.priority}
                 icon={
                   taskData.priority === "High" ?
-                    <FcHighPriority className="mb-[2px]" />
+                    <FcHighPriority />
                     : taskData.priority === "Medium" ?
-                      <FcMediumPriority className="mb-[2px]" />
-                    : <FcLowPriority className="mb-[2px]" />
+                      <FcMediumPriority />
+                    : <FcLowPriority />
                 }
               >
                 <SelectItem value="High" label="High" />
@@ -248,7 +265,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                   timeIntervals={15}
                   timeCaption="Time"
                   placeholderText="Select a start date"
-                  className="border py-2 rounded-md focus:outline-none text-center"
+                  className="border py-2 rounded-lg focus:outline-none text-center"
                 />
               </div>
 
@@ -275,7 +292,7 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                   timeIntervals={15}
                   timeCaption="Time"
                   placeholderText="Select an end date"
-                  className="border py-2 rounded-md focus:outline-none text-center"
+                  className="border py-2 rounded-lg focus:outline-none text-center"
                   minDate={taskData.estimated_start_time}
                 />
                 {error && <p className="text-error text-sm mt-2">{error}</p>}
@@ -302,10 +319,10 @@ const TaskModal = ({ task, onCancel, onSave }) => {
   );
 };
 
-TaskModal.propTypes = {
+Modal.propTypes = {
   task: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };
 
-export default TaskModal;
+export default Modal;

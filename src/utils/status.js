@@ -5,25 +5,25 @@ const Status = Object.freeze({
   EXPIRED: 3,
 });
 
-const statusToString = (number) => {
-  switch (number) {
-    case 0:
-      return "ToDo";
-    case 1:
-      return "InProgress";
-    case 2:
-      return "Completed";
-    case 3:
-      return "Expired";
-    default:
-      return null;
-  }
-};
+// const statusToString = (number) => {
+//   switch (number) {
+//     case 0:
+//       return "ToDo";
+//     case 1:
+//       return "InProgress";
+//     case 2:
+//       return "Completed";
+//     case 3:
+//       return "Expired";
+//     default:
+//       return null;
+//   }
+// };
 
 const statusToStringDisplay = (string) => {
   switch (string) {
     case "ToDo":
-      return "To-Do";
+      return "To Do";
     case "InProgress":
       return "In Progress";
     case "Completed":
@@ -65,5 +65,5 @@ const getStatusColor = (status) => {
   }
 };
 
-export { statusToString, statusToStringDisplay, getStatusBgColor, getStatusColor };
+export { statusToStringDisplay, getStatusBgColor, getStatusColor };
 export default Status;

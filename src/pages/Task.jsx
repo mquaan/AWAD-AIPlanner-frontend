@@ -3,14 +3,15 @@ import { usePage } from "../context/PageContext";
 import Button from "../components/Button";
 import { IoMdOptions } from "react-icons/io";
 import TaskViewModal from "../components/TaskViewModal";
+import Loading from "../components/Loading";
 import { useTask } from "../context/TaskContext";
 import Board from "./Board";
 import Calendar from "./Calendar";
+import List from "./List";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import { addTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
-import { priorityToString } from "../utils/priority";
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
@@ -84,11 +85,9 @@ const Task = () => {
 
   const checkIfNewTaskSatisfyFilters = (task) => {
     if (filters.subject && task.subject.id !== filters.subject) {
-      console.log('subject', task.subject.id)
       return false;
     }
     if (filters.priority && task.priority !== filters.priority) {
-      console.log('priority', task.priority, filters.priority)
       return false
     }
 
@@ -149,13 +148,12 @@ const Task = () => {
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
       )}
-      {!currentView && <div>Loading</div>}
-      {currentView === "list" && <div>List</div>}
+      {!currentView && <div><Loading /></div>}
+      {currentView === "list" && <List />}
       {currentView === "board" && <Board />}
       {currentView === "calendar" && <Calendar />}
       {isModalOpen && (
         <Modal
-          task={selectedTask}
           onCancel={cancelModal}
           onSave={handleSave}
         />

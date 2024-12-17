@@ -54,7 +54,7 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
         tabIndex={0}
         className={twMerge(
           "flex items-center justify-between px-2 py-2 rounded-md cursor-pointer transition group",
-          !disabled && (isOpen ? "bg-primary-light" : "hover:bg-primary-light"),
+          !disabled && (isOpen ? "bg-primary-light" : "hover:bg-primary-light hover:shadow-sm"),
           disabled && "bg-disabled cursor-not-allowed",
         )}
         onClick={() => {
