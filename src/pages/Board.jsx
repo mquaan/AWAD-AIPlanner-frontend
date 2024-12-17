@@ -79,8 +79,7 @@ const Board = () => {
                 {tasks
                   .filter((task) => task.status === status)
                   .map((task) => (
-                    <TaskBoard key={task.id} task={task} onClick={(e) => {
-                      e.stopPropagation();
+                    <TaskBoard key={task.id} task={task} onClick={() => {
                       openModal(task.id, '');
                     }}/>
                   ))}

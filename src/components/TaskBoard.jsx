@@ -1,8 +1,10 @@
 import { useDraggable } from '@dnd-kit/core';
 import PropTypes from 'prop-types';
 import { RiCalendarCheckLine } from 'react-icons/ri';
+import { useState } from 'react';
 
 const TaskBoard = ({ task, onClick }) => {
+  const [clickTimeout, setClickTimeout] = useState(null);
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
     data: { task },
@@ -11,7 +13,7 @@ const TaskBoard = ({ task, onClick }) => {
   const style = transform
     ? {
       transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      transition: isDragging ? 'none' : 'transform 200ms ease',
+      transition: isDragging ? 'none' : 'transform 400ms ease',
       zIndex: isDragging ? 1000 : 1,
       boxShadow: isDragging ? '0 4px 12px rgba(0, 0, 0, 0.2)' : 'none',
     }
@@ -24,7 +26,6 @@ const TaskBoard = ({ task, onClick }) => {
 
     const isCurrentYear = date.getFullYear() === now.getFullYear();
 
-    // Format chuỗi thời gian
     const options = {
       hour: '2-digit',
       minute: '2-digit',
@@ -36,6 +37,19 @@ const TaskBoard = ({ task, onClick }) => {
     return new Intl.DateTimeFormat('vi-VN', options).format(date);
   };
 
+  const handleMouseDown = () => {
+    const timeout = setTimeout(() => setClickTimeout(null), 150); // Set thời gian để phân biệt drag và click
+    setClickTimeout(timeout);
+  };
+
+  const handleMouseUp = () => {
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+      onClick();
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
@@ -43,9 +57,10 @@ const TaskBoard = ({ task, onClick }) => {
       style={style}
       {...listeners}
       {...attributes}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       className="py-[12px] px-5 border w-[95%] border-[#d8d6d6] rounded-xl shadow-sm flex gap-4
                 hover:shadow-md transition duration-300 cursor-pointer"
-      onClick={onClick}
     >
       {/* Priority circle */}
       <div
@@ -62,8 +77,10 @@ const TaskBoard = ({ task, onClick }) => {
           <p className="text-sm text-gray-600">{task.description}</p>
         </div>
         <div className="flex items-center gap-1 text-gray-500">
-          <RiCalendarCheckLine size={15} className='mb-[2px]' />
-          <span className="text-sm">{task.estimated_end_time ? formatDate(task.estimated_end_time) : 'No end date'}</span>
+          <RiCalendarCheckLine size={15} className="mb-[2px]" />
+          <span className="text-sm">
+            {task.estimated_end_time ? formatDate(task.estimated_end_time) : 'No end date'}
+          </span>
         </div>
       </div>
     </div>
