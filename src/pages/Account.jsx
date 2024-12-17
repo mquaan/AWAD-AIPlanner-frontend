@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePage } from "../context/PageContext";
-import { getUserProfile, updateUserProfile, changePassword } from '../service/userApi';
+import { getUserProfile, updateUserProfile, changePassword, changeAvatar } from '../service/userApi';
 import Button from "../components/Button";
 import InputField from "../components/InputField";
 import DialogConfirm from "../components/DialogConfirm";
@@ -52,9 +52,11 @@ const Account = () => {
 
   const [showDialogConfirmChangeName, setShowDialogConfirmChangeName] = useState(false);
   const [showDialogConfirmChangePassword, setShowDialogConfirmChangePassword] = useState(false);
+  // const [showDialogConfirmChangePhoto, setShowDialogConfirmChangePhoto] = useState(false);
 
   const [showNameActions, setShowNameActions] = useState(false);
   const [showPasswordActions, setShowPasswordActions] = useState(false);
+  // const [showPhotoActions, setShowPhotoActions] = useState(false);
 
   useEffect(() => {
     watch((value) => {
@@ -100,14 +102,13 @@ const Account = () => {
         old_password: getPasswordValues('currentPassword'),
         password: getPasswordValues('newPassword'),
       });
-
       setShowDialogConfirmChangePassword(false);
       setShowPasswordActions(false);
       resetPassword();
 
       showToast("success", 'Password changed successfully');
     } catch (err) {
-      showToast("error", err.message || 'Failed to change password');
+      showToast("error", err.response?.data?.message || 'Failed to change password');
     }
   }
 
@@ -115,7 +116,21 @@ const Account = () => {
     e.preventDefault();
     
     var formData = new FormData();
-    formData.append('image', e.target.files[0]);
+    formData.append('file', e.target.files[0]);
+    try {
+      // Update user avatar
+      const res = await changeAvatar(formData);
+
+      // Update profile with new avatar URL
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        avatar: res.data.avatar,
+      }));
+
+      showToast("success", 'Avatar updated successfully');
+    } catch (err) {
+      showToast("error", err.response?.data?.message || 'Failed to update avatar');
+    }
   }
 
   return (

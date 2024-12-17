@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { getPriorityColor } from '../utils/priority';
 import UnassignedTaskCard from '../components/UnassignedTaskCard';
 import { usePage } from '../context/PageContext';
+import moment from 'moment';
 
 const Calendar = () => {
   const calendarRef = useRef(null);
@@ -134,9 +135,34 @@ const Calendar = () => {
             dayGrid: {
               displayEventTime: false,
             },
+            timeGridWeek: {
+              dayHeaderContent: (args) => {
+                return moment(args.date).format("ddd, DD/MM");
+              },
+              titleFormat: (args) => {
+                if (args.start.month === args.end.month) {
+                  return `${moment(args.start).format("DD")} - ${moment(
+                    args.end
+                  ).format("DD/MM/YYYY")}`;
+                }
+                return `${moment(args.start).format("DD/MM/YYYY")} - ${moment(
+                  args.end
+                ).format("DD/MM/YYYY")}`;
+              },
+            },
             timeGridDay: {
               eventMaxStack: 4,
+              titleFormat: (args) => {
+                return moment(args.date).format("DD/MM/YYYY");
+              },
             },
+          }}
+          buttonText={{
+            today: "Today",
+            month: "Month",
+            week: "Week",
+            day: "Day",
+            list: "List",
           }}
           allDaySlot={false}
           datesSet={handleViewChange}
@@ -162,15 +188,19 @@ const Calendar = () => {
         />
       </div>
 
-      <div className='w-[240px] border-[1px] rounded-lg' ref={containerRef}>
-        <div className='h-[42px] mb-[24px] flex flex-col justify-center border-b-[1px]'>
-          <h1 className='px-3 font-semibold text-center'>Tasks unassigned time</h1>
+      <div className="w-[240px] border-[1px] rounded-lg" ref={containerRef}>
+        <div className="h-[42px] mb-[24px] flex flex-col justify-center border-b-[1px]">
+          <h1 className="px-3 font-semibold text-center">
+            Tasks unassigned time
+          </h1>
         </div>
-        <div className='px-3 h-full overflow-y-auto space-y-2'>
-          {unassignedTasks.length === 0 && <p className='text-center text-sm'>No task</p>}
-          {unassignedTasks.map((task) => 
-            <UnassignedTaskCard key={task.id} task={task} />
+        <div className="px-3 h-full overflow-y-auto space-y-2">
+          {unassignedTasks.length === 0 && (
+            <p className="text-center text-sm">No task</p>
           )}
+          {unassignedTasks.map((task) => (
+            <UnassignedTaskCard key={task.id} task={task} />
+          ))}
         </div>
       </div>
     </div>

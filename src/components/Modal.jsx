@@ -10,7 +10,9 @@ import { FcMediumPriority, FcHighPriority, FcLowPriority } from "react-icons/fc"
 import { PiTagChevronFill  } from "react-icons/pi";
 import { AiFillFileAdd } from "react-icons/ai";
 import { useTask } from '../context/TaskContext';
-import { getSubjects } from '../service/subjectApi'
+import { IoIosAddCircle } from "react-icons/io";
+
+import { addSubject, getSubjects } from '../service/subjectApi'
 import { Select, SelectItem } from './Select_modal';
 import { getStatusColor } from '../utils/status';
 import { useToast } from '../context/ToastContext';
@@ -28,6 +30,9 @@ const Modal = ({ onCancel, onSave }) => {
   });
 
   const [subjects, setSubjects] = useState([])
+
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
+  const [newSubject, setNewSubject] = useState("");
 
   const [error, setError] = useState("");
 
@@ -120,6 +125,31 @@ const Modal = ({ onCancel, onSave }) => {
   }, []);
   
 
+  const handleInputChange = (e) => {
+    setNewSubject(e.target.value);
+  };
+
+  const handleAddSubject = async () => {
+    if (newSubject.trim() === '') {
+      return;
+    }
+    
+    try {
+      const response = await addSubject(newSubject);
+      setSubjects((prevSubjects) => [...prevSubjects, response.data]);
+      setIsAddingSubject(false); // Close the input field
+      setNewSubject(''); // Reset the input value if needed
+    } catch (error) {
+      showToast("error", error.response?.data?.message || 'Failed to add subject');
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleAddSubject();
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-[10000]"
@@ -130,7 +160,9 @@ const Modal = ({ onCancel, onSave }) => {
         ref={modalRef}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
-          <h2 className="text-lg font-semibold">{selectedTask.id ? 'Edit Task' : 'New Task'}</h2>
+          <h2 className="text-lg font-semibold">
+            {selectedTask.id ? "Edit Task" : "New Task"}
+          </h2>
           <div className="flex gap-2">
             <button className="hover:text-black hover:bg-gray-200 p-1 rounded-lg">
               <TfiMore />
@@ -179,11 +211,13 @@ const Modal = ({ onCancel, onSave }) => {
                 defaultValue={taskData.subject_id}
 
                 icon={taskData.subject_id ? <AiFillFileAdd className='text-[#f65454e9]'/> : <AiFillFileAdd className='text-[#bdd1da]'/>}
+                // icon={<FcBookmark className="mb-[2px]" />}
+                onCollapse={() => {
+                  setIsAddingSubject(false)
+                  setNewSubject('')
+                }}
               >
-                <SelectItem
-                  value={""}
-                  label={"No subject"}
-                />
+                <SelectItem value={""} label={"No subject"} />
                 {subjects?.map((subject) => (
                   <SelectItem
                     key={subject.id}
@@ -191,6 +225,27 @@ const Modal = ({ onCancel, onSave }) => {
                     label={subject.name}
                   />
                 ))}
+                <li className="px-8 h-[50px] w-full text-sm transition text-primary flex items-center sticky bottom-0 bg-white">
+                  {!isAddingSubject ? 
+                  <div className='flex gap-2 cursor-pointer items-center' onClick={() => setIsAddingSubject(true)}>
+                    <IoIosAddCircle size={24} className="mb-[2px]" />
+                    Add New Subject
+                  </div>
+                  :
+                  <div className='flex gap-2 items-center w-full'>
+                    <input
+                      type="text"
+                      value={newSubject}
+                      onChange={handleInputChange}
+                      onKeyDown={handleKeyDown}
+                      className="w-full rounded focus:outline-none text-text-primary text-sm"
+                      placeholder='Enter new subject name'
+                      autoFocus
+                    />
+                    {newSubject && <IoIosAddCircle size={24} className="cursor-pointer" onClick={handleAddSubject} />}
+                  </div>
+                  }
+                </li>
               </Select>
             </div>
           </div>
