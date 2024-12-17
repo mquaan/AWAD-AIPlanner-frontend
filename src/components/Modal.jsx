@@ -102,6 +102,8 @@ const Modal = ({ onCancel, onSave }) => {
   
     useEffect(() => {
       const handleClickOutside = (event) => {
+        if (showDialogConfirm) return;
+
         if (modalRef.current && !modalRef.current.contains(event.target)) {
           onCancel();
         }
@@ -112,7 +114,7 @@ const Modal = ({ onCancel, onSave }) => {
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
-    }, [onCancel]);
+    }, [onCancel, showDialogConfirm]);
 
   useEffect(() => {
     if (selectedTask.status !== "Expired" && selectedTask.estimated_end_time) {
@@ -157,6 +159,7 @@ const Modal = ({ onCancel, onSave }) => {
   };
 
   const handleMenuClick = (index) => {
+    console.log(index);
     if (index === 0) {
       setShowDialogConfirm(true);
     }
@@ -165,13 +168,16 @@ const Modal = ({ onCancel, onSave }) => {
 
   const handleDeleteTask = () => {
     setShowDialogConfirm(false);
-    onSave({ ...task, isDeleted: true });
+    console.log({ ...selectedTask, isDeleted: true });
+    onSave({ ...selectedTask, isDeleted: true });
   }
 
   const menuRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      if (showDialogConfirm) return;
+
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setShowMenu(false);
       }
@@ -182,15 +188,16 @@ const Modal = ({ onCancel, onSave }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [setShowMenu]);
+  }, [setShowMenu, showDialogConfirm]);
 
   return (
+    <>
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-[10000]"
+      
     >
       <div
         className="bg-white rounded-2xl shadow-xl w-[700px] max-h-screen overflow-auto"
-        onClick={(e) => e.stopPropagation()}
         ref={modalRef}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
@@ -434,11 +441,11 @@ const Modal = ({ onCancel, onSave }) => {
         content="Are you sure you want to delete this task?"
       />
     </div>
+    </>
   );
 };
 
 Modal.propTypes = {
-  task: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };

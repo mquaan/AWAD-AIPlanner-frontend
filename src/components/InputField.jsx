@@ -3,7 +3,7 @@ import { forwardRef, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 
-const InputField = forwardRef(({ type = "text", placeholder = "", value, onChange, className, error, helperText, disabled=false, icon: Icon, ...props }, ref) => {
+const InputField = forwardRef(({ type = "text", placeholder = "", className, error, helperText, disabled=false, icon: Icon, ...props }, ref) => {  
   const [showPassword, setShowPassword] = useState(false);
   
   const defaultClassName = `
@@ -31,8 +31,6 @@ const InputField = forwardRef(({ type = "text", placeholder = "", value, onChang
           className={inputClassName}
           ref={ref} // Forward the ref
           disabled={disabled}
-          value={value}
-          onChange={onChange}
           {...props} // Spread only valid input props
         />
         {type === 'password' && (
@@ -55,8 +53,6 @@ InputField.propTypes = {
   type: PropTypes.string,
   placeholder: PropTypes.string,
   name: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
   className: PropTypes.string,
   error: PropTypes.string,
   helperText: PropTypes.string,

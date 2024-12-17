@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePage } from "../context/PageContext";
 import Button from "../components/Button";
 import { IoMdOptions } from "react-icons/io";
@@ -10,7 +10,7 @@ import Calendar from "./Calendar";
 import List from "./List";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { addTask, deleteTask, getTasks, updateTask } from "../service/taskApi";
+import { addTask, deleteTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import { VscFeedback } from "react-icons/vsc";
 import FeedbackModal from "../components/FeedbackModal";
@@ -40,7 +40,7 @@ const Task = () => {
       <InputField
         key={1}
         placeholder="Search task name..."
-        className="w-64"
+        className="w-64 border-[1px] border-gray-200 focus-within:border-[1.5px] shadow-sm"
         icon={GoSearch}
         onChange={debounceSearch}
       />,
@@ -178,6 +178,7 @@ const Task = () => {
   }
 
   const handleSave = (task) => {
+    console.log(task);
     if (task.id) {
       if (!task.isDeleted) {
         handleUpdateTask(task);
@@ -208,7 +209,7 @@ const Task = () => {
   }
 
   const debounceSearch = useMemo(() => {
-    return debounce((e) => setSearchName(e.target.value), 1000)
+    return debounce((e) => setSearchName(e.target.value), 600)
   }, [])
 
   return (
