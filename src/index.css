@@ -66,13 +66,13 @@
 
 ::-webkit-scrollbar-thumb {
   /* background: #bebebe; */
-  background: var(--primary-color);
+  background: #c3b9b9;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   /* background: #929292; */
-  background: var(--primary-dark-color);
+  background: #c5b3b3;
 }
 
 ::-ms-reveal {

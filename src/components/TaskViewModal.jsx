@@ -1,15 +1,18 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { IoClose } from "react-icons/io5";
 import { RxListBullet, RxLayout, RxCalendar } from "react-icons/rx";
 import { useTask } from "../context/TaskContext";
 import Switch from "./Switch";
 import { SelectItem, Select } from "./Select";
+import { getSubjects } from "../service/subjectApi";
 
 const TaskViewModal = ({ onClose }) => {
   const { currentView, changeView, filters, updateFilters } = useTask();
 
   const modalRef = useRef(null);
+
+  const [subjects, setSubjects] = useState([]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -24,6 +27,18 @@ const TaskViewModal = ({ onClose }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
+
+  useEffect(() => {
+    const callGetSubjects = async () => {
+      try {
+        const response = await getSubjects();
+        setSubjects(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    callGetSubjects();
+  }, []);
 
   return (
     <div
@@ -115,7 +130,7 @@ const TaskViewModal = ({ onClose }) => {
       </div>
 
       {/* Sort By Section */}
-      {currentView !== "calendar" &&
+      {currentView === "board" &&
       <div className="space-y-2">
         <h4 className="font-semibold">Sort by</h4>
         <div className="space-y-2">
@@ -125,11 +140,11 @@ const TaskViewModal = ({ onClose }) => {
             </label>
             <Select
               className="w-40"
-              onChange={(value) => console.log(value)}
+              onChange={(value) => updateFilters({ sort_by: value }) }
               defaultValue=""
             >
               <SelectItem value={""} label={"None"} />
-              <SelectItem value={"due-date"} label={"Due Date"} />
+              <SelectItem value={"estimated_end_time"} label={"Due Date"} />
               <SelectItem value={"priority"} label={"Priority"} />
             </Select>
           </div>
@@ -139,11 +154,11 @@ const TaskViewModal = ({ onClose }) => {
             </label>
             <Select
               className="w-40"
-              onChange={(value) => console.log(value)}
-              defaultValue="ascending"
+              onChange={(value) => updateFilters({ direction: value })}
+              defaultValue="asc"
             >
-              <SelectItem value={"ascending"} label={"Ascending"} />
-              <SelectItem value={"descending"} label={"Descending"} />
+              <SelectItem value={"asc"} label={"Ascending"} />
+              <SelectItem value={"desc"} label={"Descending"} />
             </Select>
           </div>
         </div>
@@ -160,12 +175,17 @@ const TaskViewModal = ({ onClose }) => {
             </label>
             <Select
               className="w-40 capitalize"
-              onChange={(value) => console.log(value)}
+              onChange={(value) => updateFilters({ subject : value })}
               defaultValue=""
             >
               <SelectItem value={""} label={"All"} />
-              <SelectItem value={"math"} label={"math"} className="capitalize" />
-              <SelectItem value={"english"} label={"english"} className="capitalize" />
+              {subjects?.map((subject) => (
+                <SelectItem
+                  key={subject.id}
+                  value={subject.id}
+                  label={subject.name}
+                />
+              ))}
             </Select>
           </div>
           <div className="flex items-center justify-between">

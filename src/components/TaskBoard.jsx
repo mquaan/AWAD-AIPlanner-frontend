@@ -1,7 +1,22 @@
+import { useDraggable } from '@dnd-kit/core';
 import PropTypes from 'prop-types';
 import { RiCalendarCheckLine } from 'react-icons/ri';
 
 const TaskBoard = ({ task, onClick }) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: task.id,
+    data: { task },
+  });
+
+  const style = transform
+    ? {
+      transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      transition: isDragging ? 'none' : 'transform 200ms ease',
+      zIndex: isDragging ? 1000 : 1,
+      boxShadow: isDragging ? '0 4px 12px rgba(0, 0, 0, 0.2)' : 'none',
+    }
+    : undefined;
+
   // Hàm format thời gian
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
@@ -23,20 +38,23 @@ const TaskBoard = ({ task, onClick }) => {
 
   return (
     <div
+      ref={setNodeRef}
       key={task.id}
+      style={style}
+      {...listeners}
+      {...attributes}
       className="py-[12px] px-5 border w-[95%] border-[#d8d6d6] rounded-xl shadow-sm flex gap-4
                 hover:shadow-md transition duration-300 cursor-pointer"
       onClick={onClick}
     >
       {/* Priority circle */}
       <div
-        className={`mt-4 w-3 h-3 rounded-full ${
-          task.priority === 'High'
+        className={`mt-4 w-3 h-3 rounded-full ${task.priority === 'High'
             ? 'bg-priority-high'
             : task.priority === 'Medium'
-            ? 'bg-priority-medium'
-            : 'bg-priority-low'
-        }`}
+              ? 'bg-priority-medium'
+              : 'bg-priority-low'
+          }`}
       ></div>
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
