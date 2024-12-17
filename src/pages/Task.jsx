@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePage } from "../context/PageContext";
 import Button from "../components/Button";
 import { IoMdOptions } from "react-icons/io";
@@ -8,17 +8,19 @@ import Board from "./Board";
 import Calendar from "./Calendar";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { addTask, deleteTask, updateTask } from "../service/taskApi";
+import { addTask, deleteTask, getTasks, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import { VscFeedback } from "react-icons/vsc";
 import FeedbackModal from "../components/FeedbackModal";
 import { getFeedback } from "../service/feedbackApi";
-import { set } from "react-hook-form";
+import InputField from "../components/InputField";
+import { GoSearch } from "react-icons/go";
+import {debounce} from 'lodash'
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
   const [showViewModal, setShowViewModal] = useState(false);
-  const { currentView } = useTask();
+  const { currentView, setSearchName } = useTask();
   const [showFeedback, setShowFeedback] = useState(false);
 
   const [feedback, setFeedback] = useState("");
@@ -33,8 +35,15 @@ const Task = () => {
 
   useEffect(() => {
     setActions([
-      <Button
+      <InputField
         key={1}
+        placeholder="Search task name..."
+        className="w-64"
+        icon={GoSearch}
+        onChange={debounceSearch}
+      />,
+      <Button
+        key={2}
         onClick={handleGetFeedback}
         variant="outline"
         className="w-fit font-medium border-none hover:text-primary"
@@ -43,7 +52,7 @@ const Task = () => {
         AI feedback
       </Button>,
       <Button
-        key={2}
+        key={3}
         onClick={() => setShowViewModal(true)}
         variant="outline"
         className="w-fit font-medium border-none hover:text-primary"
@@ -197,6 +206,10 @@ const Task = () => {
     setShowFeedback(false);
     setFeedback("");
   }
+
+  const debounceSearch = useMemo(() => {
+    return debounce((e) => setSearchName(e.target.value), 1000)
+  }, [])
 
   return (
     <div className="relative">

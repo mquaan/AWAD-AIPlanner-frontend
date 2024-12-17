@@ -75,7 +75,6 @@ const TaskModal = ({ task, onCancel, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target || e;
-    console.log(name, value);
     setTaskData((prevTask) => ({
       ...prevTask,
       [name]: value,
