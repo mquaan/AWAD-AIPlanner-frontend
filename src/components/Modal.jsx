@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { isAfter, isBefore, isValid } from 'date-fns';
@@ -11,11 +11,14 @@ import { PiTagChevronFill  } from "react-icons/pi";
 import { AiFillFileAdd } from "react-icons/ai";
 import { useTask } from '../context/TaskContext';
 import { IoIosAddCircle } from "react-icons/io";
+import { GoTrash } from "react-icons/go";
 
 import { addSubject, getSubjects } from '../service/subjectApi'
 import { Select, SelectItem } from './Select_modal';
 import { getStatusColor } from '../utils/status';
 import { useToast } from '../context/ToastContext';
+import Menu, { MenuItem } from './Menu';
+import DialogConfirm from './DialogConfirm';
 
 const Modal = ({ onCancel, onSave }) => {
   const { selectedTask } = useTask();
@@ -37,6 +40,9 @@ const Modal = ({ onCancel, onSave }) => {
   const [error, setError] = useState("");
 
   const { showToast } = useToast();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [showDialogConfirm, setShowDialogConfirm] = useState(false);
 
   const validateDates = () => {
     if (!taskData.estimated_start_time || !taskData.estimated_end_time) {
@@ -96,6 +102,8 @@ const Modal = ({ onCancel, onSave }) => {
   
     useEffect(() => {
       const handleClickOutside = (event) => {
+        if (showDialogConfirm) return;
+
         if (modalRef.current && !modalRef.current.contains(event.target)) {
           onCancel();
         }
@@ -106,7 +114,7 @@ const Modal = ({ onCancel, onSave }) => {
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
       };
-    }, [onCancel]);
+    }, [onCancel, showDialogConfirm]);
 
   useEffect(() => {
     if (selectedTask.status !== "Expired" && selectedTask.estimated_end_time) {
@@ -150,13 +158,46 @@ const Modal = ({ onCancel, onSave }) => {
     }
   };
 
+  const handleMenuClick = (index) => {
+    console.log(index);
+    if (index === 0) {
+      setShowDialogConfirm(true);
+    }
+    setShowMenu(false);
+  }
+
+  const handleDeleteTask = () => {
+    setShowDialogConfirm(false);
+    console.log({ ...selectedTask, isDeleted: true });
+    onSave({ ...selectedTask, isDeleted: true });
+  }
+
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showDialogConfirm) return;
+
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setShowMenu, showDialogConfirm]);
+
   return (
+    <>
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-[10000]"
+      
     >
       <div
         className="bg-white rounded-2xl shadow-xl w-[700px] max-h-screen overflow-auto"
-        onClick={(e) => e.stopPropagation()}
         ref={modalRef}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
@@ -164,11 +205,30 @@ const Modal = ({ onCancel, onSave }) => {
             {selectedTask.id ? "Edit Task" : "New Task"}
           </h2>
           <div className="flex gap-2">
-            <button className="hover:text-black hover:bg-gray-200 p-1 rounded-lg">
-              <TfiMore />
-            </button>
+            <div className="relative">
+              <button
+                className="hover:text-black hover:bg-gray-200 p-1 rounded-lg"
+                onClick={() => setShowMenu(!showMenu)}
+              >
+                <TfiMore />
+              </button>
+              {showMenu && (
+                <Menu
+                  className={"w-52 absolute top-5 -right-8"}
+                  onItemClick={handleMenuClick}
+                  ref={menuRef}
+                >
+                  <MenuItem
+                    label="Delete"
+                    className="hover:bg-transparent text-error"
+                    icon={<GoTrash size={16} />}
+                  />
+                </Menu>
+              )}
+            </div>
+
             <button
-              className="hover:text-black hover:bg-gray-200 p-1 rounded-lg"
+              className="hover:text-black hover:bg-gray-200 p-1 rounded-lg ml-2"
               onClick={onCancel}
             >
               <LiaTimesSolid />
@@ -213,8 +273,8 @@ const Modal = ({ onCancel, onSave }) => {
                 icon={taskData.subject_id ? <AiFillFileAdd className='text-[#f65454e9]'/> : <AiFillFileAdd className='text-[#bdd1da]'/>}
                 // icon={<FcBookmark className="mb-[2px]" />}
                 onCollapse={() => {
-                  setIsAddingSubject(false)
-                  setNewSubject('')
+                  setIsAddingSubject(false);
+                  setNewSubject("");
                 }}
               >
                 <SelectItem value={""} label={"No subject"} />
@@ -372,12 +432,20 @@ const Modal = ({ onCancel, onSave }) => {
           </div>
         </div>
       </div>
+
+      <DialogConfirm
+        open={showDialogConfirm}
+        onClose={() => setShowDialogConfirm(false)}
+        onConfirm={handleDeleteTask}
+        title="Confirm"
+        content="Are you sure you want to delete this task?"
+      />
     </div>
+    </>
   );
 };
 
 Modal.propTypes = {
-  task: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
 };

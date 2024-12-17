@@ -65,14 +65,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  /* background: #bebebe; */
-  background: var(--primary-color);
+  background: #bebebe;
+  /* background: var(--primary-color); */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  /* background: #929292; */
-  background: var(--primary-dark-color);
+  background: #929292;
+  /* background: var(--primary-dark-color); */
 }
 
 ::-ms-reveal {
