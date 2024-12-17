@@ -13,26 +13,26 @@ import { usePage } from '../context/PageContext';
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
 
 const MENU_ITEMS = [
-  {
-    icon: <RxDashboard size={24} />,
-    title: 'Dashboard',
-    path: '/dashboard',
-  },
+  // {
+  //   icon: <RxDashboard size={24} />,
+  //   title: 'Dashboard',
+  //   path: '/dashboard',
+  // },
   {
     icon: <RxLayout size={24} />,
     title: 'Task',
     path: '/task',
   },
-  {
-    icon: <RxTimer size={24} />,
-    title: 'Focus timer',
-    path: '/timer',
-  },
-  {
-    icon: <SlSettings size={24} />,
-    title: 'Settings',
-    path: '/settings',
-  },
+  // {
+  //   icon: <RxTimer size={24} />,
+  //   title: 'Focus timer',
+  //   path: '/timer',
+  // },
+  // {
+  //   icon: <SlSettings size={24} />,
+  //   title: 'Settings',
+  //   path: '/settings',
+  // },
   {
     icon: <LuUser size={24} />,
     title: 'Account',
