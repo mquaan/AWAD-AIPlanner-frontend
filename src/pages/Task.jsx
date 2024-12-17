@@ -8,11 +8,12 @@ import Board from "./Board";
 import Calendar from "./Calendar";
 import { useNavigate, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { addTask, updateTask } from "../service/taskApi";
+import { addTask, deleteTask, updateTask } from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import { VscFeedback } from "react-icons/vsc";
 import FeedbackModal from "../components/FeedbackModal";
 import { getFeedback } from "../service/feedbackApi";
+import { set } from "react-hook-form";
 
 const Task = () => {
   const { setHeading, setActions } = usePage();
@@ -152,9 +153,28 @@ const Task = () => {
     }
   }
 
+  const handleDeleteTask = async (deletedTask) => {
+    try {
+      const response = await deleteTask(deletedTask.id);
+      setTasks(tasks.filter((task) => task.id !== response.data.id));
+      showToast("success", "Task deleted successfully");
+
+      setSelectedTask(null);
+      setIsModalOpen(false);
+
+      navigate('/task');
+    } catch (error) {
+      showToast("error", error.response?.data?.message || 'Failed to delete task');
+    }
+  }
+
   const handleSave = (task) => {
     if (task.id) {
-      handleUpdateTask(task);
+      if (!task.isDeleted) {
+        handleUpdateTask(task);
+      } else {
+        handleDeleteTask(task);
+      }
     } else {
       handleAddTask(task);
     }

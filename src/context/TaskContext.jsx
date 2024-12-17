@@ -123,7 +123,7 @@ const TaskProvider = ({ children }) => {
       setIsModalOpen,
     }}>
       {children}
-    </TaskContext.Provider>
+    </TaskContext.Provider> 
   );
 }
 

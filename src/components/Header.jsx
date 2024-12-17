@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import Menu from "./Menu";
+import Menu, { MenuItem } from "./Menu";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import { useToast } from '../context/ToastContext';
 import DialogConfirm from "./DialogConfirm";
-// import { userLogout } from "../service/authApi";
-
-const items = [
-  { label: "Go to dashboard", path: "/dashboard" },
-  { label: "Logout" },
-];
 
 const Header = () => {
   const { user, logout, isLoggedIn } = useAuth();
@@ -30,13 +24,15 @@ const Header = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleMenuClick = (index) => {
-    if (index === 1) {
+    if (index === 0) {
+      navigate('/dashboard');
+    } else if (index === 1) {
       setShowDialogConfirm(true);
     }
   }
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -59,8 +55,11 @@ const Header = () => {
                 showMenuAccount &&
                 <Menu
                   className={"absolute top-10 right-0"} 
-                  items={items} 
-                  onItemClick={handleMenuClick} />
+                  // items={items}
+                  onItemClick={handleMenuClick}>
+                  <MenuItem label="Go to dashboard" />
+                  <MenuItem label="Logout" />
+                </Menu>
               }
             </div>
           </div>

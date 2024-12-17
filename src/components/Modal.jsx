@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { isAfter, isBefore, isValid } from 'date-fns';
@@ -9,11 +9,14 @@ import { LiaTimesSolid } from "react-icons/lia";
 import { FcBookmark, FcMediumPriority, FcHighPriority, FcLowPriority } from "react-icons/fc";
 import { PiTagChevronFill  } from "react-icons/pi";
 import { IoIosAddCircle } from "react-icons/io";
+import { GoTrash } from "react-icons/go";
 
 import { addSubject, getSubjects } from '../service/subjectApi'
 import { Select, SelectItem } from './Select_modal';
 import { getStatusColor } from '../utils/status';
 import { useToast } from '../context/ToastContext';
+import Menu, { MenuItem } from './Menu';
+import DialogConfirm from './DialogConfirm';
 
 const TaskModal = ({ task, onCancel, onSave }) => {
   // Use a single state to hold the task data
@@ -35,6 +38,9 @@ const TaskModal = ({ task, onCancel, onSave }) => {
   const [error, setError] = useState("");
 
   const { showToast } = useToast();
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [showDialogConfirm, setShowDialogConfirm] = useState(false);
 
   const validateDates = () => {
     if (!taskData.estimated_start_time || !taskData.estimated_end_time) {
@@ -132,25 +138,86 @@ const TaskModal = ({ task, onCancel, onSave }) => {
     }
   };
 
+  const handleMenuClick = (index) => {
+    if (index === 0) {
+      setShowDialogConfirm(true);
+    }
+    setShowMenu(false);
+  }
+
+  const handleDeleteTask = () => {
+    setShowDialogConfirm(false);
+    onSave({ ...task, isDeleted: true });
+  }
+
+  const modalRef = useRef(null);
+  const menuRef = useRef(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onCancel();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onCancel]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setShowMenu]);
+
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center z-[10000]"
-      onClick={onCancel}
+      ref={modalRef}
     >
       <div
         className="bg-white rounded-2xl shadow-xl w-[700px] max-h-screen overflow-auto"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between pl-6 pr-5 py-4 text-gray-700">
           <h2 className="text-lg font-semibold">
             {task.id ? "Edit Task" : "New Task"}
           </h2>
           <div className="flex gap-2">
-            <button className="hover:text-black hover:bg-gray-200 p-1 rounded-lg">
-              <TfiMore />
-            </button>
+            <div className="relative">
+              <button
+                className="hover:text-black hover:bg-gray-200 p-1 rounded-lg"
+                onClick={() => setShowMenu(!showMenu)}
+              >
+                <TfiMore />
+              </button>
+              {showMenu && (
+                <Menu
+                  className={"w-52 absolute top-5 -right-8"}
+                  onItemClick={handleMenuClick}
+                  ref={menuRef}
+                >
+                  <MenuItem
+                    label="Delete"
+                    className="hover:bg-transparent text-error"
+                    icon={<GoTrash size={16} />}
+                  />
+                </Menu>
+              )}
+            </div>
+
             <button
-              className="hover:text-black hover:bg-gray-200 p-1 rounded-lg"
+              className="hover:text-black hover:bg-gray-200 p-1 rounded-lg ml-2"
               onClick={onCancel}
             >
               <LiaTimesSolid />
@@ -193,8 +260,8 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                 defaultValue={taskData.subject_id}
                 icon={<FcBookmark className="mb-[2px]" />}
                 onCollapse={() => {
-                  setIsAddingSubject(false)
-                  setNewSubject('')
+                  setIsAddingSubject(false);
+                  setNewSubject("");
                 }}
               >
                 <SelectItem value={""} label={"No subject"} />
@@ -206,25 +273,34 @@ const TaskModal = ({ task, onCancel, onSave }) => {
                   />
                 ))}
                 <li className="px-8 h-[50px] w-full text-sm transition text-primary flex items-center sticky bottom-0 bg-white">
-                  {!isAddingSubject ? 
-                  <div className='flex gap-2 cursor-pointer items-center' onClick={() => setIsAddingSubject(true)}>
-                    <IoIosAddCircle size={24} className="mb-[2px]" />
-                    Add New Subject
-                  </div>
-                  :
-                  <div className='flex gap-2 items-center w-full'>
-                    <input
-                      type="text"
-                      value={newSubject}
-                      onChange={handleInputChange}
-                      onKeyDown={handleKeyDown}
-                      className="w-full rounded focus:outline-none text-text-primary text-sm"
-                      placeholder='Enter new subject name'
-                      autoFocus
-                    />
-                    {newSubject && <IoIosAddCircle size={24} className="cursor-pointer" onClick={handleAddSubject} />}
-                  </div>
-                  }
+                  {!isAddingSubject ? (
+                    <div
+                      className="flex gap-2 cursor-pointer items-center"
+                      onClick={() => setIsAddingSubject(true)}
+                    >
+                      <IoIosAddCircle size={24} className="mb-[2px]" />
+                      Add New Subject
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center w-full">
+                      <input
+                        type="text"
+                        value={newSubject}
+                        onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
+                        className="w-full rounded focus:outline-none text-text-primary text-sm"
+                        placeholder="Enter new subject name"
+                        autoFocus
+                      />
+                      {newSubject && (
+                        <IoIosAddCircle
+                          size={24}
+                          className="cursor-pointer"
+                          onClick={handleAddSubject}
+                        />
+                      )}
+                    </div>
+                  )}
                 </li>
               </Select>
             </div>
@@ -353,6 +429,14 @@ const TaskModal = ({ task, onCancel, onSave }) => {
           </div>
         </div>
       </div>
+
+      <DialogConfirm
+        open={showDialogConfirm}
+        onClose={() => setShowDialogConfirm(false)}
+        onConfirm={handleDeleteTask}
+        title="Confirm"
+        content="Are you sure you want to delete this task?"
+      />
     </div>
   );
 };
