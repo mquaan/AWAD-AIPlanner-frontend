@@ -18,7 +18,7 @@ const SelectItem = ({ label, isSelected, onClick, className }) => {
   );
 };
 
-const Select = ({ name, children, placeholder, onChange, defaultValue, className, icon, disabled }) => {
+const Select = ({ name, children, placeholder, onChange, defaultValue, className, icon, disabled, onCollapse }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(defaultValue !== null ? defaultValue : null);
   const dropdownRef = useRef(null);
@@ -28,6 +28,7 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsOpen(false);
+        {onCollapse && onCollapse()}
       }
     };
 
@@ -41,6 +42,8 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
     setSelectedOption(value);
     setIsOpen(false);
     onChange({ name, value }); // Gửi cả `name` và `value` khi gọi `onChange`
+    if (onCollapse)
+      onCollapse();
   };
 
   // Get the label of the selected option
@@ -60,6 +63,8 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
         onClick={() => {
           if (!disabled)
             setIsOpen(!isOpen)
+          if (isOpen && onCollapse)
+            onCollapse();
         }}
       >
         <div className="flex items-center gap-2">
@@ -80,11 +85,11 @@ const Select = ({ name, children, placeholder, onChange, defaultValue, className
 
       {!disabled && isOpen && (
         <ul
-          className="absolute mt-1 w-full bg-white border border-border rounded-md shadow-lg max-h-60 overflow-auto z-10"
+          className="absolute mt-1 w-full bg-white border border-border rounded-md shadow-lg max-h-52 overflow-auto z-10"
           role="listbox"
         >
           {React.Children.map(children, (child) => {
-            if (React.isValidElement(child)) {
+            if (React.isValidElement(child) && child.type === SelectItem) {
               return React.cloneElement(child, {
                 isSelected: selectedOption === child.props.value,
                 onClick: () => handleSelect(child.props.value),
@@ -114,6 +119,7 @@ Select.propTypes = {
   className: PropTypes.string,
   icon: PropTypes.node,
   disabled: PropTypes.bool,
+  onCollapse: PropTypes.func,
 };
 
 export { SelectItem, Select };
