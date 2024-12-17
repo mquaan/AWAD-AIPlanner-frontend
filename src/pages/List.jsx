@@ -35,7 +35,7 @@ const List = () => {
   };
 
   return (
-    <div className="flex flex-col border-gray-200">
+    <div className="flex flex-col">
       <div
         onClick={() => openModal('new')}
         className="group mb-2 w-full p-[18px] flex gap-2 items-center cursor-pointer"

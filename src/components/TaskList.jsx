@@ -35,6 +35,8 @@ function TaskList({ task, onClick }) {
   
   const priorityColor = task.priority === 'High' ? 'priority-high' : 
                         task.priority === 'Medium' ? 'priority-medium' : 'priority-low';
+  const priorityBorderColor = task.priority === 'High' ? 'border-priority-high' : 
+                        task.priority === 'Medium' ? 'border-priority-medium' : 'border-priority-low';
   const priorityColorText = task.priority === 'High' ? 'text-priority-high' :
                             task.priority === 'Medium' ? 'text-priority-medium' : 'text-priority-low';
 
@@ -53,10 +55,10 @@ function TaskList({ task, onClick }) {
               }
             }
             className={`mt-2 flex items-center justify-center w-5 h-5 rounded-full border-[2px] transition 
-                        group border-${priorityColor}`}
+                        group ${priorityBorderColor}`}
           >
               {task.status === 'Completed' && <div className={`w-3 h-3 bg-${priorityColor} rounded-full group-hover:opacity-70`}></div>}
-              {task.status !== 'Completed' && <div className={`w-4 h-4 bg-${priorityColor} opacity-10 rounded-full`}></div>}
+              {task.status !== 'Completed' && <div className={`w-4 h-4 bg-${priorityColor} opacity-15 rounded-full`}></div>}
               {task.status !== 'Completed' && <FaCheck className={`opacity-0 ${priorityColorText} absolute w-3 group-hover:opacity-100`}/>}
           </div>
         }
