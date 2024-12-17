@@ -10,6 +10,8 @@ const DEFAULT_FILTERS = {
   page: 1,
   showCompletedTasks: false,
   showExpiredTasks: false,
+  sort_by: 'estimated_end_time',
+  direction: 'asc',
   subject: '',
   priority: '',
 };
