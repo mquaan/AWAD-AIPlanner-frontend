@@ -1,5 +1,6 @@
 import TaskBoard from '../components/TaskBoard';
 
+import { useEffect, useState } from 'react';
 import { useTask } from '../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +8,21 @@ const Board = () => {
   const navigate = useNavigate();
   
   const { tasks, filters, setSelectedTask, setIsModalOpen } = useTask();
+  const [tasksData, setTasksData] = useState([]);
+  
+    const sortedTasks = tasks.sort((a, b) => {
+      if (!a.estimated_end_time) return 1;
+      if (!b.estimated_end_time) return -1;
+      return new Date(a.estimated_end_time) - new Date(b.estimated_end_time);
+    });
+  
+    const filteredTasks = sortedTasks.filter(task => task.status !== 'Completed' && task.status !== 'Expired');
+    const completedTasks = sortedTasks.filter(task => task.status === 'Completed');
+    const expiredTasks = sortedTasks.filter(task => task.status === 'Expired');
+  
+    useEffect(() => {
+      setTasksData([...filteredTasks, ...completedTasks, ...expiredTasks]);
+    }, [tasks, filters]);
 
   const statuses = ['ToDo', 'InProgress', 'Completed', 'Expired'];
 
@@ -30,11 +46,11 @@ const Board = () => {
                 {status === 'ToDo' ? 'TO DO' : status === 'InProgress' ? 'IN PROGRESS' : status.toUpperCase()}
               </h2>
               <p className='text-sm text-text-neutral pb-[2.5px]'>
-                {tasks.filter((task) => task.status === status).length}
+                {tasksData.filter((task) => task.status === status).length}
               </p>
             </div>
             <div className="space-y-3">
-              {tasks
+              {tasksData
                 .filter((task) => task.status === status)
                 .map((task) => (
                   <TaskBoard key={task.id} task={task} onClick={() => openModal(task.id, '')}/>

@@ -15,7 +15,7 @@ const TaskBoard = ({ task, onClick }) => {
       minute: '2-digit',
       day: '2-digit',
       month: '2-digit',
-      ...(isCurrentYear ? {} : { year: 'numeric' }), // Chỉ thêm năm nếu không phải năm hiện tại
+      ...(isCurrentYear ? {} : { year: 'numeric' }),
     };
 
     return new Intl.DateTimeFormat('vi-VN', options).format(date);
@@ -43,7 +43,7 @@ const TaskBoard = ({ task, onClick }) => {
           <h3 className="font-medium">{task.name}</h3>
           <p className="text-sm text-gray-600">{task.description}</p>
         </div>
-        <div className="flex items-center gap-1 text-gray-400">
+        <div className="flex items-center gap-1 text-gray-500">
           <RiCalendarCheckLine size={15} className='mb-[2px]' />
           <span className="text-sm">{task.estimated_end_time ? formatDate(task.estimated_end_time) : 'No end date'}</span>
         </div>

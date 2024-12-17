@@ -225,14 +225,16 @@ const Modal = ({ onCancel, onSave }) => {
                     label={subject.name}
                   />
                 ))}
-                <li className="px-8 h-[50px] w-full text-sm transition text-primary flex items-center sticky bottom-0 bg-white">
+                <li className="h-[50px] w-full text-sm transition flex items-center sticky bottom-0 bg-white">
                   {!isAddingSubject ? 
-                  <div className='flex gap-2 cursor-pointer items-center' onClick={() => setIsAddingSubject(true)}>
-                    <IoIosAddCircle size={24} className="mb-[2px]" />
-                    Add New Subject
+                  <div className='flex justify-center items-center w-full'>
+                    <div className='flex gap-2 cursor-pointer items-center hover:text-primary' onClick={() => setIsAddingSubject(true)}>
+                      <IoIosAddCircle size={20} className="mb-[2px]" />
+                      Add New Subject
+                    </div>
                   </div>
                   :
-                  <div className='flex gap-2 items-center w-full'>
+                  <div className='text-primary flex mx-8 gap-2 items-center w-full'>
                     <input
                       type="text"
                       value={newSubject}

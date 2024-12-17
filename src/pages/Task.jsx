@@ -38,7 +38,7 @@ const Task = () => {
         key={1}
         onClick={handleGetFeedback}
         variant="outline"
-        className="w-fit font-medium border-none hover:text-primary"
+        className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
         icon={VscFeedback}
       >
         AI feedback
@@ -47,7 +47,7 @@ const Task = () => {
         key={2}
         onClick={() => setShowViewModal(true)}
         variant="outline"
-        className="w-fit font-medium border-none hover:text-primary"
+        className="w-fit font-medium border-[1px] border-gray-200 hover:text-primary shadow-sm"
         icon={IoMdOptions}
       >
         View
@@ -180,7 +180,7 @@ const Task = () => {
 
   return (
     <div className="relative">
-      {isLoading && <div>Loading...</div>}
+      {isLoading && <Loading />}
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
       )}      
