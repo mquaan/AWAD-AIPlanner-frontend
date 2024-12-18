@@ -113,7 +113,8 @@ const Calendar = () => {
   return (
     <div className="w-full h-[calc(100vh-125px)] flex justify-between overflow-hidden">
       {/* <div className={`${showSidebar ? 'w-[682px]' : 'w-[810px]'}`}> */}
-      <div className={`${showSidebar ? 'w-[56vw]' : 'w-[65.9vw]'}`}>
+      {/* <div className={`${showSidebar ? 'w-[56vw]' : 'w-[65.9vw]'}`}> */}
+      <div className={`${showSidebar ? 'w-[calc(100vw-578px)]' : 'w-[calc(100vw-450px)]'}`}>
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

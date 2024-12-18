@@ -1,9 +1,9 @@
-import { RxDashboard, RxLayout, RxTimer } from "react-icons/rx";
+import { RxDashboard, RxLayout } from "react-icons/rx";
 import { BiLogOut } from "react-icons/bi";
-import { SlSettings } from "react-icons/sl";
+// import { SlSettings } from "react-icons/sl";
 import { LuUser } from "react-icons/lu";
 import PropTypes from 'prop-types';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import '../styles/sidebar.css';
 import { useAuth } from "../context/AuthContext";
 import { useToast } from '../context/ToastContext';
