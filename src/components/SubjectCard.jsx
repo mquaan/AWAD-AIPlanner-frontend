@@ -4,11 +4,11 @@ import { CiEdit } from "react-icons/ci";
 
 const SubjectCard = ({ subject, onEdit, onDelete }) => {
   return (
-    <div className="w-full h-fit border border-border px-5 py-3 rounded-lg bg-white flex items-center justify-between">
-      <h2>{subject.name}</h2>
+    <div className="w-full h-14 border border-border px-5 py-3 rounded-lg bg-white flex items-center justify-between">
+      <h2 className='whitespace-nowrap text-ellipsis overflow-hidden'>{subject.name}</h2>
 
       {/* Actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 ml-3">
         <button className="text-blue-500 hover:text-blue-600" onClick={() => onEdit(subject)}>
           <CiEdit size={20} />
         </button>
