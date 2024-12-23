@@ -155,7 +155,7 @@ const TaskViewModal = ({ onClose }) => {
             <Select
               className="w-40"
               onChange={(value) => updateFilters({ direction: value })}
-              defaultValue="asc"
+              defaultValue="desc"
             >
               <SelectItem value={"asc"} label={"Ascending"} />
               <SelectItem value={"desc"} label={"Descending"} />

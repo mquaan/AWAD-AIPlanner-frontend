@@ -20,6 +20,6 @@ export const modifySubject = async (id, data) => {
 };
 
 export const deleteSubject = async (id) => {
-  const response = await axiosInstance.put(`/subject/delete/${id}`);
+  const response = await axiosInstance.delete(`/subject/${id}`);
   return response;
 };

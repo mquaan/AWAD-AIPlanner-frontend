@@ -8,7 +8,8 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../components/Di
 import Button from "../components/Button";
 import InputField from "../components/InputField";
 import DialogConfirm from "../components/DialogConfirm";
-import { IoAdd } from "react-icons/io5";
+import { IoAdd, IoInformationCircleSharp } from "react-icons/io5";
+import { getTimerSettings, updateTimerSettings } from "../service/timerApi";
 
 const Settings = () => {
   const { setHeading, setActions } = usePage();
@@ -19,7 +20,26 @@ const Settings = () => {
 
   const { showToast } = useToast();
 
+  const handleGetData = (tabIndex) => {
+    if (tabIndex === 0) { // Fetch subjects data
+      fetchSubjects();
+    } else { // Fetch timer settings data
+      fetchTimerSettings();
+    }
+  }
+
+  useEffect(() => {
+    fetchSubjects();
+  }, []);
+
+  // ----------- SUBJECTS SETTING -----------
   const [subjects, setSubjects] = useState([]);
+
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogConfirmOpen, setIsDialogConfirmOpen] = useState(false);
+
+  const [newName, setNewName] = useState('');
 
   const fetchSubjects = async () => {
     try {
@@ -29,24 +49,6 @@ const Settings = () => {
       showToast("error", err?.response?.data?.message || "Failed to fetch subjects");
     }
   };
-
-  const handleGetData = (tabIndex) => {
-    if (tabIndex === 0) { // Fetch subjects data
-      fetchSubjects();
-    } else { // Fetch timer settings data
-      console.log("Get timer data");
-    }
-  }
-
-  useEffect(() => {
-    fetchSubjects();
-  }, []);
-
-  const [selectedSubject, setSelectedSubject] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDialogConfirmOpen, setIsDialogConfirmOpen] = useState(false);
-
-  const [newName, setNewName] = useState('');
 
   const handleCloseDialogSubject = () => {
     setIsDialogOpen(false);
@@ -126,6 +128,41 @@ const Settings = () => {
       showToast("error", err?.response?.data?.message || "Failed to delete subject");
     }
   }
+  // ----------- END SUBJECTS SETTING -----------
+
+  // ----------- TIMER SETTING -----------
+  const [timerSettings, setTimerSettings] = useState(null);
+
+  const [newTimerSettings, setNewTimerSettings] = useState({
+    focus_time: 0,
+    short_break_time: 0,
+    long_break_time: 0,
+    interval: 0
+  })
+
+  const fetchTimerSettings = async () => {
+    try {
+      const response = await getTimerSettings();
+      setTimerSettings(response.data);
+      setNewTimerSettings(response.data);
+    } catch (err) {
+      showToast("error", err?.response?.data?.message || "Failed to fetch timer settings");
+    }
+  };
+
+  const handleUpdateTimerSettings = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await updateTimerSettings(newTimerSettings);
+      setTimerSettings(response.data);
+      setNewTimerSettings(response.data);
+      showToast("success", "Timer settings updated successfully");
+    } catch (err) {
+      showToast("error", err?.response?.data?.message || "Failed to update timer settings");
+    }
+  }
+  // ----------- END TIMER SETTING -----------
 
   return (
     <>
@@ -142,7 +179,7 @@ const Settings = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 h-full">
+            <div className="grid grid-cols-2 gap-4">
               {subjects?.map((subject) => (
                 <SubjectCard
                   key={subject.id}
@@ -155,14 +192,98 @@ const Settings = () => {
           </TabPanel>
         </Tab>
         <Tab label="Timer">
-          <TabPanel>
-            <h2>Content for Tab 2</h2>
-            <p>This is the content for the second tab.</p>
+          <TabPanel className="space-y-4">
+            <div className="">
+              <h1 className="font-semibold">Time (minutes)</h1>
+            </div>
+            <form action="" className="space-y-4" onSubmit={handleUpdateTimerSettings}>
+              <div className="grid grid-cols-4 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="ip-pomodoro-setting" className="text-sm font-medium">Pomodoro</label>
+                  <InputField
+                    id="ip-pomodoro-setting"
+                    type="number"
+                    min="1"
+                    value={newTimerSettings.focus_time}
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setNewTimerSettings({ ...newTimerSettings, focus_time: value === "" ? "" : Number(value) })
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="ip-short-break-setting" className="text-sm font-medium">Short Break</label>
+                  <InputField
+                    id="ip-short-break-setting"
+                    type="number"
+                    min="0"
+                    value={newTimerSettings?.short_break_time}
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setNewTimerSettings({ ...newTimerSettings, short_break_time: value === "" ? "" : Number(value) })
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="ip-long-break-setting" className="text-sm font-medium">Long Break</label>
+                  <InputField
+                    id="ip-long-break-setting"
+                    type="number"
+                    min="0"
+                    value={newTimerSettings?.long_break_time}
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setNewTimerSettings({ ...newTimerSettings, long_break_time: value === "" ? "" : Number(value) })
+                    }}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="ip-interval-setting" className="text-sm font-medium">Interval</label>
+                  <InputField
+                    id="ip-interval-setting"
+                    type="number"
+                    min="0"
+                    value={newTimerSettings?.interval}
+                    required
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setNewTimerSettings({ ...newTimerSettings, interval: value === "" ? "" : Number(value) })
+                    }}
+                  />
+                </div>
+              </div>
+
+              <p className="text-text-secondary flex gap-2 items-center">
+                <IoInformationCircleSharp size={20} />
+                <span className="font-semibold">Pomodoro sequence:</span> Pomodoro → short break, repeat number of intervals, then one long break
+              </p>
+
+              <div className="">
+                <Button
+                  type="submit"
+                  className="w-[100px]"
+                  disabled={
+                    newTimerSettings.focus_time === timerSettings?.focus_time &&
+                    newTimerSettings.short_break_time === timerSettings?.short_break_time &&
+                    newTimerSettings.long_break_time === timerSettings?.long_break_time &&
+                    newTimerSettings.interval === timerSettings?.interval
+                  }
+                >
+                  Save
+                </Button>
+              </div>
+            </form>
           </TabPanel>
         </Tab>
       </Tabs>
 
-      {/* Dialog Edit Subject */}
+      {/* Dialog Subject */}
       <Dialog isOpen={isDialogOpen} onClose={handleCloseDialogSubject}>
         <DialogHeader
           title={selectedSubject !== null ? "Edit subject" : "Add subject"}
