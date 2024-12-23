@@ -1,6 +1,6 @@
-import { RxDashboard, RxLayout } from "react-icons/rx";
+import { RxDashboard, RxLayout, RxTimer } from "react-icons/rx";
 import { BiLogOut } from "react-icons/bi";
-// import { SlSettings } from "react-icons/sl";
+import { SlSettings } from "react-icons/sl";
 import { LuUser } from "react-icons/lu";
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
@@ -23,16 +23,16 @@ const MENU_ITEMS = [
     title: 'Task',
     path: '/task',
   },
-  // {
-  //   icon: <RxTimer size={24} />,
-  //   title: 'Focus timer',
-  //   path: '/timer',
-  // },
-  // {
-  //   icon: <SlSettings size={24} />,
-  //   title: 'Settings',
-  //   path: '/settings',
-  // },
+  {
+    icon: <RxTimer size={24} />,
+    title: 'Focus timer',
+    path: '/timer',
+  },
+  {
+    icon: <SlSettings size={24} />,
+    title: 'Settings',
+    path: '/settings',
+  },
   {
     icon: <LuUser size={24} />,
     title: 'Account',

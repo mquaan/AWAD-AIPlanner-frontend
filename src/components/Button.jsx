@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { twMerge } from 'tailwind-merge';
 
-const Button = ({ children, onClick=null, type='button', variant='primary', className='', icon: Icon }) => {
+const Button = ({ children, onClick=null, type='button', variant='primary', className='', icon: Icon, ...props }) => {
   let variantStyle;
   if (variant === 'primary') {
     variantStyle = 'bg-primary hover:bg-button-hover text-white';
@@ -18,9 +18,11 @@ const Button = ({ children, onClick=null, type='button', variant='primary', clas
       className={twMerge(
         'w-[200px] h-[45px] px-4 py-2 flex items-center justify-center gap-[10px] rounded-lg cursor-pointer shadow-sm',
         'transition-colors duration-300 text-center text-[15px] font-semibold text-white',
+        'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-primary',
         variantStyle,
         className,
       )}
+      {...props}
     >
       {Icon && <Icon className='text-xl' />}
       {children}
