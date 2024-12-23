@@ -11,3 +11,15 @@ export const addSubject = async (name) => {
   });
   return response;
 };
+
+export const modifySubject = async (id, data) => {
+  const response = await axiosInstance.put(`/subject/${id}`, {
+    name: data,
+  });
+  return response;
+};
+
+export const deleteSubject = async (id) => {
+  const response = await axiosInstance.put(`/subject/delete/${id}`);
+  return response;
+};
