@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { usePage } from "../context/PageContext";
 import {getTaskById, updateTaskFocusTime, updateTaskStatus} from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
@@ -10,12 +10,63 @@ import { TbReload } from "react-icons/tb";
 import { HiOutlineSelector } from "react-icons/hi";
 import FocusTaskModal from "../components/FocusTaskModal";
 import { FaPlay, FaPause } from "react-icons/fa6";
+import {notifyMe, requestPermission} from "../utils/notification.js";
+import {IoClose, IoInformationCircleSharp} from "react-icons/io5";
+import PropTypes from "prop-types";
 
-const FocusTimer = ()  => {
-  const { setHeading, setActions } = usePage();
+const InfoModal = ({ onClose }) => {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      ref={modalRef}
+      className="absolute -top-4 right-0 w-64 bg-white shadow-md rounded-lg p-4 space-y-4 z-50"
+    >
+      <div className="w-full text-sm text-text-secondary space-y-2">
+        <p>You can customize the duration of each timer in the <span className="font-semibold">Settings → Timer</span>.
+        </p>
+        <p>Number of Pomodoros completed will be displayed with dots below the &#39;Pomodoro&#39;.</p>
+      </div>
+    </div>
+  )
+}
+
+InfoModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+}
+
+const FocusTimer = () => {
+  const {setHeading, setActions} = usePage();
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   useEffect(() => {
     setHeading("Focus Timer");
-    setActions([]);
+    setActions([
+      <button
+        key={1}
+        className="text-text-secondary"
+        onClick={() => {
+          setIsOpenInfoModal(!isOpenInfoModal);
+        }}
+      >
+        <IoInformationCircleSharp
+          size={32}
+        />
+      </button>
+    ]);
   }, []);
 
   const { showToast } = useToast();
@@ -30,6 +81,8 @@ const FocusTimer = ()  => {
   const [pomoCount, setPomoCount] = useState(0);
 
   useEffect(() => {
+    requestPermission();
+
     const savedTask = localStorage.getItem("focusTaskId");
 
     const fetchTaskById = async (id) => {
@@ -82,10 +135,14 @@ const FocusTimer = ()  => {
           setActiveMode(1);
           setTargetTime(timerSettings.short_break_time * 60 * 1000);
         }
+
+        notifyMe("Time's up! Take a break!");
       } catch (error) {
         showToast("error", error.response?.data?.message || "Failed to update focus time");
       }
     } else {
+      notifyMe("Time's up! Get back to work!");
+
       setActiveMode(0);
       setTargetTime(timerSettings.focus_time * 60 * 1000);
     }
@@ -113,7 +170,6 @@ const FocusTimer = ()  => {
 
   useEffect(() => {
     fetchTimerSettings();
-    
   }, []);
 
   const changeModeTimer = (mode) => {
@@ -131,6 +187,7 @@ const FocusTimer = ()  => {
       default:
         break;
     }
+    reset();
   }
 
   const [isSpinning, setIsSpinning] = useState(false);
@@ -145,7 +202,6 @@ const FocusTimer = ()  => {
       if (activeMode === 0 && isRunning) {
         // Update task focus time
         const focusTime = Math.floor(timePassed / (60 * 1000));
-        console.log(focusTime);
         if (focusTime !== 0) {
           await updateTaskFocusTime(focusTask.id, focusTime);
           setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
@@ -168,7 +224,9 @@ const FocusTimer = ()  => {
 
   return (
     <>
-      <div className="flex flex-col items-center">
+      <div className="relative flex flex-col items-center gap-6">
+        {isOpenInfoModal && <InfoModal onClose={() => setIsOpenInfoModal(false)}/>}
+
         <div className="w-[400px] space-y-5">
           {/* Task Section */}
           <div className="flex gap-3 items-center">
