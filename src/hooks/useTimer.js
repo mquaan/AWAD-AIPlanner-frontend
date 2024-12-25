@@ -65,7 +65,7 @@ const useTimer = (onStart, onPause, onComplete) => {
 
   const pause = () => {
     setIsRunning(false);
-    if (onPause) onPause(targetTime - timeLeft);
+    if (onPause) onPause();
   };
 
   const reset = () => {
@@ -77,6 +77,7 @@ const useTimer = (onStart, onPause, onComplete) => {
     timeLeft: getTimeDiff(timeLeft),
     isRunning,
     setTargetTime,
+    timePassed: targetTime - timeLeft,
     start,
     pause,
     reset,

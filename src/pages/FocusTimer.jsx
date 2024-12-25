@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePage } from "../context/PageContext";
-import {getTaskById, updateTaskFocusTime} from "../service/taskApi";
+import {getTaskById, updateTaskFocusTime, updateTaskStatus} from "../service/taskApi";
 import { useToast } from "../context/ToastContext";
 import CheckableTaskCard from "../components/CheckableTaskCard";
 import Button from "../components/Button";
@@ -9,6 +9,7 @@ import useTimer from "../hooks/useTimer";
 import { TbReload } from "react-icons/tb";
 import { HiOutlineSelector } from "react-icons/hi";
 import FocusTaskModal from "../components/FocusTaskModal";
+import { FaPlay, FaPause } from "react-icons/fa6";
 
 const FocusTimer = ()  => {
   const { setHeading, setActions } = usePage();
@@ -46,15 +47,15 @@ const FocusTimer = ()  => {
     }
   }, []);
 
-  const onPauseTimer = (timePassed) => {
+  const onPauseTimer = async () => {
     if (activeMode === 0) {
       // Update task focus time
       const focusTime = Math.floor(timePassed / (60 * 1000));
 
       if (focusTime === 0) return;
-      
+
       try {
-        updateTaskFocusTime(focusTask.id, focusTime);
+        await updateTaskFocusTime(focusTask.id, focusTime);
         setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
       } catch (error) {
         showToast("error", error.response?.data?.message || "Failed to update focus time");
@@ -62,11 +63,11 @@ const FocusTimer = ()  => {
     }
   }
 
-  const onCompleteTimer = () => {
+  const onCompleteTimer = async () => {
     if (activeMode === 0) {
       // Update task focus time
       try {
-        updateTaskFocusTime(focusTask.id, timerSettings.focus_time);
+        await updateTaskFocusTime(focusTask.id, timerSettings.focus_time);
         setFocusTask({ ...focusTask, focus_time: focusTask.focus_time + timerSettings.focus_time });
 
         const nextCount = pomoCount + 1;
@@ -94,6 +95,7 @@ const FocusTimer = ()  => {
     timeLeft,
     setTargetTime,
     isRunning,
+    timePassed,
     start,
     pause,
     reset,
@@ -138,12 +140,30 @@ const FocusTimer = ()  => {
     setTimeout(() => setIsSpinning(false), 1000);
   }
 
-  const handleCompleteTask = () => {
-    setFocusTask(null);
-    localStorage.removeItem("focusTaskId");
-    setActiveMode(0);
-    setTargetTime(timerSettings.focus_time * 60 * 1000);
-    reset();
+  const handleCompleteTask = async () => {
+    try {
+      if (activeMode === 0 && isRunning) {
+        // Update task focus time
+        const focusTime = Math.floor(timePassed / (60 * 1000));
+        console.log(focusTime);
+        if (focusTime !== 0) {
+          await updateTaskFocusTime(focusTask.id, focusTime);
+          setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
+        }
+      }
+
+      // Update task status
+      await updateTaskStatus({ ...focusTask, status: 'Completed' });
+      showToast('success', 'Task completed');
+
+      setFocusTask(null);
+      localStorage.removeItem("focusTaskId");
+      setActiveMode(0);
+      setTargetTime(timerSettings.focus_time * 60 * 1000);
+      reset();
+    } catch (error) {
+      showToast('error', error.response?.data?.message || 'Failed to update task status');
+    }
   }
 
   return (
@@ -231,9 +251,11 @@ const FocusTimer = ()  => {
             <div className="flex gap-5">
               <Button
                 variant="primary"
-                className="w-[200px] uppercase"
+                className="w-[200px] uppercase text-base"
                 disabled={!focusTask}
                 onClick={() => (isRunning ? pause() : start())}
+                icon={isRunning ? FaPause : FaPlay}
+                iconLeft={false}
               >
                 {isRunning ? "Pause" : "Start"}
               </Button>
