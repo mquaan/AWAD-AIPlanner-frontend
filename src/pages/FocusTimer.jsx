@@ -46,6 +46,22 @@ const FocusTimer = ()  => {
     }
   }, []);
 
+  const onPauseTimer = (timePassed) => {
+    if (activeMode === 0) {
+      // Update task focus time
+      const focusTime = Math.floor(timePassed / (60 * 1000));
+
+      if (focusTime === 0) return;
+      
+      try {
+        updateTaskFocusTime(focusTask.id, focusTime);
+        setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
+      } catch (error) {
+        showToast("error", error.response?.data?.message || "Failed to update focus time");
+      }
+    }
+  }
+
   const onCompleteTimer = () => {
     if (activeMode === 0) {
       // Update task focus time
@@ -81,7 +97,7 @@ const FocusTimer = ()  => {
     start,
     pause,
     reset,
-  } = useTimer(null, null, onCompleteTimer);
+  } = useTimer(null, onPauseTimer, onCompleteTimer);
 
   const fetchTimerSettings = async () => {
       try {

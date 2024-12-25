@@ -28,7 +28,7 @@ const getTimeDiff = (diffInMSec) => {
 
 const useTimer = (onStart, onPause, onComplete) => {
   const [targetTime, setTargetTime] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(3000);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const useTimer = (onStart, onPause, onComplete) => {
 
   const pause = () => {
     setIsRunning(false);
-    if (onPause) onPause();
+    if (onPause) onPause(targetTime - timeLeft);
   };
 
   const reset = () => {
