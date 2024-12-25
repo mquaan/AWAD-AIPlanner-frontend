@@ -11,7 +11,7 @@ import { HiOutlineSelector } from "react-icons/hi";
 import FocusTaskModal from "../components/FocusTaskModal";
 import { FaPlay, FaPause } from "react-icons/fa6";
 import {notifyMe, requestPermission} from "../utils/notification.js";
-import {IoClose, IoInformationCircleSharp} from "react-icons/io5";
+import {IoInformationCircleSharp} from "react-icons/io5";
 import PropTypes from "prop-types";
 
 const InfoModal = ({ onClose }) => {
@@ -88,6 +88,10 @@ const FocusTimer = () => {
     const fetchTaskById = async (id) => {
       try {
         const response = await getTaskById(id);
+        if (response.data.status !== "InProgress") {
+          localStorage.removeItem("focusTaskId");
+          return;
+        }
         setFocusTask(response.data);
       } catch (error) {
         showToast("error", error.response?.data?.message || "Failed to fetch focus task");
@@ -148,6 +152,21 @@ const FocusTimer = () => {
     }
   }
 
+  const onRunningTimer = () => {
+    // Check if the task deadline is reached during the session
+    if (focusTask.estimated_end_time) {
+      const deadline = new Date(focusTask.estimated_end_time);
+      const now = new Date();
+
+      if (now > deadline) {
+        console.log({ ...focusTask, status: "Expired" });
+        setFocusTask({ ...focusTask, status: "Expired" });
+        notifyMe("Task deadline reached! Complete the task now!");
+        pause();
+      }
+    }
+  }
+
   const {
     timeLeft,
     setTargetTime,
@@ -156,7 +175,7 @@ const FocusTimer = () => {
     start,
     pause,
     reset,
-  } = useTimer(null, onPauseTimer, onCompleteTimer);
+  } = useTimer(null, onPauseTimer, onCompleteTimer, onRunningTimer);
 
   const fetchTimerSettings = async () => {
       try {
@@ -310,7 +329,7 @@ const FocusTimer = () => {
               <Button
                 variant="primary"
                 className="w-[200px] uppercase text-base"
-                disabled={!focusTask}
+                disabled={!focusTask || focusTask.status !== "InProgress"}
                 onClick={() => (isRunning ? pause() : start())}
                 icon={isRunning ? FaPause : FaPlay}
                 iconLeft={false}
@@ -318,7 +337,10 @@ const FocusTimer = () => {
                 {isRunning ? "Pause" : "Start"}
               </Button>
 
-              <button onClick={handleResetClick} disabled={!focusTask}>
+              <button
+                onClick={handleResetClick}
+                disabled={!focusTask || focusTask.status !== "InProgress"}
+              >
                 <TbReload
                   size={40}
                   className={isSpinning ? "animate-spin-once" : ""}

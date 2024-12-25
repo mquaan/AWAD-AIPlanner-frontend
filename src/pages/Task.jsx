@@ -178,7 +178,6 @@ const Task = () => {
   }
 
   const handleSave = (task) => {
-    console.log(task);
     if (task.id) {
       if (!task.isDeleted) {
         handleUpdateTask(task);
