@@ -14,6 +14,7 @@ import { useToast } from './context/ToastContext';
 import AuthLayout from './layouts/AuthLayout';
 import TaskProvider from './context/TaskContext';
 import Settings from './pages/Settings';
+import FocusTimer from './pages/FocusTimer';
 
 function App() {
   const { toast } = useToast();
@@ -28,6 +29,7 @@ function App() {
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/timer" element={<FocusTimer />} />
               <Route path="/account" element={<Account />} />
               <Route
                 path="/task"

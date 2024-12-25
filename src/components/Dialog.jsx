@@ -58,7 +58,7 @@ const Dialog = ({ isOpen, onClose, children, className }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[10000]">
       <div
-        className={twMerge("bg-white rounded-lg shadow-lg w-[700px] max-h-screen my-4 overflow-auto", className)}
+        className={twMerge("bg-white rounded-lg shadow-lg w-[700px] max-h-[calc(100vh-2rem)] overflow-auto", className)}
         ref={modalRef}
       >
         {children}

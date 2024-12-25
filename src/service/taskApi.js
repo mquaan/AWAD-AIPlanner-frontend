@@ -34,3 +34,16 @@ export const deleteTask = async (id) => {
   const response = await axiosInstance.delete(`/task/${id}`);
   return response;
 }
+
+export const getTaskById = async (id) => {
+  const response = await axiosInstance.get(`/task/${id}`);
+  return response;
+}
+
+
+export const updateTaskFocusTime = async (id, focusTime) => {
+  const response = await axiosInstance.put(`/task/focus/${id}`, {
+    "focus_time": focusTime,
+  });
+  return response;
+}

@@ -76,7 +76,6 @@ const TaskProvider = ({ children }) => {
 
     // Get tasks
     const handleGetTasks = async () => {
-      console.log('fetching tasks');
       try {
         const response = await getTasks(queryString);
         setTasks(response.data.data);
