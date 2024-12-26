@@ -27,6 +27,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('currentViewCalendar');
     localStorage.removeItem('filters');
     localStorage.removeItem('showSidebar');
+    localStorage.removeItem('focusTaskId');
+    localStorage.removeItem('pomoCount');
   };
 
   return (

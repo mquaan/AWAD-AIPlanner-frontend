@@ -6,6 +6,7 @@ import { useTask } from "../context/TaskContext";
 import Switch from "./Switch";
 import { SelectItem, Select } from "./Select";
 import { getSubjects } from "../service/subjectApi";
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const TaskViewModal = ({ onClose }) => {
   const { currentView, changeView, filters, updateFilters } = useTask();
@@ -14,19 +15,7 @@ const TaskViewModal = ({ onClose }) => {
 
   const [subjects, setSubjects] = useState([]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  useClickOutside(modalRef, onClose);
 
   useEffect(() => {
     const callGetSubjects = async () => {

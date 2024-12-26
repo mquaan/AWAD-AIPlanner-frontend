@@ -13,23 +13,12 @@ import { FaPlay, FaPause } from "react-icons/fa6";
 import {notifyMe, requestPermission} from "../utils/notification.js";
 import {IoInformationCircleSharp} from "react-icons/io5";
 import PropTypes from "prop-types";
+import {useNavigate} from "react-router-dom";
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const InfoModal = ({ onClose }) => {
   const modalRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  useClickOutside(modalRef, onClose);
 
   return (
     <div
@@ -50,8 +39,13 @@ InfoModal.propTypes = {
 }
 
 const FocusTimer = () => {
-  const {setHeading, setActions} = usePage();
+  const {setHeading, setActions, setDisableSidebar, hasAnyChanges, setHasAnyChanges} = usePage();
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
+
+  // const [hasAnyChanges, setHasAnyChanges] = useState(false);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     setHeading("Focus Timer");
     setActions([
@@ -67,6 +61,7 @@ const FocusTimer = () => {
         />
       </button>
     ]);
+    setHasAnyChanges(false);
   }, []);
 
   const { showToast } = useToast();
@@ -103,6 +98,47 @@ const FocusTimer = () => {
       fetchTaskById(savedTask);
     }
   }, []);
+
+  // Prevent user from leaving the page with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (!hasAnyChanges) return;
+
+      event.preventDefault();
+      event.returnValue = 'Changes you made may not be saved.';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasAnyChanges]);
+
+  // Prevent user from leaving the page with unsaved changes
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (!hasAnyChanges) return;
+
+      event.preventDefault();
+      const confirm = window.confirm('Changes you made may not be saved.');
+      if (!confirm) {
+        navigate(event.state?.url);
+      } else {
+        pause();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState, false);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [navigate, hasAnyChanges]);
+
+  const onStartTimer = () => {
+    setHasAnyChanges(true);
+  }
 
   const onPauseTimer = async () => {
     if (activeMode === 0) {
@@ -175,7 +211,11 @@ const FocusTimer = () => {
     start,
     pause,
     reset,
-  } = useTimer(null, onPauseTimer, onCompleteTimer, onRunningTimer);
+  } = useTimer(onStartTimer, onPauseTimer, onCompleteTimer, onRunningTimer);
+
+  useEffect(() => {
+    setDisableSidebar(isRunning);
+  }, [isRunning]);
 
   const fetchTimerSettings = async () => {
       try {
@@ -192,6 +232,11 @@ const FocusTimer = () => {
   }, []);
 
   const changeModeTimer = (mode) => {
+    if (mode === 0)
+      setHasAnyChanges(false);
+    else
+      setHasAnyChanges(true);
+
     setActiveMode(mode);
     switch (mode) {
       case 0:
@@ -355,6 +400,8 @@ const FocusTimer = () => {
         isOpen={isOpenFocusTaskModal}
         onClose={() => setIsOpenFocusTaskModal(false)}
         onSelect={(task) => {
+          setHasAnyChanges(true);
+
           setFocusTask(task);
           localStorage.setItem("focusTaskId", task.id);
           setIsOpenFocusTaskModal(false);

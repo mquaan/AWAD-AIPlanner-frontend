@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { twMerge } from 'tailwind-merge';
 import { LiaTimesSolid } from 'react-icons/lia';
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const DialogHeader = ({ title, onClose }) => {
   return (
@@ -39,19 +40,7 @@ const DialogFooter = ({ children }) => {
 const Dialog = ({ isOpen, onClose, children, className }) => {
   const modalRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  useClickOutside(modalRef, onClose);
 
   if (!isOpen) return null;
 

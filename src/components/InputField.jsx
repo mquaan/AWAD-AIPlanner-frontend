@@ -14,7 +14,7 @@ const InputField = forwardRef(({ type = "text", placeholder = "", className, err
   `;
 
   const inputClassName = twMerge(
-    'w-full h-full px-6 rounded-full outline-none bg-transparent placeholder-text-neutral disabled:cursor-not-allowed',
+    'w-full h-full px-6 rounded-lg outline-none bg-transparent placeholder-text-neutral disabled:cursor-not-allowed',
     type === 'password' && 'pr-[50px]',
     Icon && 'pl-[50px]',
   );
