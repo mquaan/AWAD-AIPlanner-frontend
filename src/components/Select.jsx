@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { LuChevronDown } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const SelectItem = ({ label, isSelected, onClick, className }) => {
   const defaultClassName = `px-4 py-2 cursor-pointer text-sm hover:bg-primary-light hover:text-primary transition
@@ -24,18 +25,7 @@ const Select = ({ children, placeholder, onChange, defaultValue, className }) =>
   const dropdownRef = useRef(null);
 
   // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  useClickOutside(dropdownRef, () => setIsOpen(false));
 
   const handleSelect = (value) => {
     setSelectedOption(value);

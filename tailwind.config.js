@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         "lalezar": ['Lalezar'],
+        "ds-digital": ['DS-Digital'],
       },
       colors: {
         "primary": "var(--primary-color)",
@@ -50,7 +51,10 @@ export default {
       width: {
         "sidebar-expanded": "var(--sidebar-width-expanded)",
         "sidebar-collapsed": "var(--sidebar-width-collapsed)",
-      }
+      },
+      animation: {
+        "spin-once": "spin 1s linear",
+      },
     },
   },
   plugins: [],

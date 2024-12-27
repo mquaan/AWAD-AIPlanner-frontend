@@ -1,25 +1,14 @@
 import PropTypes from 'prop-types';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { LiaTimesSolid } from 'react-icons/lia';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const FeedbackModal = ({ isOpen, onClose, feedback }) => {
   const modalRef = useRef(null);
 
-  useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
-          onClose();
-        }
-      };
-  
-      document.addEventListener("mousedown", handleClickOutside);
-  
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [onClose]);
+  useClickOutside(modalRef, onClose);
 
   if (!isOpen || !feedback) return null;
 

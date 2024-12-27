@@ -248,7 +248,7 @@ const Settings = () => {
                   <InputField
                     id="ip-interval-setting"
                     type="number"
-                    min="0"
+                    min="1"
                     value={newTimerSettings?.interval}
                     required
                     onChange={(e) => {
