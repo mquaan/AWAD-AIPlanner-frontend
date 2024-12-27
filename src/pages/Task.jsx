@@ -214,7 +214,7 @@ const Task = () => {
 
   return (
     <div className="relative">
-      {isLoading && <Loading />}
+      {isLoading && <Loading content="Generating..." />}
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
       )}      

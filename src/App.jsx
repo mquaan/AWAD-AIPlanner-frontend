@@ -26,7 +26,15 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route element={<PrivateRoute />}>
             <Route element={<MainLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+              {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+              <Route
+                path="/dashboard"
+                element={
+                  <TaskProvider>
+                    <Dashboard />
+                  </TaskProvider>
+                }
+              />
               <Route path="/settings" element={<Settings />} />
               <Route path="/account" element={<Account />} />
               <Route
