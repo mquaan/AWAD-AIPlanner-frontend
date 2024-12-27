@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { twMerge } from 'tailwind-merge';
 
-const Button = ({ children, onClick=null, type='button', variant='primary', className='', icon: Icon, ...props }) => {
+const Button = ({ children, onClick=null, type='button', variant='primary', className='', icon: Icon, iconLeft=true, ...props }) => {
   let variantStyle;
   if (variant === 'primary') {
     variantStyle = 'bg-primary hover:bg-button-hover text-white';
@@ -24,8 +24,9 @@ const Button = ({ children, onClick=null, type='button', variant='primary', clas
       )}
       {...props}
     >
-      {Icon && <Icon className='text-xl' />}
+      {iconLeft && Icon && <Icon className='text-xl' />}
       {children}
+      {!iconLeft && Icon && <Icon className='text-xl' />}
     </button>
   );
 };
@@ -37,6 +38,7 @@ Button.propTypes = {
   variant: PropTypes.oneOf(['primary', 'secondary', 'outline']),
   className: PropTypes.string,
   icon: PropTypes.elementType,
+  iconLeft: PropTypes.bool,
 };
 
 export default Button;

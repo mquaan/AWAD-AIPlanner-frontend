@@ -1,16 +1,16 @@
-import { RxDashboard, RxLayout, RxTimer } from "react-icons/rx";
-import { BiLogOut } from "react-icons/bi";
-import { SlSettings } from "react-icons/sl";
-import { LuUser } from "react-icons/lu";
+import {RxDashboard, RxLayout, RxTimer} from "react-icons/rx";
+import {BiLogOut} from "react-icons/bi";
+import {SlSettings} from "react-icons/sl";
+import {LuUser} from "react-icons/lu";
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import '../styles/sidebar.css';
-import { useAuth } from "../context/AuthContext";
-import { useToast } from '../context/ToastContext';
-import { useState } from "react";
+import {useAuth} from "../context/AuthContext";
+import {useToast} from '../context/ToastContext';
+import {useState} from "react";
 import DialogConfirm from "./DialogConfirm";
-import { usePage } from '../context/PageContext';
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import {usePage} from '../context/PageContext';
+import {FaAngleLeft, FaAngleRight} from "react-icons/fa6";
 
 const MENU_ITEMS = [
   {
@@ -40,25 +40,54 @@ const MENU_ITEMS = [
   },
 ];
 
-const SidebarHeader = ({ expanded }) => {
+const confirmLeaveSite = () => {
+  return window.confirm('Changes you made may not be saved.');
+}
+
+const SidebarHeader = ({ expanded, disabled }) => {
+  const { hasAnyChanges } = usePage();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (disabled) return;
+
+    if (hasAnyChanges && !confirmLeaveSite()) {
+      return;
+    }
+
+    navigate('/');
+  }
+
   return (
-    <div className="flex items-center px-4 py-5 bg-white sticky top-0">
-      <Link to="/">
-      {expanded ? 
+    <div
+      className={`flex items-center px-4 py-5 bg-white sticky top-0 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      onClick={handleClick}
+    >
+      {expanded ?
         <img src="/logo-with-text.svg" alt="logo" className="h-10" />
         :
         <img src="/logo-icon.svg" alt="logo" className="h-10" />
       }
-      </Link>
     </div>
   );
 };
 
-const SidebarFooter = ({ expanded }) => {
+const SidebarFooter = ({ expanded, disabled }) => {
   const { logout } = useAuth();
   const { showToast } = useToast();
+  const { hasAnyChanges } = usePage();
 
   const [showDialogConfirm, setShowDialogConfirm] = useState(false);
+
+  const handleClick = () => {
+    if (disabled) return;
+
+    if (hasAnyChanges && !confirmLeaveSite()) {
+      return;
+    }
+
+    setShowDialogConfirm(true)
+  }
 
   const handleLogout = async() => {
     try{
@@ -74,10 +103,11 @@ const SidebarFooter = ({ expanded }) => {
     <>
       <div className="px-4 pb-5 pt-2 bg-white flex flex-col items-center">
         <div
-          className={`w-full flex items-center p-2 rounded-md hover:cursor-pointer hover:bg-primary-light hover:text-primary ${
-            !expanded && "w-fit"
-          }`}
-          onClick={() => setShowDialogConfirm(true)}
+          className={`w-full flex items-center p-2 rounded-md
+          ${disabled ? 'cursor-not-allowed' : 'hover:cursor-pointer hover:bg-primary-light hover:text-primary'}
+          ${!expanded && "w-fit"}
+          `}
+          onClick={handleClick}
         >
           <BiLogOut size={24} />
           {expanded && <span className="ml-2">Logout</span>}
@@ -95,24 +125,46 @@ const SidebarFooter = ({ expanded }) => {
   );
 };
 
-const SidebarItem = ({ expanded, icon, title, path }) => {
+const SidebarItem = ({ expanded, icon, title, path, disabled }) => {
   const pathName = useLocation().pathname;
   const isActive = pathName.includes(path);
 
+  const { hasAnyChanges } = usePage();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (disabled) return;
+
+    if (pathName === path) {
+      return;
+    }
+
+    if (hasAnyChanges && pathName.includes('/timer') && !confirmLeaveSite()) {
+      return;
+    }
+
+    navigate(path);
+  }
+
   return (
-    <Link to={path} className="w-full">
-      <div className={`flex items-center p-2 rounded-md ${isActive ? 'bg-primary text-white shadow-md' : 'hover:bg-primary-light hover:text-primary'} ${!expanded && 'w-fit'}`}>
+    <div className={`w-full ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleClick}>
+      <div
+        className={`flex items-center p-2 rounded-md 
+        ${isActive ? 'bg-primary text-white shadow-md' : !disabled && 'hover:bg-primary-light hover:text-primary'} 
+        ${!expanded && 'w-fit'}
+        `}
+      >
         {icon}
         {expanded && <span className="ml-2">{title}</span>}
       </div>
-    </Link>
+    </div>
   );
 };
 
 const Sidebar = () => {
   // const [isHovered, setIsHovered] = useState(false);
 
-  const { showSidebar, toggleSidebar } = usePage();
+  const { showSidebar, toggleSidebar, disableSidebar } = usePage();
   const [showToggle, setShowToggle] = useState(false);
 
   // const handleMouseEnter = () => {
@@ -134,7 +186,7 @@ const Sidebar = () => {
         // onMouseEnter={handleMouseEnter}
         // onMouseLeave={handleMouseLeave}
       >
-        <SidebarHeader expanded={showSidebar} />
+        <SidebarHeader expanded={showSidebar} disabled={disableSidebar} />
         <div className="h-full mt-2 px-4 py-5 flex flex-col items-center overflow-x-hidden overflow-y-auto">
           {MENU_ITEMS.map((item, index) => (
             <SidebarItem
@@ -143,10 +195,11 @@ const Sidebar = () => {
               title={item.title}
               path={item.path}
               expanded={showSidebar}
+              disabled={disableSidebar}
             />
           ))}
         </div>
-        <SidebarFooter expanded={showSidebar} />
+        <SidebarFooter expanded={showSidebar} disabled={disableSidebar} />
       </div>
       <div
         className={`sidebar-toggle-area top-[3.5rem] flex items-center justify-center fixed ${showSidebar ? 'expanded' : 'collapsed'} transition-all duration-300`}
@@ -171,15 +224,20 @@ SidebarItem.propTypes = {
   icon: PropTypes.element,
   title: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
 };
 
 SidebarHeader.propTypes = {
   expanded: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 SidebarFooter.propTypes = {
   expanded: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
+// Sidebar.propTypes = {
+// }
 
 export default Sidebar;

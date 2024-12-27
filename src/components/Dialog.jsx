@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { twMerge } from 'tailwind-merge';
 import { LiaTimesSolid } from 'react-icons/lia';
+import useClickOutside from "../hooks/useClickOutside.js";
 
 const DialogHeader = ({ title, onClose }) => {
   return (
@@ -39,26 +40,14 @@ const DialogFooter = ({ children }) => {
 const Dialog = ({ isOpen, onClose, children, className }) => {
   const modalRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [onClose]);
+  useClickOutside(modalRef, onClose);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[10000]">
       <div
-        className={twMerge("bg-white rounded-lg shadow-lg w-[700px] max-h-screen my-4 overflow-auto", className)}
+        className={twMerge("bg-white rounded-lg shadow-lg w-[700px] max-h-[calc(100vh-2rem)] overflow-auto", className)}
         ref={modalRef}
       >
         {children}

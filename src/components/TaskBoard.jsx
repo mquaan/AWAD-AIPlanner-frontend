@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/core';
 import PropTypes from 'prop-types';
 import { RiCalendarCheckLine } from 'react-icons/ri';
 import { useState } from 'react';
+import { formatDate } from '../utils/datetime';
 
 const TaskBoard = ({ task, onClick }) => {
   const [clickTimeout, setClickTimeout] = useState(null);
@@ -19,23 +20,23 @@ const TaskBoard = ({ task, onClick }) => {
     }
     : undefined;
 
-  // Hàm format thời gian
-  const formatDate = (isoDate) => {
-    const date = new Date(isoDate);
-    const now = new Date();
+  // // Hàm format thời gian
+  // const formatDate = (isoDate) => {
+  //   const date = new Date(isoDate);
+  //   const now = new Date();
 
-    const isCurrentYear = date.getFullYear() === now.getFullYear();
+  //   const isCurrentYear = date.getFullYear() === now.getFullYear();
 
-    const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      day: '2-digit',
-      month: '2-digit',
-      ...(isCurrentYear ? {} : { year: 'numeric' }),
-    };
+  //   const options = {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     day: '2-digit',
+  //     month: '2-digit',
+  //     ...(isCurrentYear ? {} : { year: 'numeric' }),
+  //   };
 
-    return new Intl.DateTimeFormat('vi-VN', options).format(date);
-  };
+  //   return new Intl.DateTimeFormat('vi-VN', options).format(date);
+  // };
 
   const handleMouseDown = () => {
     const timeout = setTimeout(() => setClickTimeout(null), 150); // Set thời gian để phân biệt drag và click
@@ -64,14 +65,14 @@ const TaskBoard = ({ task, onClick }) => {
     >
       {/* Priority circle */}
       <div
-        className={`mt-4 w-3 h-3 rounded-full ${task.priority === 'High'
+        className={`flex-none mt-4 w-3 h-3 rounded-full ${task.priority === 'High'
             ? 'bg-priority-high'
             : task.priority === 'Medium'
               ? 'bg-priority-medium'
               : 'bg-priority-low'
           }`}
       ></div>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 overflow-hidden">
         <div className="flex flex-col gap-1">
           <h3 className="font-medium">{task.name}</h3>
           <p className="text-sm text-gray-600">{task.description}</p>

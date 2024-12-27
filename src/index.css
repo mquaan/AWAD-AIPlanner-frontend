@@ -7,6 +7,11 @@
   src: local('Lalezar'), url('./assets/fonts/Lalezar-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'DS-Digital';
+  src: url('./assets/fonts/DS-DIGI.TTF') format('truetype');
+}
+
 @layer base {
   :root {
     --primary-color: #ff6542;
