@@ -26,7 +26,7 @@ const getTimeDiff = (diffInMSec) => {
   };
 };
 
-const useTimer = (onStart, onPause, onComplete, onRunning) => {
+const useTimer = (onStart, onPause, onComplete, onRunning, onReset) => {
   const [targetTime, setTargetTime] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -72,6 +72,7 @@ const useTimer = (onStart, onPause, onComplete, onRunning) => {
   const reset = () => {
     setIsRunning(false);
     setTimeLeft(targetTime);
+    if (onReset) onReset();
   }
 
   return {
