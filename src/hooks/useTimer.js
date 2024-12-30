@@ -37,7 +37,12 @@ const useTimer = (onStart, onPause, onComplete, onRunning, onReset) => {
   }, [targetTime]);
 
   useEffect(() => {
-    if (isRunning && targetTime) {
+    if (isRunning && targetTime !== null) {
+      if (targetTime === 0) {
+        setIsRunning(false);
+        if (onComplete) onComplete();
+      }
+
       const countdownInterval = setInterval(() => {
         if (timeLeft - 1000 <= 0) {
           setIsRunning(false);
