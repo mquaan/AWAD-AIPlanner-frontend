@@ -189,7 +189,8 @@ const FocusTimer = () => {
         showToast("error", error.response?.data?.message || "Failed to update focus time");
       }
     } else {
-      notifyMe("Time's up! Get back to work!");
+      if ((activeMode === 1 && timerSettings.short_break_time !== 0) || (activeMode === 2 && timerSettings.long_break_time !== 0))
+        notifyMe("Time's up! Get back to work!");
 
       setActiveMode(0);
       setTargetTime(timerSettings.focus_time * 60 * 1000);
