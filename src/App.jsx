@@ -15,6 +15,7 @@ import AuthLayout from './layouts/AuthLayout';
 import TaskProvider from './context/TaskContext';
 import Settings from './pages/Settings';
 import FocusTimer from './pages/FocusTimer';
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 
 function App() {
   const { toast } = useToast();
@@ -52,6 +53,7 @@ function App() {
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
         </Routes>
       </Router>
