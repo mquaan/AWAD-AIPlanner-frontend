@@ -26,10 +26,10 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const handleMenuClick = (index) => {
-    if (index === 0) {
+  const handleMenuClick = (value) => {
+    if (value === "dashboard") {
       navigate('/dashboard');
-    } else if (index === 1) {
+    } else if (value === "logout") {
       setShowDialogConfirm(true);
     }
   }
@@ -57,8 +57,8 @@ const Header = () => {
                   className={"absolute top-10 right-0"} 
                   // items={items}
                   onItemClick={handleMenuClick}>
-                  <MenuItem label="Go to dashboard" />
-                  <MenuItem label="Logout" />
+                  <MenuItem value="dashboard" label="Go to dashboard" />
+                  <MenuItem value="logout" label="Logout" />
                 </Menu>
               }
             </div>
