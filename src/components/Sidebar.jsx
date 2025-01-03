@@ -129,7 +129,7 @@ const SidebarItem = ({ expanded, icon, title, path, disabled }) => {
   const pathName = useLocation().pathname;
   const isActive = pathName.includes(path);
 
-  const { hasAnyChanges } = usePage();
+  const { hasAnyChanges, setHasAnyChanges } = usePage();
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -139,8 +139,12 @@ const SidebarItem = ({ expanded, icon, title, path, disabled }) => {
       return;
     }
 
-    if (hasAnyChanges && pathName.includes('/timer') && !confirmLeaveSite()) {
-      return;
+    if (hasAnyChanges && pathName.includes('/timer')) {
+      if (confirmLeaveSite()) {
+        setHasAnyChanges(false);
+      } else {
+        return;
+      }
     }
 
     navigate(path);

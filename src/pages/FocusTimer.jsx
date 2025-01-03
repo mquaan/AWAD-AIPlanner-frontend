@@ -128,6 +128,7 @@ const FocusTimer = () => {
         navigate(event.state?.url);
       } else {
         pause();
+        setHasAnyChanges(false);
       }
     };
 
