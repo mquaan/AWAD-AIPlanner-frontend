@@ -24,7 +24,7 @@ const Boxes = ({ title, value, Icon, text, bg }) => {
   return (
     <div className="w-[12vw] py-6 px-3 gap-3 flex flex-col items-center justify-center bg-white border shadow-md rounded-2xl">
       <div className={`flex items-center p-3 rounded-2xl ${bg}`}>
-        <Icon className="w-6 h-6"/>
+        <Icon className="w-6 h-6" />
       </div>
       <h1 className={`font-bold text-lg ${text}`}>{title}</h1>
       <p className="font-semibold text-md">{value}</p>
@@ -33,16 +33,16 @@ const Boxes = ({ title, value, Icon, text, bg }) => {
 };
 
 const UpNext = ({ task }) => {
-  const priorityBgColor = 
+  const priorityBgColor =
     task.priority === "High" ? "bg-priority-high" :
-    task.priority === "Medium" ? "bg-priority-medium" :
-    task.priority === "Low" ? "bg-priority-low" : "bg-gray-500";
+      task.priority === "Medium" ? "bg-priority-medium" :
+        task.priority === "Low" ? "bg-priority-low" : "bg-gray-500";
 
-  const priorityTextColor = 
+  const priorityTextColor =
     task.priority === "High" ? "text-priority-high" :
-    task.priority === "Medium" ? "text-priority-medium" :
-    task.priority === "Low" ? "text-priority-low" : "text-gray-500";
-  
+      task.priority === "Medium" ? "text-priority-medium" :
+        task.priority === "Low" ? "text-priority-low" : "text-gray-500";
+
 
   return (
     <div className="flex gap-2">
@@ -138,8 +138,8 @@ const SubjectDonutChart = ({ data }) => {
     "#6F94B5", // Slate blue
     "#96C8FF", // Light periwinkle
     "#C0D7FF", // Light ice blue
-  ]; 
-  
+  ];
+
   const chartData = {
     labels,
     datasets: [
@@ -168,11 +168,11 @@ const SubjectDonutChart = ({ data }) => {
       title: {
         display: true,
         text: "Subject Task Distribution",
-        color: "#111827", 
+        color: "#111827",
         font: {
           size: 15,
         },
-        padding: { top: 10, bottom: 20 }, 
+        padding: { top: 10, bottom: 20 },
       },
       tooltip: {
         enabled: true,
@@ -199,7 +199,7 @@ const SubjectDonutChart = ({ data }) => {
 
   return (
     <div className={`flex justify-center p-4 bg-white border shadow-lg rounded-2xl ${showSidebar ? 'w-[24vw]' : 'w-[28vw]'}`} >
-      <Doughnut data={chartData} options={options}/>
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 };
@@ -229,20 +229,20 @@ const Dashboard = () => {
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
   const onDateClick = (day) => setSelectedDate(day);
   const removeSelectedDate = () => setSelectedDate(null);
-  const isTaskDate = (day) => 
+  const isTaskDate = (day) =>
     tasks.some((task) => (
       formatDate(task.estimated_start_time) === formatDate(day) ||
       formatDate(task.estimated_end_time) === formatDate(day)
     ))
 
-  const getTasksName = (day) => tasks.filter((task) => formatDate(task.estimated_start_time) === formatDate(day) && 
-        formatDate(task.estimated_end_time) === formatDate(day)).map((task) => task.name);
-    
+  const getTasksName = (day) => tasks.filter((task) => formatDate(task.estimated_start_time) === formatDate(day) &&
+    formatDate(task.estimated_end_time) === formatDate(day)).map((task) => task.name);
+
   const getTasksNameStart = (day) => tasks.filter((task) => formatDate(task.estimated_start_time) === formatDate(day) &&
-        formatDate(task.estimated_end_time) !== formatDate(day)).map((task) => task.name + ' (start)');
+    formatDate(task.estimated_end_time) !== formatDate(day)).map((task) => task.name + ' (start)');
   const getTasksNameEnd = (day) => tasks.filter((task) => formatDate(task.estimated_end_time) === formatDate(day) &&
-        formatDate(task.estimated_start_time) !== formatDate(day)).map((task) => task.name + ' (end)');
- 
+    formatDate(task.estimated_start_time) !== formatDate(day)).map((task) => task.name + ' (end)');
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".calendar")) {
@@ -299,7 +299,7 @@ const Dashboard = () => {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
-        
+
         const taskName = isTaskDate(cloneDay) ? [...getTasksName(cloneDay), ...getTasksNameStart(cloneDay), ...getTasksNameEnd(cloneDay)] : null;
 
         days.push(
@@ -308,17 +308,16 @@ const Dashboard = () => {
             onClick={() => onDateClick(cloneDay)}
             onMouseEnter={(e) => taskName && handleMouseEnter(e, taskName)}
             onMouseLeave={handleMouseLeave}
-            className={`p-[6px] text-center text-sm cursor-pointer rounded-full ${
-              !isSameMonth(day, monthStart)
+            className={`p-[6px] text-center text-sm cursor-pointer rounded-full ${!isSameMonth(day, monthStart)
                 ? 'text-gray-400'
                 : isSameDay(day, currentDate)
-                ? 'bg-blue-200'
-                : isTaskDate(day)
-                ? 'bg-green-100 hover:bg-green-200'
-                : isSameDay(day, selectedDate)
-                ? 'bg-sky-100'
-                : 'hover:bg-sky-100'
-            }`}
+                  ? 'bg-blue-200'
+                  : isTaskDate(day)
+                    ? 'bg-green-100 hover:bg-green-200'
+                    : isSameDay(day, selectedDate)
+                      ? 'bg-sky-100'
+                      : 'hover:bg-sky-100'
+              }`}
           >
             {format(day, 'd')}
           </div>
@@ -389,18 +388,18 @@ const Dashboard = () => {
     const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Bắt đầu từ thứ 2
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6); // Tới Chủ nhật
-    
+
     const dayTaskCount = Array(7).fill(1);
-  
+
     tasks.forEach((task) => {
       if (!task.estimated_start_time || !task.estimated_end_time) return;
       const startDate = new Date(task.estimated_start_time);
       const endDate = new Date(task.estimated_end_time);
-  
+
       for (let i = 0; i < 7; i++) {
         const currentDay = new Date(startOfWeek);
         currentDay.setDate(startOfWeek.getDate() + i);
-  
+
         if (
           startDate <= currentDay &&
           endDate >= currentDay &&
@@ -410,7 +409,7 @@ const Dashboard = () => {
         }
       }
     });
-  
+
     return {
       labels: ["M", "T", "W", "T", "F", "Sa", "Su"],
       datasets: [
@@ -455,7 +454,7 @@ const Dashboard = () => {
       <div className="w-full h-full flex flex-col items-center justify-center gap-4 mt-[-10px]">
         <div className="flex w-full items-center justify-between">
           <div
-            className="max-w-[15vw] flex gap-2 items-center justify-between"
+            className="max-w-[12vw] flex gap-2 items-center justify-between"
           >
             <div className="flex flex-col gap-1 w-full text-xl">
               <div className="font-semibold flex gap-1">
@@ -464,15 +463,15 @@ const Dashboard = () => {
                 <img
                   src={profile?.avatar}
                   alt="avatar"
-                  className="w-8 h-8 rounded-full"
-                  />
+                  className="w-6 h-6 rounded-full"
+                />
                 <p>!</p>
               </div>
             </div>
           </div>
-          
+
           <div className="flex gap-3 items-center justify-between">
-            <div 
+            <div
               onClick={() => navigate("/task")}
               className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
                         hover:shadow-lg"
@@ -480,11 +479,11 @@ const Dashboard = () => {
               <div className="flex items-center justify-center">
                 <MdManageHistory className="w-5 h-5 text-primary" />
               </div>
-              <div className="font-semibold">
+              <div className="font-semibold text-[15px]">
                 Manage Tasks
               </div>
             </div>
-            <div 
+            <div
               onClick={() => navigate("/timer")}
               className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
                         hover:shadow-lg"
@@ -492,11 +491,11 @@ const Dashboard = () => {
               <div className="flex items-center justify-center">
                 <FaPlay className="w-4 h-4 text-primary" />
               </div>
-              <div className="font-semibold">
+              <div className="font-semibold text-[15px]">
                 Focus Timer
               </div>
             </div>
-            <div 
+            <div
               onClick={handleGetFeedback}
               className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
                         hover:shadow-lg"
@@ -504,10 +503,10 @@ const Dashboard = () => {
               <div className="flex items-center justify-center">
                 <TbAnalyze className="w-5 h-5 text-primary" />
               </div>
-              <div className="font-semibold">
+              <div className="font-semibold text-[15px]">
                 AI Analyze
               </div>
-            </div>  
+            </div>
           </div>
           <div className="w-[25vw] h-full items-center justify-center flex flex-col gap-2 ">
             <div className="flex gap-4 text-lg">
@@ -519,28 +518,28 @@ const Dashboard = () => {
         <div className="w-full flex gap-12">
           <div className="w-full flex flex-col gap-4">
             <div className="flex w-full justify-between">
-              <Boxes 
+              <Boxes
                 title="To Do"
                 value={tasks.filter((task) => task.status === "ToDo").length + " tasks"}
                 Icon={FcTodoList}
                 text="text-blue-500"
                 bg="bg-blue-100"
               />
-              <Boxes 
+              <Boxes
                 title="In Progress"
                 value={tasks.filter((task) => task.status === "InProgress").length + " tasks"}
                 Icon={FcServices}
                 text="text-orange-500"
                 bg="bg-orange-100"
               />
-              <Boxes 
+              <Boxes
                 title="Completed"
                 value={tasks.filter((task) => task.status === "Completed").length + " tasks"}
                 Icon={FcOk}
                 text="text-green-500"
                 bg="bg-green-100"
               />
-              <Boxes 
+              <Boxes
                 title="Expired"
                 value={tasks.filter((task) => task.status === "Expired").length + " tasks"}
                 Icon={FcExpired}
@@ -556,43 +555,55 @@ const Dashboard = () => {
                 </div>
                 <div className="flex flex-col p-4 items-center justify-between h-full bg-white border shadow-lg rounded-2xl">
                   <p className="font-bold">Task Now In Progress</p>
-                  {tasks.filter((task) => task.status === "InProgress")
-                    .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time))
-                    .slice(0, 1)
-                    .map((task) => (
-                      <div key={task.id} className="flex flex-col items-center">
-                        <p className="text-[#50998f] font-semibold">{task.name}</p>
-                        <div className="flex w-[20vw]">
-                          <p className="text-[12px] text-gray-700">
-                            {formatUpNext(task.estimated_start_time)}
-                          </p>
-                          <div className="flex flex-col w-full gap-1 justify-center items-center mt-3">
-                            <div className="w-full bg-gray-200 rounded-full h-2.5">
-                              <div
-                                className="bg-[#79cec3] h-2.5 rounded-full"
-                                style={{
-                                  width: `${Math.min(
-                                    100,
-                                    (new Date() - new Date(task.estimated_start_time)) /
-                                      (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
+                  {tasks.filter((task) => task.status === "InProgress").length === 0 ? (
+                    <p className="text-gray-500">There are no tasks in progress</p>
+                  ) : (
+                    tasks.filter((task) => task.status === "InProgress")
+                      .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time))
+                      .slice(0, 1)
+                      .map((task) => (
+                        <div key={task.id} className="flex flex-col items-center">
+                          <p className="text-[#50998f] font-semibold">{task.name}</p>
+                          <div className="flex w-[20vw]">
+                            <p className="text-[12px] text-gray-700">
+                              {formatUpNext(task.actual_start_time)}
+                            </p>
+                            <div className="flex flex-col w-full gap-1 justify-center items-center mt-3">
+                              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                                <div
+                                  className="bg-[#79cec3] h-2.5 rounded-full"
+                                  style={{
+                                    width: `${Math.min(
+                                      100,
+                                      (progressTime - new Date(task.actual_start_time)) /
+                                      (new Date(task.estimated_end_time) - new Date(task.actual_start_time)) *
                                       100
-                                  )}%`,
-                                }}
-                              ></div>
+                                    )}%`,
+                                  }}
+                                ></div>
+                              </div>
+                              {task.actual_start_time && task.estimated_end_time ? 
+                                (
+                                  <div className="text-[13px] font-medium text-[#2c382e] bg-[#79cec3] rounded-full py-1 px-2">
+                                    {((progressTime - new Date(task.actual_start_time)) /
+                                    (new Date(task.estimated_end_time) - new Date(task.actual_start_time)) * 100).toFixed(0)}%
+                                  </div>
+                                ) : 
+                                (
+                                  null
+                                )
+                              }
                             </div>
-                            <div className="text-[13px] font-medium text-[#2c382e] bg-[#79cec3] rounded-full py-1 px-2">
-                              {((progressTime - new Date(task.estimated_start_time)) /
-                                (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
-                                100).toFixed(0)}%
-                            </div>
+                            {task.actual_start_time && task.estimated_end_time ? (
+                              <p className="text-[12px] text-gray-700 ml-3">
+                                {formatUpNext(task.estimated_end_time)}
+                              </p>) : <p className="text-[12px] font-semibold text-gray-700 ml-3">
+                              Keep doing
+                            </p>}
                           </div>
-                          <p className="ml-3 text-[12px] text-gray-700">
-                            {formatUpNext(task.estimated_end_time)}
-                          </p>
-                      </div>
-                      </div>
-                  ))}
-                  
+                        </div>
+                      ))
+                  )}
                 </div>
               </div>
             </div>
@@ -604,46 +615,46 @@ const Dashboard = () => {
               {renderCells()}
 
               {tooltip.visible && (
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '150px',
-                  top: tooltip.y,
-                  left: tooltip.x,
-                  transform: 'translate(-50%, -100%)',
-                  backgroundColor: '#FFEDE1',
-                  color: 'black',
-                  padding: '5px 10px',
-                  borderRadius: '5px',
-                  pointerEvents: 'none',
-                  fontSize: '13px',
-                }}
-              >
-                <ul className="list-disc pl-4">
-                  {tooltip.text.map((task, index) => (
-                    <li key={index}>
-                      {task}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <div
+                  style={{
+                    position: 'absolute',
+                    width: '150px',
+                    top: tooltip.y,
+                    left: tooltip.x,
+                    transform: 'translate(-50%, -100%)',
+                    backgroundColor: '#FFEDE1',
+                    color: 'black',
+                    padding: '5px 10px',
+                    borderRadius: '5px',
+                    pointerEvents: 'none',
+                    fontSize: '13px',
+                  }}
+                >
+                  <ul className="list-disc pl-4">
+                    {tooltip.text.map((task, index) => (
+                      <li key={index}>
+                        {task}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
-            
+
             <div className="w-full px-6 py-4 border shadow-lg rounded-2xl bg-white">
               <h1 className="font-bold text-xl mb-2">Up next</h1>
               <div className="flex flex-col gap-6">
                 {tasks.filter((task) => task.estimated_end_time !== null && task.status !== "Completed" && task.status !== "Expired")
                   .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time)).slice(0, 3).map((task) => (
-                  <UpNext key={task.id} task={task} />
-                ))}
+                    <UpNext key={task.id} task={task} />
+                  ))}
 
               </div>
             </div>
           </div>
         </div>
         {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
-        
+
       </div>
     </div>
   );
