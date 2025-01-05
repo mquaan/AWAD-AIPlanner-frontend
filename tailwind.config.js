@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         "lalezar": ['Lalezar'],
         "ds-digital": ['DS-Digital'],
+        "orbitron": ['Orbitron'],
       },
       colors: {
         "primary": "var(--primary-color)",

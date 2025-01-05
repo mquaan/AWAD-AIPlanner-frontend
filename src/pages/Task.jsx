@@ -193,7 +193,7 @@ const Task = () => {
     setIsLoading(true);
     setShowFeedback(true);
     try {
-      const response = await getFeedback();
+      const response = await getFeedback("suggest");
       setFeedback(response.data.Candidates[0].Content.Parts[0]);
     } catch (error) {
       showToast('error', error.response?.data?.message || 'Failed to get feedback');
@@ -213,7 +213,7 @@ const Task = () => {
 
   return (
     <div className="relative">
-      {isLoading && <Loading />}
+      {isLoading && <Loading content="Generating..." />}
       {showViewModal && (
         <TaskViewModal onClose={() => setShowViewModal(false)} />
       )}      
