@@ -463,7 +463,7 @@ const Dashboard = () => {
                 <img
                   src={profile?.avatar}
                   alt="avatar"
-                  className="w-6 h-6 rounded-full"
+                  className="w-6 h-6 rounded-full flex-none"
                 />
                 <p>!</p>
               </div>
