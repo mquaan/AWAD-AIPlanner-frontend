@@ -54,8 +54,8 @@ function LoginForm() {
             error={errors.password?.message}
             icon={FaLock}
           />
-          <Link to="/forgot-password" className='w-fit text-text-primary text-sm'>Forgot password?</Link>
         </div>
+        <Link to="/forgot-password" className='flex pr-2 justify-end text-text-primary text-sm'>Forgot password?</Link>
         <Button type="submit" className='w-full'>Log In</Button>
         <p className='w-fit mx-auto'>or</p>
       </form>
