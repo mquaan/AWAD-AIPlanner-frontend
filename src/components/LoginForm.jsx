@@ -46,13 +46,16 @@ function LoginForm() {
           error={errors.email?.message}
           icon={FaUser}
         />
-        <InputField
-          type="password"
-          placeholder="Password"
-          {...register('password', { required: 'Password is required' })}
-          error={errors.password?.message}
-          icon={FaLock}
-        />
+        <div className="space-y-1">
+          <InputField
+            type="password"
+            placeholder="Password"
+            {...register('password', { required: 'Password is required' })}
+            error={errors.password?.message}
+            icon={FaLock}
+          />
+          <Link to="/forgot-password" className='w-fit text-text-primary text-sm'>Forgot password?</Link>
+        </div>
         <Button type="submit" className='w-full'>Log In</Button>
         <p className='w-fit mx-auto'>or</p>
       </form>

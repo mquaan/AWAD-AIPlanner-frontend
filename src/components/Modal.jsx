@@ -19,6 +19,8 @@ import { getStatusColor } from '../utils/status';
 import { useToast } from '../context/ToastContext';
 import Menu, { MenuItem } from './Menu';
 import DialogConfirm from './DialogConfirm';
+import {RxTimer} from "react-icons/rx";
+import {useNavigate} from "react-router-dom";
 
 const Modal = ({ onCancel, onSave }) => {
   const { selectedTask } = useTask();
@@ -31,6 +33,8 @@ const Modal = ({ onCancel, onSave }) => {
     estimated_start_time: selectedTask.estimated_start_time ? new Date(selectedTask.estimated_start_time) : null,
     estimated_end_time: selectedTask.estimated_end_time ? new Date(selectedTask.estimated_end_time) : null,
   });
+
+  const navigate = useNavigate();
 
   const [subjects, setSubjects] = useState([])
 
@@ -158,10 +162,13 @@ const Modal = ({ onCancel, onSave }) => {
     }
   };
 
-  const handleMenuClick = (index) => {
-    console.log(index);
-    if (index === 0) {
+  const handleMenuClick = (value) => {
+    if (value === "delete") {
       setShowDialogConfirm(true);
+    } else if (value === "focusTimer") {
+      // Start focus timer
+      localStorage.setItem("focusTaskId", selectedTask.id);
+      navigate("/timer");
     }
     setShowMenu(false);
   }
@@ -214,11 +221,20 @@ const Modal = ({ onCancel, onSave }) => {
               </button>
               {showMenu && (
                 <Menu
-                  className={"w-52 absolute top-5 -right-8"}
+                  className={"w-52 absolute top-5 -right-8 z-[999]"}
                   onItemClick={handleMenuClick}
                   ref={menuRef}
                 >
+                  {selectedTask.id && selectedTask.status === "InProgress" && (
+                    <MenuItem
+                      value="focusTimer"
+                      label="Start Focus Timer"
+                      className="hover:bg-transparent"
+                      icon={<RxTimer size={16} />}
+                    />
+                  )}
                   <MenuItem
+                    value="delete"
                     label="Delete"
                     className="hover:bg-transparent text-error"
                     icon={<GoTrash size={16} />}

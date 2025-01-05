@@ -75,6 +75,8 @@ const FocusTimer = () => {
 
   const [pomoCount, setPomoCount] = useState(0);
 
+  const [timeSaved, setTimeSaved] = useState(0); // in minutes
+
   useEffect(() => {
     requestPermission();
 
@@ -126,6 +128,7 @@ const FocusTimer = () => {
         navigate(event.state?.url);
       } else {
         pause();
+        setHasAnyChanges(false);
       }
     };
 
@@ -143,12 +146,13 @@ const FocusTimer = () => {
   const onPauseTimer = async () => {
     if (activeMode === 0) {
       // Update task focus time
-      const focusTime = Math.floor(timePassed / (60 * 1000));
+      const focusTime = Math.floor(timePassed / (60 * 1000)) - timeSaved;
 
       if (focusTime === 0) return;
 
       try {
         await updateTaskFocusTime(focusTask.id, focusTime);
+        setTimeSaved(timeSaved + focusTime);
         setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
       } catch (error) {
         showToast("error", error.response?.data?.message || "Failed to update focus time");
@@ -159,9 +163,14 @@ const FocusTimer = () => {
   const onCompleteTimer = async () => {
     if (activeMode === 0) {
       // Update task focus time
+      const focusTime = timerSettings.focus_time - timeSaved;
+
+      if (focusTime === 0) return;
+
       try {
-        await updateTaskFocusTime(focusTask.id, timerSettings.focus_time);
-        setFocusTask({ ...focusTask, focus_time: focusTask.focus_time + timerSettings.focus_time });
+        await updateTaskFocusTime(focusTask.id, focusTime);
+        setTimeSaved(0);
+        setFocusTask({ ...focusTask, focus_time: focusTask.focus_time + focusTime });
 
         const nextCount = pomoCount + 1;
 
@@ -181,7 +190,8 @@ const FocusTimer = () => {
         showToast("error", error.response?.data?.message || "Failed to update focus time");
       }
     } else {
-      notifyMe("Time's up! Get back to work!");
+      if ((activeMode === 1 && timerSettings.short_break_time !== 0) || (activeMode === 2 && timerSettings.long_break_time !== 0))
+        notifyMe("Time's up! Get back to work!");
 
       setActiveMode(0);
       setTargetTime(timerSettings.focus_time * 60 * 1000);
@@ -195,12 +205,15 @@ const FocusTimer = () => {
       const now = new Date();
 
       if (now > deadline) {
-        console.log({ ...focusTask, status: "Expired" });
         setFocusTask({ ...focusTask, status: "Expired" });
         notifyMe("Task deadline reached! Complete the task now!");
         pause();
       }
     }
+  }
+
+  const onResetTimer = () => {
+    setTimeSaved(0);
   }
 
   const {
@@ -211,7 +224,7 @@ const FocusTimer = () => {
     start,
     pause,
     reset,
-  } = useTimer(onStartTimer, onPauseTimer, onCompleteTimer, onRunningTimer);
+  } = useTimer(onStartTimer, onPauseTimer, onCompleteTimer, onRunningTimer, onResetTimer);
 
   useEffect(() => {
     setDisableSidebar(isRunning);
@@ -265,9 +278,10 @@ const FocusTimer = () => {
     try {
       if (activeMode === 0 && isRunning) {
         // Update task focus time
-        const focusTime = Math.floor(timePassed / (60 * 1000));
+        const focusTime = Math.floor(timePassed / (60 * 1000)) - timeSaved;
         if (focusTime !== 0) {
           await updateTaskFocusTime(focusTask.id, focusTime);
+          setTimeSaved(timeSaved + focusTime);
           setFocusTask({...focusTask, focus_time: focusTask.focus_time + focusTime});
         }
       }
