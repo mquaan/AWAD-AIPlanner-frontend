@@ -10,7 +10,7 @@ const StatusTag = ({ status }) => {
   const text = statusToStringDisplay(status);
   const color = getStatusBgColor(status);
   return (
-    <div className={`px-2 py-1 rounded-sm text-[10px] uppercase font-bold text-text-secondary text-center`} style={{ backgroundColor: color }}>
+    <div className={`px-2 py-1 w-fit rounded-sm text-[10px] uppercase font-bold text-text-secondary text-center`} style={{ backgroundColor: color }}>
       {text}
     </div>
   )
