@@ -48,8 +48,8 @@ const UpNext = ({ task }) => {
     <div className="flex gap-2">
       <div className={`w-[5px] rounded-md ${priorityBgColor} ${priorityTextColor}`}> .</div>
       <div className="flex flex-col">
-        <p>{task.name}</p>
-        <p className="text-sm text-gray-500">Deadline: {formatUpNext(task.estimated_end_time)}</p>
+        <p className="text-[14px]">{task.name}</p>
+        <p className="text-[13px] text-gray-500">Deadline: {formatUpNext(task.estimated_end_time)}</p>
       </div>
     </div>
   )
@@ -255,14 +255,14 @@ const Dashboard = () => {
 
 
   const renderHeader = () => (
-    <div className="flex justify-between items-center mb-4">
+    <div className="flex justify-between items-center mb-2">
       <button
         onClick={prevMonth}
         className="text-gray-600 hover:text-black p-2 rounded-full transition"
       >
         &lt;
       </button>
-      <h2 className="text-lg font-semibold">{format(currentMonth, 'MMMM yyyy')}</h2>
+      <h2 className="text-md font-semibold">{format(currentMonth, 'MMMM yyyy')}</h2>
       <button
         onClick={nextMonth}
         className="text-gray-600 hover:text-black p-2 rounded-full transition"
@@ -306,7 +306,7 @@ const Dashboard = () => {
             onClick={() => onDateClick(cloneDay)}
             onMouseEnter={(e) => taskName && handleMouseEnter(e, taskName)}
             onMouseLeave={handleMouseLeave}
-            className={`p-2 text-center cursor-pointer rounded-full ${
+            className={`p-[6px] text-center text-sm cursor-pointer rounded-full ${
               !isSameMonth(day, monthStart)
                 ? 'text-gray-400'
                 : isSameDay(day, currentDate)
@@ -596,7 +596,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <div className="w-[25vw] border p-4 shadow-lg rounded-2xl bg-white">
+            <div className="w-[25vw] border p-5 shadow-lg rounded-2xl bg-white">
               {renderHeader()}
               {renderDays()}
               {renderCells()}
@@ -628,7 +628,7 @@ const Dashboard = () => {
               )}
             </div>
             
-            <div className="w-full p-4 border shadow-lg rounded-2xl bg-white">
+            <div className="w-full px-6 py-4 border shadow-lg rounded-2xl bg-white">
               <h1 className="font-bold text-xl mb-2">Up next</h1>
               <div className="flex flex-col gap-6">
                 {tasks.filter((task) => task.estimated_end_time !== null && task.status !== "Completed" && task.status !== "Expired")
