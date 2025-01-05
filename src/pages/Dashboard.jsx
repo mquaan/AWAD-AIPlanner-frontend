@@ -22,11 +22,11 @@ ChartJS.register(ArcElement, CategoryScale, LinearScale, PointElement, LineEleme
 
 const Boxes = ({ title, value, Icon, text, bg }) => {
   return (
-    <div className="w-[12vw] p-6 gap-3 flex flex-col items-center justify-center bg-white border shadow-md rounded-2xl">
+    <div className="w-[12vw] py-6 px-3 gap-3 flex flex-col items-center justify-center bg-white border shadow-md rounded-2xl">
       <div className={`flex items-center p-3 rounded-2xl ${bg}`}>
         <Icon className="w-6 h-6"/>
       </div>
-      <h1 className={`font-bold text-xl ${text}`}>{title}</h1>
+      <h1 className={`font-bold text-lg ${text}`}>{title}</h1>
       <p className="font-semibold text-md">{value}</p>
     </div>
   );
@@ -60,9 +60,10 @@ const LineChart = ({ lineData }) => {
   const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
   const todayTaskCount = lineData?.datasets[0]?.data[todayIndex] || 0;
   return (
-    <div className={`flex p-4 justify-center ${showSidebar ? 'w-[25vw]' : 'w-[28vw]'}`}>
+    <div className={`flex p-4 justify-center ${showSidebar ? 'w-[24vw]' : 'w-[28vw]'}`} >
       <Line
         data={lineData}
+        maintainAspectRatio={false}
         options={{
           responsive: true,
           plugins: {
@@ -153,6 +154,7 @@ const SubjectDonutChart = ({ data }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
@@ -196,8 +198,8 @@ const SubjectDonutChart = ({ data }) => {
   };
 
   return (
-    <div className={`flex justify-center p-4 bg-white border shadow-lg rounded-2xl ${showSidebar ? 'w-[25vw]' : 'w-[28vw]'}`} >
-      <Doughnut data={chartData} options={options} />
+    <div className={`flex justify-center p-4 bg-white border shadow-lg rounded-2xl ${showSidebar ? 'w-[24vw]' : 'w-[28vw]'}`} >
+      <Doughnut data={chartData} options={options}/>
     </div>
   );
 };
@@ -453,12 +455,12 @@ const Dashboard = () => {
       <div className="w-full h-full flex flex-col items-center justify-center gap-4 mt-[-10px]">
         <div className="flex w-full items-center justify-between">
           <div
-            className="w-[20vw] flex gap-2 items-center justify-between"
+            className="max-w-[15vw] flex gap-2 items-center justify-between"
           >
-            <div className="flex flex-col gap-1 w-full text-2xl">
+            <div className="flex flex-col gap-1 w-full text-xl">
               <div className="font-semibold flex gap-1">
                 <p>Hi, </p>
-                <p className="text-primary">{profile?.name}</p>
+                <p className="text-primary truncate">{profile?.name}</p>
                 <img
                   src={profile?.avatar}
                   alt="avatar"
@@ -546,10 +548,10 @@ const Dashboard = () => {
                 bg="bg-yellow-100"
               />
             </div>
-            <div className="flex justify-between mt-2">
+            <div className="flex justify-between gap-6 mt-2">
               <SubjectDonutChart data={numTask} />
               <div className="flex flex-col gap-4">
-                <div className="h-fit bg-white border shadow-lg rounded-2xl">
+                <div className="h-fit w-full bg-white border shadow-lg rounded-2xl">
                   <LineChart lineData={getTaskDataForWeek(tasks)} />
                 </div>
                 <div className="flex flex-col p-4 items-center justify-between h-full bg-white border shadow-lg rounded-2xl">
