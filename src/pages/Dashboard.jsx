@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePage } from "../context/PageContext";
 import { useTask } from "../context/TaskContext";
+import Loading from "../components/Loading";
+import FeedbackModal from "../components/FeedbackModal";
+import { useToast } from "../context/ToastContext";
 import { FaPlay } from "react-icons/fa";
 import { TbAnalyze } from "react-icons/tb";
 import { MdManageHistory } from "react-icons/md";
 import { getUserProfile } from '../service/userApi';
 import { getAllNumTask } from "../service/subjectApi";
+import { getFeedback } from "../service/feedbackApi";
 import PropTypes from "prop-types";
 import { Line, Doughnut } from "react-chartjs-2";
 import { FcOk, FcTodoList, FcExpired, FcServices } from "react-icons/fc";
@@ -417,200 +421,228 @@ const Dashboard = () => {
       ],
     };
   };
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { showToast } = useToast();
+  const handleGetFeedback = async () => {
+    setIsLoading(true);
+    setShowFeedback(true);
+    try {
+      const response = await getFeedback("analyze");
+      setFeedback(response.data.Candidates[0].Content.Parts[0]);
+    } catch (error) {
+      showToast('error', error.response?.data?.message || 'Failed to get feedback');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const handleCloseFeedback = () => {
+    setShowFeedback(false);
+    setFeedback("");
+  }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-4 mt-[-10px]">
-      <div className="flex w-full items-center justify-between">
-        <div
-          className="w-[20vw] flex gap-2 items-center justify-between"
-        >
-          <div className="flex flex-col gap-1 w-full text-2xl">
-            <div className="font-semibold flex gap-1">
-              <p>Hi, </p>
-              <p className="text-primary">{profile?.name}</p>
-              <img
-                src={profile?.avatar}
-                alt="avatar"
-                className="w-8 h-8 rounded-full"
-                />
-              <p>!</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="flex gap-3 items-center justify-between">
-          <div 
-            onClick={() => navigate("/task")}
-            className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
-                      hover:shadow-lg"
+    <div>
+      {isLoading && <Loading content="Generating..." />}
+      {showFeedback && (
+        <FeedbackModal isOpen={showFeedback} feedback={feedback} onClose={handleCloseFeedback} />
+      )}
+      <div className="w-full h-full flex flex-col items-center justify-center gap-4 mt-[-10px]">
+        <div className="flex w-full items-center justify-between">
+          <div
+            className="w-[20vw] flex gap-2 items-center justify-between"
           >
-            <div className="flex items-center justify-center">
-              <MdManageHistory className="w-5 h-5 text-primary" />
-            </div>
-            <div className="font-semibold">
-              Manage Tasks
-            </div>
-          </div>
-          <div 
-            onClick={() => navigate("/timer")}
-            className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
-                      hover:shadow-lg"
-          >
-            <div className="flex items-center justify-center">
-              <FaPlay className="w-4 h-4 text-primary" />
-            </div>
-            <div className="font-semibold">
-              Focus Timer
-            </div>
-          </div>
-          <div 
-            onClick={() => navigate("/timer")}
-            className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
-                      hover:shadow-lg"
-          >
-            <div className="flex items-center justify-center">
-              <TbAnalyze className="w-5 h-5 text-primary" />
-            </div>
-            <div className="font-semibold">
-              AI Analyze
-            </div>
-          </div>  
-        </div>
-        <div className="w-[25vw] h-full items-center justify-center flex flex-col gap-2 ">
-          <div className="flex gap-4 text-lg">
-            <p className="text-2xl font-orbitron">{realTime}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full flex gap-12">
-        <div className="w-full flex flex-col gap-4">
-          <div className="flex w-full justify-between">
-            <Boxes 
-              title="To Do"
-              value={tasks.filter((task) => task.status === "ToDo").length + " tasks"}
-              Icon={FcTodoList}
-              text="text-blue-500"
-              bg="bg-blue-100"
-            />
-            <Boxes 
-              title="In Progress"
-              value={tasks.filter((task) => task.status === "InProgress").length + " tasks"}
-              Icon={FcServices}
-              text="text-orange-500"
-              bg="bg-orange-100"
-            />
-            <Boxes 
-              title="Completed"
-              value={tasks.filter((task) => task.status === "Completed").length + " tasks"}
-              Icon={FcOk}
-              text="text-green-500"
-              bg="bg-green-100"
-            />
-            <Boxes 
-              title="Expired"
-              value={tasks.filter((task) => task.status === "Expired").length + " tasks"}
-              Icon={FcExpired}
-              text="text-yellow-500"
-              bg="bg-yellow-100"
-            />
-          </div>
-          <div className="flex justify-between mt-2">
-            <SubjectDonutChart data={numTask} />
-            <div className="flex flex-col gap-4">
-              <div className="h-fit bg-white border shadow-lg rounded-2xl">
-                <LineChart lineData={getTaskDataForWeek(tasks)} />
-              </div>
-              <div className="flex flex-col p-4 items-center justify-between h-full bg-white border shadow-lg rounded-2xl">
-                <p className="font-bold">Task Now In Progress</p>
-                {tasks.filter((task) => task.status === "InProgress")
-                  .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time))
-                  .slice(0, 1)
-                  .map((task) => (
-                    <div key={task.id} className="flex flex-col items-center">
-                      <p className="text-[#50998f] font-semibold">{task.name}</p>
-                      <div className="flex w-[20vw]">
-                        <p className="text-[12px] text-gray-700">
-                          {formatUpNext(task.estimated_start_time)}
-                        </p>
-                        <div className="flex flex-col w-full gap-1 justify-center items-center mt-3">
-                          <div className="w-full bg-gray-200 rounded-full h-2.5">
-                            <div
-                              className="bg-[#79cec3] h-2.5 rounded-full"
-                              style={{
-                                width: `${Math.min(
-                                  100,
-                                  (new Date() - new Date(task.estimated_start_time)) /
-                                    (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
-                                    100
-                                )}%`,
-                              }}
-                            ></div>
-                          </div>
-                          <div className="text-[13px] font-medium text-[#2c382e] bg-[#79cec3] rounded-full py-1 px-2">
-                            {((progressTime - new Date(task.estimated_start_time)) /
-                              (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
-                              100).toFixed(0)}%
-                          </div>
-                        </div>
-                        <p className="ml-3 text-[12px] text-gray-700">
-                          {formatUpNext(task.estimated_end_time)}
-                        </p>
-                    </div>
-                    </div>
-                ))}
-                
+            <div className="flex flex-col gap-1 w-full text-2xl">
+              <div className="font-semibold flex gap-1">
+                <p>Hi, </p>
+                <p className="text-primary">{profile?.name}</p>
+                <img
+                  src={profile?.avatar}
+                  alt="avatar"
+                  className="w-8 h-8 rounded-full"
+                  />
+                <p>!</p>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          <div className="w-[25vw] border p-4 shadow-lg rounded-2xl bg-white">
-            {renderHeader()}
-            {renderDays()}
-            {renderCells()}
-
-            {tooltip.visible && (
-            <div
-              style={{
-                position: 'absolute',
-                width: '150px',
-                top: tooltip.y,
-                left: tooltip.x,
-                transform: 'translate(-50%, -100%)',
-                backgroundColor: '#FFEDE1',
-                color: 'black',
-                padding: '5px 10px',
-                borderRadius: '5px',
-                pointerEvents: 'none',
-                fontSize: '13px',
-              }}
-            >
-              <ul className="list-disc pl-4">
-                {tooltip.text.map((task, index) => (
-                  <li key={index}>
-                    {task}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            )}
           </div>
           
-          <div className="w-full p-4 border shadow-lg rounded-2xl bg-white">
-            <h1 className="font-bold text-xl mb-2">Up next</h1>
-            <div className="flex flex-col gap-6">
-              {tasks.filter((task) => task.estimated_end_time !== null && task.status !== "Completed" && task.status !== "Expired")
-                .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time)).slice(0, 3).map((task) => (
-                <UpNext key={task.id} task={task} />
-              ))}
-
+          <div className="flex gap-3 items-center justify-between">
+            <div 
+              onClick={() => navigate("/task")}
+              className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
+                        hover:shadow-lg"
+            >
+              <div className="flex items-center justify-center">
+                <MdManageHistory className="w-5 h-5 text-primary" />
+              </div>
+              <div className="font-semibold">
+                Manage Tasks
+              </div>
+            </div>
+            <div 
+              onClick={() => navigate("/timer")}
+              className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
+                        hover:shadow-lg"
+            >
+              <div className="flex items-center justify-center">
+                <FaPlay className="w-4 h-4 text-primary" />
+              </div>
+              <div className="font-semibold">
+                Focus Timer
+              </div>
+            </div>
+            <div 
+              onClick={handleGetFeedback}
+              className="flex gap-3 items-center justify-between bg-white border cursor-pointer p-4 rounded-3xl shadow-sm
+                        hover:shadow-lg"
+            >
+              <div className="flex items-center justify-center">
+                <TbAnalyze className="w-5 h-5 text-primary" />
+              </div>
+              <div className="font-semibold">
+                AI Analyze
+              </div>
+            </div>  
+          </div>
+          <div className="w-[25vw] h-full items-center justify-center flex flex-col gap-2 ">
+            <div className="flex gap-4 text-lg">
+              <p className="text-2xl font-orbitron">{realTime}</p>
             </div>
           </div>
         </div>
+
+        <div className="w-full flex gap-12">
+          <div className="w-full flex flex-col gap-4">
+            <div className="flex w-full justify-between">
+              <Boxes 
+                title="To Do"
+                value={tasks.filter((task) => task.status === "ToDo").length + " tasks"}
+                Icon={FcTodoList}
+                text="text-blue-500"
+                bg="bg-blue-100"
+              />
+              <Boxes 
+                title="In Progress"
+                value={tasks.filter((task) => task.status === "InProgress").length + " tasks"}
+                Icon={FcServices}
+                text="text-orange-500"
+                bg="bg-orange-100"
+              />
+              <Boxes 
+                title="Completed"
+                value={tasks.filter((task) => task.status === "Completed").length + " tasks"}
+                Icon={FcOk}
+                text="text-green-500"
+                bg="bg-green-100"
+              />
+              <Boxes 
+                title="Expired"
+                value={tasks.filter((task) => task.status === "Expired").length + " tasks"}
+                Icon={FcExpired}
+                text="text-yellow-500"
+                bg="bg-yellow-100"
+              />
+            </div>
+            <div className="flex justify-between mt-2">
+              <SubjectDonutChart data={numTask} />
+              <div className="flex flex-col gap-4">
+                <div className="h-fit bg-white border shadow-lg rounded-2xl">
+                  <LineChart lineData={getTaskDataForWeek(tasks)} />
+                </div>
+                <div className="flex flex-col p-4 items-center justify-between h-full bg-white border shadow-lg rounded-2xl">
+                  <p className="font-bold">Task Now In Progress</p>
+                  {tasks.filter((task) => task.status === "InProgress")
+                    .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time))
+                    .slice(0, 1)
+                    .map((task) => (
+                      <div key={task.id} className="flex flex-col items-center">
+                        <p className="text-[#50998f] font-semibold">{task.name}</p>
+                        <div className="flex w-[20vw]">
+                          <p className="text-[12px] text-gray-700">
+                            {formatUpNext(task.estimated_start_time)}
+                          </p>
+                          <div className="flex flex-col w-full gap-1 justify-center items-center mt-3">
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                              <div
+                                className="bg-[#79cec3] h-2.5 rounded-full"
+                                style={{
+                                  width: `${Math.min(
+                                    100,
+                                    (new Date() - new Date(task.estimated_start_time)) /
+                                      (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
+                                      100
+                                  )}%`,
+                                }}
+                              ></div>
+                            </div>
+                            <div className="text-[13px] font-medium text-[#2c382e] bg-[#79cec3] rounded-full py-1 px-2">
+                              {((progressTime - new Date(task.estimated_start_time)) /
+                                (new Date(task.estimated_end_time) - new Date(task.estimated_start_time)) *
+                                100).toFixed(0)}%
+                            </div>
+                          </div>
+                          <p className="ml-3 text-[12px] text-gray-700">
+                            {formatUpNext(task.estimated_end_time)}
+                          </p>
+                      </div>
+                      </div>
+                  ))}
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <div className="w-[25vw] border p-4 shadow-lg rounded-2xl bg-white">
+              {renderHeader()}
+              {renderDays()}
+              {renderCells()}
+
+              {tooltip.visible && (
+              <div
+                style={{
+                  position: 'absolute',
+                  width: '150px',
+                  top: tooltip.y,
+                  left: tooltip.x,
+                  transform: 'translate(-50%, -100%)',
+                  backgroundColor: '#FFEDE1',
+                  color: 'black',
+                  padding: '5px 10px',
+                  borderRadius: '5px',
+                  pointerEvents: 'none',
+                  fontSize: '13px',
+                }}
+              >
+                <ul className="list-disc pl-4">
+                  {tooltip.text.map((task, index) => (
+                    <li key={index}>
+                      {task}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              )}
+            </div>
+            
+            <div className="w-full p-4 border shadow-lg rounded-2xl bg-white">
+              <h1 className="font-bold text-xl mb-2">Up next</h1>
+              <div className="flex flex-col gap-6">
+                {tasks.filter((task) => task.estimated_end_time !== null && task.status !== "Completed" && task.status !== "Expired")
+                  .sort((a, b) => new Date(a.estimated_end_time) - new Date(b.estimated_end_time)).slice(0, 3).map((task) => (
+                  <UpNext key={task.id} task={task} />
+                ))}
+
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
+        
       </div>
-      {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
-      
     </div>
   );
 };
