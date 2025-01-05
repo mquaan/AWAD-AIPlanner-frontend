@@ -17,7 +17,7 @@ function StatusMessage({ message, type='' }) {
 
   return (
     <div 
-      className={twMerge(`w-[250px] text-center fixed top-[30px] right-[20px] p-[15px] rounded-md
+      className={twMerge(`w-[250px] text-center fixed top-[25px] right-[20px] p-[15px] rounded-md
                 text-slate-100 shadow-lg z-[10100] transition-opacity duration-300`, styles)}
     >
       {message}

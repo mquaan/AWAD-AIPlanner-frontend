@@ -12,6 +12,11 @@
   src: url('./assets/fonts/DS-DIGI.TTF') format('truetype');
 }
 
+@font-face {
+  font-family: 'Orbitron';
+  src: url('./assets/fonts/Orbitron-Medium.ttf') format('truetype');
+}
+
 @layer base {
   :root {
     --primary-color: #ff6542;

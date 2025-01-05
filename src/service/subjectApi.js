@@ -23,3 +23,8 @@ export const deleteSubject = async (id) => {
   const response = await axiosInstance.delete(`/subject/${id}`);
   return response;
 };
+
+export const getAllNumTask = async () => {
+  const response = await axiosInstance.get(`/subject/amount-task`);
+  return response;
+}
