@@ -63,7 +63,6 @@ const LineChart = ({ lineData }) => {
     <div className={`flex p-4 justify-center ${showSidebar ? 'w-[24vw]' : 'w-[28vw]'}`} >
       <Line
         data={lineData}
-        maintainAspectRatio={false}
         options={{
           responsive: true,
           plugins: {
@@ -105,7 +104,6 @@ const LineChart = ({ lineData }) => {
               },
             },
             y: {
-              max: (context) => Math.max(...context.chart.data.datasets[0].data) + 1,
               ticks: {
                 color: "black",
               },
@@ -353,7 +351,6 @@ const Dashboard = () => {
     const fetchAllNumTask = async () => {
       try {
         const response = await getAllNumTask();
-        console.log(response.data);
         setNumTask(response.data);
       } catch (e) {
         console.error(e);
